@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCNxvk0axhw-3IZ9SnkGk0OFHH6v6fdZD8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>714626395898</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.smartinventory</string>
+	<key>PROJECT_ID</key>
+	<string>smartinventory-51751</string>
+	<key>STORAGE_BUCKET</key>
+	<string>smartinventory-51751.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:714626395898:ios:4bf1ca1dcef458c84b2343</string>
+</dict>
+</plist>
