@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/ProductsScreen.dart';
 
-void main() async {
-  runApp(MyApp());
+void main() {
+  runApp(const MaterialApp(
+    home: ProductsScreen(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-    );
-  }
-}
