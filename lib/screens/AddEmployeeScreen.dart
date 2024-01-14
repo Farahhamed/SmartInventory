@@ -24,18 +24,34 @@ class AddEmployeeScreen extends StatelessWidget {
           children: [
             TextField(
               controller: employeeNameController,
-              decoration: InputDecoration(labelText: 'Employee Name'),
+              style: TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                labelText: 'Employee Name',
+                labelStyle: TextStyle(fontSize: 16),
+              ),
             ),
             SizedBox(height: 16),
             TextField(
               controller: jobTitleController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Job Tite'),
+              style: TextStyle(fontSize: 18),
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'Job Title',
+                labelStyle: TextStyle(fontSize: 16),
+              ),
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: addEmployee,
-              child: Text('Add Employee'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.indigo, // Button color
+                onPrimary: Colors.white, // Text color on button
+                padding: EdgeInsets.all(16.0),
+              ),
+              child: Text(
+                'Add New Employee',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),

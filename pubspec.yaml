@@ -34,10 +34,6 @@ dependencies:
     sdk: flutter
   get: ^4.6.6
   http: ^1.1.2
-  odoo_rpc: ^0.5.2
-  get: ^4.6.6
-  firebase_core: ^2.24.2
-  odoo_api_plus: ^0.1.1
 
 dev_dependencies:
   cloud_firestore: ^4.14.0
