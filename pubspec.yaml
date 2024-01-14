@@ -39,6 +39,7 @@ dependencies:
   odoo_rpc: ^0.5.2
   get: ^4.6.6
   firebase_core: ^2.24.2
+  odoo_api_plus: ^0.1.1
 
 dev_dependencies:
   flutter_test:
