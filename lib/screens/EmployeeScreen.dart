@@ -33,11 +33,11 @@ class _OdooMethodsViewState extends State<EmployeeScreen> {
       employeeNameController.text,
       jobTitleController.text,
     );
-    fetchData(); // Refresh data after adding a product
-    Navigator.pop(context); // Close the Add Product form after adding
+    fetchData(); // Refresh data after adding an employee
+    Navigator.pop(context); // Close the Add Employee form after adding
   }
 
-  void navigateToAddProductForm() {
+  void navigateToAddEmployeeForm() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -54,26 +54,45 @@ class _OdooMethodsViewState extends State<EmployeeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter + Flask API'),
+        title: Text('Employees', style: TextStyle(fontSize: 24)),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: navigateToAddProductForm,
-              child: Text('Add New Product'),
+              onPressed: navigateToAddEmployeeForm,
+              style: ElevatedButton.styleFrom(
+                primary: Colors.indigo, // Button color
+                onPrimary: Colors.white, // Text color on button
+                padding: EdgeInsets.all(16.0),
+              ),
+              child: Text(
+                'Add New Employee',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: records.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(records[index]['name']),
-                  subtitle: Text('List Price: ${records[index]['list_price']}'),
-                );
-              },
+            child: Card(
+              margin: EdgeInsets.all(16.0),
+              color: Colors.white, // Card background color
+              child: ListView.builder(
+                itemCount: records.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                      records[index]['name'],
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'Job Title: ${records[index]['job_title']}',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -81,3 +100,4 @@ class _OdooMethodsViewState extends State<EmployeeScreen> {
     );
   }
 }
+

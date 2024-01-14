@@ -24,18 +24,34 @@ class AddProductScreen extends StatelessWidget {
           children: [
             TextField(
               controller: productNameController,
-              decoration: InputDecoration(labelText: 'Product Name'),
+              style: TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                labelText: 'Product Name',
+                labelStyle: TextStyle(fontSize: 16),
+              ),
             ),
             SizedBox(height: 16),
             TextField(
               controller: listPriceController,
+              style: TextStyle(fontSize: 18),
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'List Price'),
+              decoration: InputDecoration(
+                labelText: 'List Price',
+                labelStyle: TextStyle(fontSize: 16),
+              ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
+           ElevatedButton(
               onPressed: addProduct,
-              child: Text('Add Product'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.indigo, // Button color
+                onPrimary: Colors.white, // Text color on button
+                padding: EdgeInsets.all(16.0),
+              ),
+              child: Text(
+                'Add New Product',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),
