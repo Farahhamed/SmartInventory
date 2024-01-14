@@ -176,6 +176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  odoo_api_plus:
+    dependency: "direct main"
+    description:
+      name: odoo_api_plus
+      sha256: "3b4849e27a3f1a3bec234ed7046a015d6fea1d8f38f22422f807a3c075e771c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   odoo_rpc:
     dependency: "direct main"
     description:
@@ -261,6 +269,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.7"
   vector_math:
     dependency: transitive
     description:
