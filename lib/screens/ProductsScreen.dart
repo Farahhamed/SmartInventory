@@ -2,6 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/AddProductScreen.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey[200],
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.indigo,
+            onPrimary: Colors.white,
+            padding: EdgeInsets.all(16.0),
+          ),
+        ),
+      ),
+      home: ProductsScreen(),
+    );
+  }
+}
+
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
 
@@ -54,26 +78,45 @@ class _OdooMethodsViewState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter + Flask API'),
+        title: Text('Products', style: TextStyle(fontSize: 24)),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: navigateToAddProductForm,
-              child: Text('Add New Product'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.indigo,
+                onPrimary: Colors.white,
+                padding: EdgeInsets.all(16.0),
+              ),
+              child: Text(
+                'Add New Product',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: records.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(records[index]['name']),
-                  subtitle: Text('List Price: ${records[index]['list_price']}'),
-                );
-              },
+            child: Card(
+              margin: EdgeInsets.all(16.0),
+              color: Colors.white,
+              child: ListView.builder(
+                itemCount: records.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                      records[index]['name'],
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'List Price: ${records[index]['list_price']}',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
