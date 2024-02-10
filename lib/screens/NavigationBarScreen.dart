@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/ActivityLogScreen.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
+import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProductsScreen.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -32,7 +34,7 @@ class _MainPageState extends State<MainPage> {
     ActivityLogUI(),
     EmployeeListPage(),
     ProfileScreen(),
-    ProductsScreen(),
+    ProductsList(),
   ];
 
   @override
