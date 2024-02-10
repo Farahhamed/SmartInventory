@@ -41,6 +41,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   icons_plus: ^5.0.0
+  intl: ^0.19.0
   uuid: ^4.3.3
 
 # For information on the generic Dart part of this file, see the
@@ -55,7 +56,6 @@ flutter:
   assets:
     - assets/images/bg1.png
     - assets/images/images.jpg
- 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
