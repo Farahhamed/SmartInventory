@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_access_logs" model="ir.actions.act_window">
+        <field name="name">Logs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">logs.logs</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_logs"
+              name="Logs"
+              parent="menu_access_logs_root"
+              action="action_access_logs"
+              sequence="10"/>
+</odoo>
