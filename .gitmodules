@@ -1,0 +1,3 @@
+[submodule "OdooTest/odoo"]
+	path = OdooTest/odoo
+	url = https://github.com/odoo/odoo.git
