@@ -1,21 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  final String username;
+  final String id;
+  final String employeeId;
+  final String userName;
   final String password;
-  final String uuid; // Add UUID property
 
   User({
-    required this.username,
+   required this.id,
+    required this.employeeId,
+    required this.userName,
     required this.password,
-    required this.uuid,
   });
 
   // Function to convert User object to a Map for Firestore
   Map<String, dynamic> toMap() => {
-        "username": username,
+        "username": userName,
         "password": password,
-        "uuid": uuid,
+        "employeeId": employeeId,
+        "id": id,
       };
 
   // Function to create a User object from a Firestore document
@@ -23,9 +26,10 @@ class User {
     var data = snapshot.data() as Map<String, dynamic>;
 
     return User(
-      username: data['username'],
-      password: data['password'],
-      uuid: data['uuid'],
+      id: snapshot.id,
+      employeeId: data['EmployeeId'],
+      userName: data['UserName'],
+      password: data['Password'],
     );
   }
 }
