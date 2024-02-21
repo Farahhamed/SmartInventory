@@ -6,10 +6,10 @@ import 'package:smartinventory/screens/ProductsScreen.dart';
 import 'package:smartinventory/screens/SignUpScreen.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: SignUpScreen(),
+    home: ChartWidget(),
   ));
 }
