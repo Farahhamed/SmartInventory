@@ -12,13 +12,12 @@ class UserService {
   }
 
   Future<List<EmployeeType>> getEmployeeTypes() async {
-    QuerySnapshot snapshot =
-        await _firestore.collection('employeeTypes').get();
+    QuerySnapshot snapshot = await _firestore.collection('employeeTypes').get();
     return snapshot.docs.map((doc) => EmployeeType.fromFirestore(doc)).toList();
   }
 
-  Future<List<User>> getUsers() async {
+  Future<List<UserModel>> getUsers() async {
     QuerySnapshot snapshot = await _firestore.collection('users').get();
-    return snapshot.docs.map((doc) => User.fromSnapshot(doc)).toList();
+    return snapshot.docs.map((doc) => UserModel.fromSnapshot(doc)).toList();
   }
 }
