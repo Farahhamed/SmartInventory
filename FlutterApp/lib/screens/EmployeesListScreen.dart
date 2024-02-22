@@ -30,7 +30,7 @@ class EmployeeList extends StatelessWidget {
             index % 2 == 0; // Alternating morning and night shifts
         String employeeName = 'Employee $index';
         String employeeRFID = 'RFID$index';
-        int employeeNumber = 1000 + index;
+        int employeeNumber = 01005684752;
         int employeeAge = 25 + index;
 
         return Padding(
@@ -45,33 +45,37 @@ class EmployeeList extends StatelessWidget {
                     : const Color.fromARGB(255, 36, 76, 108),
                 child: Icon(Icons.person),
               ),
-              title: Text(employeeName),
-              subtitle: Row(
+              title: Text(
+                employeeName,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // Making the name bold
+                ),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      color: isMorningShift
-                          ? const Color.fromARGB(255, 188, 175, 62)
-                          : const Color.fromARGB(255, 36, 76, 108),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text(
-                      isMorningShift ? 'Morning Shift' : 'Night Shift',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ),
+                  Text('RFID: $employeeRFID'), // Moved RFID to subtitle
+                  Text(
+                      'Phone Number: $employeeNumber'), // Moved Phone Number to subtitle
+                  Text('Age: $employeeAge'), // Moved Age to subtitle
                 ],
               ),
-              trailing: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('RFID: $employeeRFID'),
-                  Text('Employee Number: $employeeNumber'),
-                  Text('Age: $employeeAge'),
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      // Implement edit functionality
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    color: Colors.red, // Set color to red
+                    onPressed: () {
+                      // Implement delete functionality
+                    },
+                  ),
                 ],
               ),
             ),
