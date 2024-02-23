@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _usernameController.dispose();
   }
 
-  void signUpUser(BuildContext context) async {
+  void signUpUser() async {
     // Ensure the form is valid
     if (_formSignupKey.currentState?.validate() != true) {
       return;
@@ -48,12 +48,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // if string returned is success, user has been created
     if (result["res"] == "success" && result["user"] != null) {
+      if(context.mounted)
+      {
       context.read<UserProvider>().setUser(result["user"]);
       // Navigate to profile_screen.dart
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ProfileScreen()),
       );
+      }
     } else {
       setState(() {
         _isLoading = false;
@@ -106,6 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // full name
                       TextFormField(
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
@@ -137,6 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // email
                       TextFormField(
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
@@ -168,6 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // password
                       TextFormField(
+                        controller: _passController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -233,7 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: InkWell(
-                          onTap: () => signUpUser(context),
+                          onTap: () => signUpUser(),
                           child: Container(
                             child: _isLoading
                                 ? const Center(
