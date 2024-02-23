@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:smartinventory/providers/provider.dart';
+import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
+import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/themes/theme.dart';
+import 'package:smartinventory/utilites/utils.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -12,7 +16,55 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  bool _isLoading = false;
+
   final _formSignupKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passController.dispose();
+    _usernameController.dispose();
+  }
+
+  void signUpUser() async {
+    // Ensure the form is valid
+    if (_formSignupKey.currentState?.validate() != true) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    Map<String, dynamic> result = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      username: _usernameController.text,
+      password: _passController.text,
+    );
+
+    // if string returned is success, user has been created
+    if (result["res"] == "success" && result["user"] != null) {
+      if(context.mounted)
+      {
+      context.read<UserProvider>().setUser(result["user"]);
+      // Navigate to profile_screen.dart
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+      );
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      showSnackBar(context, result["res"]);
+    }
+  }
+
   bool agreePersonalData = true;
   @override
   Widget build(BuildContext context) {
@@ -57,6 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // full name
                       TextFormField(
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
@@ -88,6 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // email
                       TextFormField(
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
@@ -119,6 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       // password
                       TextFormField(
+                        controller: _passController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -183,24 +238,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       // signup button
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formSignupKey.currentState!.validate() &&
-                                agreePersonalData) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Processing Data'),
+                        child: InkWell(
+                          onTap: () => signUpUser(),
+                          child: Container(
+                            child: _isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.blueGrey,
+                                    ),
+                                  )
+                                : const Text('Sign Up'),
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: const ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12),
                                 ),
-                              );
-                            } else if (!agreePersonalData) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Please agree to the processing of personal data')),
-                              );
-                            }
-                          },
-                          child: const Text('Sign up'),
+                              ),
+                              color: Color.fromARGB(
+                                  255, 174, 203, 227), // Adjust the color
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(
