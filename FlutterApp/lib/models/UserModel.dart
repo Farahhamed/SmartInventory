@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserModel {
   final String username;
   final String email;
-  final String uid; // Use "uid" instead of "uuid"
+  final String uid;
 
   UserModel({
     required this.username,

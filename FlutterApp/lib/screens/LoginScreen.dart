@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:smartinventory/resources/auth_method.dart';
+import 'package:smartinventory/screens/ProductsScreen.dart';
 import 'package:smartinventory/screens/SignUpScreen.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
+ // Import your auth methods
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -14,12 +16,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formSignInKey = GlobalKey<FormState>();
   bool rememberPassword = true;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  AuthMethods _authMethods = AuthMethods(); // Instance of your auth methods
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       child: Column(
         children: [
-          const Expanded(
+          Expanded(
             flex: 1,
             child: SizedBox(
               height: 10,
@@ -54,6 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 40.0,
                       ),
                       TextFormField(
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
@@ -61,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Email'),
+                          labelText: 'Email',
                           hintText: 'Enter Email',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -84,8 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 25.0,
                       ),
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
-                        obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Password';
@@ -93,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Password'),
+                          labelText: 'Password',
                           hintText: 'Enter Password',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -155,22 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formSignInKey.currentState!.validate() &&
-                                rememberPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Processing Data'),
-                                ),
-                              );
-                            } else if (!rememberPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Please agree to the processing of personal data')),
-                              );
-                            }
+                            _login(); // Call the login method when the button is pressed
                           },
-                          child: const Text('Sign up'),
+                          child: const Text('Sign In'),
                         ),
                       ),
                       const SizedBox(
@@ -191,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               horizontal: 10,
                             ),
                             child: Text(
-                              'Sign up with',
+                              'Sign in with',
                               style: TextStyle(
                                 color: Colors.black45,
                               ),
@@ -208,19 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //   children: [
-                      //     Logo(Logos.facebook_f),
-                      //     Logo(Logos.twitter),
-                      //     Logo(Logos.google),
-                      //     Logo(Logos.apple),
-                      //   ],
-                      // ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // don't have an account
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -262,4 +244,39 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  void _login() async {
+  // Validate form
+  if (_formSignInKey.currentState!.validate()) {
+    // Get email and password from controllers
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    // Call the login method from AuthMethods
+    Map<String, dynamic> result = await _authMethods.loginUser(
+      email: email,
+      password: password,
+    );
+
+    // Check the result
+    if (!result['error']) {
+      // Fetch the user type from Firestore
+
+      // Navigate to the profile screen and pass the user type
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProductsScreen(),
+        ),
+      );
+    } else {
+      // Login failed, show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['res']),
+        ),
+      );
+    }
+  }
+}
 }

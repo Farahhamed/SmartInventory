@@ -1,22 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
+
 
 class Branches {
   final String name;
   final String location;
-  String uuid; // Add UUID property
+  final String id;
 
-  // Constructor with UUID generation
   Branches({
     required this.location,
     required this.name,
-  }) : uuid = Uuid().v4(); // Generate UUID during instantiation
+    required this.id,
+  });
 
   // Function to convert Branches object to a Map for Firestore
   Map<String, dynamic> toMap() => {
         "name": name,
         "location": location,
-        "uuid": uuid,
+        "id": id,
       };
 
   // Function to create a Branches object from a Firestore document
@@ -26,7 +26,7 @@ class Branches {
     return Branches(
       name: data['name'],
       location: data['location'],
-    )..uuid =
-        data['uuid']; // Set UUID when creating the object from Firestore data
+      id: snapshot.id
+    ); // Set UUID when creating the object from Firestore data
   }
 }

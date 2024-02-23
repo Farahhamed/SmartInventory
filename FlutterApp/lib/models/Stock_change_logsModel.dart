@@ -5,14 +5,14 @@ import 'package:smartinventory/models/ProductModel.dart';
 class StockChangeLogs {
   final String date;
   final String time;
-  final Product productId;
-  final Employee employeeId;
+  final Product product;
+  final Employee employee;
 
   StockChangeLogs({
     required this.date,
     required this.time,
-    required this.productId,
-    required this.employeeId,
+    required this.product,
+    required this.employee,
   });
 
   // Function to convert StockChangeLogs object to a Map for Firestore
@@ -20,12 +20,12 @@ class StockChangeLogs {
         "date": date,
         "time": time,
         "productId": {
-          "name": productId.name,
+          "name": product.name,
           // Add other product properties as needed
         },
         "employeeId": {
-          "name": employeeId.name,
-          "position": employeeId.position,
+          "name": employee.name,
+          "position": employee.position,
           // Add other employee properties as needed
         },
       };
@@ -49,7 +49,7 @@ class StockChangeLogs {
     return StockChangeLogs(
       date: data['date'],
       time: data['time'],
-      productId: Product(
+      product: Product(
         name: data['productId']['name'],
         volume: data['productId']['volume'],
         weight: data['productId']['weight'],
@@ -57,10 +57,11 @@ class StockChangeLogs {
         imageUrl: data['productId']['imageUrl'],
         uuid: data['productId']['uuid'],
       ),
-      employeeId: Employee(
+      employee: Employee(
         name: data['employeeId']['name'],
         position: data['employeeId']['position'],
-        branchId: data['employeeId']['branchId'],
+        branch: data['employeeId']['branchId'],
+        id: '',
       ),
     );
   }
