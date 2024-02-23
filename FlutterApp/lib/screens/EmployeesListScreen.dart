@@ -1,42 +1,23 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(EmployeeListPage());
-}
-
-class EmployeeListPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Employee List Page',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Employee List'),
-        ),
-        body: EmployeeList(),
-      ),
-    );
-  }
-}
-
 class EmployeeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 10, // Assuming you have 10 employees
+      itemCount: 10,
       itemBuilder: (context, index) {
-        // Mock data for demonstration
-        bool isMorningShift =
-            index % 2 == 0; // Alternating morning and night shifts
+        bool isMorningShift = index % 2 == 0;
         String employeeName = 'Employee $index';
         String employeeRFID = 'RFID$index';
         int employeeNumber = 1000 + index;
         int employeeAge = 25 + index;
-
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Card(
-            elevation: 4.0,
+            elevation: 2.0, // Decreased elevation
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
             child: ListTile(
               leading: CircleAvatar(
                 radius: 30.0,
