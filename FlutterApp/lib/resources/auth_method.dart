@@ -95,4 +95,36 @@ class AuthMethods {
       }; // Return the result and set error to true.
     }
   }
+
+  Future<String> getUserTypeFromFirestore(String uid) async {
+  try {
+    // Access Firestore collection "users" and document with the provided UID
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+
+    // Check if the document exists
+    if (snapshot.exists) {
+      // Get the data from the document
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+      // Check if the user type field exists in the document
+      if (data.containsKey('userType')) {
+        // Return the user type
+        return data['userType'];
+      } else {
+        // User type field does not exist, handle accordingly
+        return 'Unknown';
+      }
+    } else {
+      // Document does not exist, handle accordingly
+      return 'Unknown';
+    }
+  } catch (error) {
+    // Error occurred, handle accordingly
+    print('Error fetching user type: $error');
+    return 'Unknown';
+  }
+}
 }
