@@ -4,20 +4,26 @@ class UserModel {
   final String username;
   final String email;
   final String uid;
+  final String phoneNumber;
+  final String userType;
 
   UserModel({
     required this.username,
     required this.email,
     required this.uid,
+    required this.phoneNumber,
+    required this.userType,
   });
 
   Map<String, dynamic> toJson() => {
         "username": username,
         "email": email,
         "uid": uid,
+        "phoneNumber": phoneNumber,
+        "userType": userType,
       };
 
-  // Function to create a User object from a Firestore document
+
   static UserModel fromSnapshot(DocumentSnapshot snapshot) {
     var data = snapshot.data() as Map<String, dynamic>;
 
@@ -25,6 +31,8 @@ class UserModel {
       username: data['username'],
       email: data['email'],
       uid: data['uid'],
+      phoneNumber: data['phoneNumber'],
+      userType: data['userType'],
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/services/PredictService.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
 
 class ForecastingScreen extends StatefulWidget {
   @override
@@ -16,15 +18,36 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
     SalesData(DateTime(2014), 40)
   ];
 
-  final List<SalesData> forecastingResults = [
-    SalesData(DateTime(2010), 34),
-    SalesData(DateTime(2011), 30),
-    SalesData(DateTime(2012), 30),
-    SalesData(DateTime(2013), 35),
-    SalesData(DateTime(2014), 38)
-  ];
+  List<SalesData> forecastingResults = [];
 
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchForecastingResults();
+  }
+
+  void _fetchForecastingResults() async {
+    try {
+      List<String> resultList = await PredictService.trainModel();
+      // Convert the fetched values to DateTime and double
+      DateTime date = DateTime.parse(resultList[0]);
+      double predValue = double.parse(resultList[1]);
+
+      setState(() {
+        // Clear the previous data and add the fetched data
+        forecastingResults.clear();
+        forecastingResults.addAll([
+          SalesData(date, predValue),
+          // Add other forecasted values here if needed
+        ]);
+      });
+    } catch (e) {
+      print('Error fetching forecasting results: $e');
+      // Handle error if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,3 +248,4 @@ class SalesData {
 
   SalesData(this.year, this.sales);
 }
+

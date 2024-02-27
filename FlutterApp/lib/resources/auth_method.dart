@@ -24,42 +24,51 @@ class AuthMethods {
   }
 
   Future<Map<String, dynamic>> signUpUser({
-    required String username,
-    required String email,
-    required String password,
-  }) async {
-    Map<String, dynamic> result = {"res": "Error occurred"};
-    try {
-      if (email.isNotEmpty && username.isNotEmpty && password.isNotEmpty) {
-        UserCredential cred = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+  required String email,
+  required String username,
+  required String password,
+  required String phoneNumber,
+  required String userType,
+}) async {
+  Map<String, dynamic> result = {"res": "Error occurred"};
+  try {
+    if (email.isNotEmpty &&
+        username.isNotEmpty &&
+        password.isNotEmpty &&
+        phoneNumber.isNotEmpty &&
+        userType.isNotEmpty) {
+      UserCredential cred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-        // Firebase automatically generates UID
-        String uid = cred.user!.uid;
+      // Firebase automatically generates UID
+      String uid = cred.user!.uid;
 
-        UserModel user = UserModel(
-          username: username,
-          email: email,
-          uid: uid,
-        );
+      UserModel user = UserModel(
+        username: username,
+        email: email,
+        uid: uid,
+        phoneNumber: phoneNumber,
+        userType: userType,
+      );
 
-        await _firestore.collection('users').doc(uid).set(
-              user.toJson(),
-            );
+      await _firestore.collection('users').doc(uid).set(
+            user.toJson(),
+          );
 
-        result["res"] = "success";
-        result["user"] = user;
-      } else {
-        result["res"] = "User registration failed";
-      }
-    } catch (err) {
-      result["res"] = err.toString();
+      result["res"] = "success";
+      result["user"] = user;
+    } else {
+      result["res"] = "User registration failed";
     }
-
-    return result;
+  } catch (err) {
+    result["res"] = err.toString();
   }
+
+  return result;
+}
+
 
   Future<Map<String, dynamic>> loginUser({
     required String email,
