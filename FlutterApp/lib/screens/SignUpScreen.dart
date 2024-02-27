@@ -3,13 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
+import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/utilites/utils.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -19,7 +20,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
+  String _selectedUserType = 'Manager';
 
   final _formSignupKey = GlobalKey<FormState>();
   @override
@@ -28,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _passController.dispose();
     _usernameController.dispose();
+    _phoneController.dispose();
   }
 
   void signUpUser() async {
@@ -44,18 +48,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
       email: _emailController.text,
       username: _usernameController.text,
       password: _passController.text,
+      phoneNumber: _phoneController.text,
+      userType: _selectedUserType,
     );
 
     // if string returned is success, user has been created
     if (result["res"] == "success" && result["user"] != null) {
-      if(context.mounted)
-      {
-      context.read<UserProvider>().setUser(result["user"]);
-      // Navigate to profile_screen.dart
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfileScreen()),
-      );
+      if (context.mounted) {
+        context.read<UserProvider>().setUser(result["user"]);
+        // Navigate to profile_screen.dart
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
       }
     } else {
       setState(() {
@@ -154,6 +159,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // phone number
+                      TextFormField(
+                        controller: _phoneController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter Phone Number';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('Phone Number'),
+                          hintText: 'Enter Phone Number',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // userType
+                      DropdownButtonFormField<String>(
+                        value: _selectedUserType,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedUserType = newValue!;
+                          });
+                        },
+                        items: <String>['Manager', 'Supervisor', 'Employee']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                          labelText: 'User Type',
+                          hintText: 'Select User Type',
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12, // Default border color
