@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/resources/auth_method.dart';
+import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/ProductsScreen.dart';
 import 'package:smartinventory/screens/SignUpScreen.dart';
 import 'package:smartinventory/themes/theme.dart';
@@ -266,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ProductsScreen(),
+          builder: (context) => MyHomePage(),
         ),
       );
     } else {
