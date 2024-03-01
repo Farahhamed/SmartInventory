@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartinventory/services/ProductsService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/screens/AddProductScreen.dart';
+import 'package:smartinventory/screens/EditProductScreen.dart';
+
+enum UserType { Manager, Employee }
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -8,7 +15,99 @@ class ProductsList extends StatefulWidget {
 }
 
 class _ProductsListState extends State<ProductsList> {
-  String selectedCategory = '';
+  List<Map<String, dynamic>> records = [];
+  final ProductService odooMethodsHelper = ProductService();
+  final TextEditingController productNameController = TextEditingController();
+  final TextEditingController listPriceController = TextEditingController();
+  UserType _userType = UserType.Employee;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserType();
+    fetchData();
+  }
+
+  Future<void> _getUserType() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+
+      if (userSnapshot.exists && userSnapshot.data() != null) {
+        dynamic userData = userSnapshot.data();
+        String? userType = userData?['userType'] as String?;
+
+        if (userType == 'Manager') {
+          setState(() {
+            _userType = UserType.Manager;
+          });
+        } else {
+          setState(() {
+            _userType = UserType.Employee;
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> fetchData() async {
+    final data = await odooMethodsHelper.fetchData();
+    setState(() {
+      records = data;
+    });
+  }
+
+  Future<void> addProduct() async {
+    await odooMethodsHelper.addProduct(
+      productNameController.text,
+      double.parse(listPriceController.text),
+    );
+    fetchData();
+    Navigator.pop(context);
+  }
+
+  Future<void> updateProduct(int productId, String newName, double newListPrice) async {
+    await odooMethodsHelper.updateProduct(productId, newName, newListPrice);
+    fetchData();
+  }
+
+  void navigateToAddProductForm() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddProductScreen(
+          productNameController: productNameController,
+          listPriceController: listPriceController,
+          addProduct: addProduct,
+        ),
+      ),
+    );
+  }
+
+  void editProduct(int productId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProductScreen(
+          productId: productId,
+          updateProduct: updateProduct,
+        ),
+      ),
+    );
+  }
+
+  void performDelete(int productId) async {
+    try {
+      await odooMethodsHelper.deleteProduct(productId);
+      fetchData();
+    } catch (error) {
+      print('Error deleting product: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,57 +152,10 @@ class _ProductsListState extends State<ProductsList> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Categories',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                height: 100.0,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    buildCategory(
-                      'Hair Products',
-                      'assets/images/hairproducticon.png',
-                      const Color.fromARGB(255, 221, 174, 230),
-                    ),
-                    buildCategory(
-                      'Cold Flu',
-                      'assets/images/cold.png',
-                      Colors.purple,
-                    ),
-                    buildCategory(
-                      'Headache',
-                      'assets/images/idk.png',
-                      Colors.purple,
-                    ),
-                    buildCategory(
-                      'Drugs',
-                      'assets/images/drugs.png',
-                      Colors.purple,
-                    ),
-                    buildCategory(
-                      'Cream',
-                      'assets/images/cream.png',
-                      Colors.purple,
-                    ),
-                  ],
-                ),
-              ),
-            ),
             ListView.builder(
               shrinkWrap: true,
-              physics:
-                  NeverScrollableScrollPhysics(), // Disable inner scrolling
-              itemCount: 8,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: records.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -138,30 +190,40 @@ class _ProductsListState extends State<ProductsList> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Shampoo',
+                                    records[index]['name'],
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.0,
                                     ),
                                   ),
                                   Text(
-                                    'Wash your hair please',
+                                    'List Price: ${records[index]['list_price']}',
                                     style: TextStyle(
                                       fontSize: 14.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    '\$99.99',
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 122, 53, 120),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
+                          if (_userType == UserType.Manager)
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () => editProduct(records[index]['id']),
+                              ),
+                            ),
+                          if (_userType == UserType.Manager)
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              child: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () => performDelete(records[index]['id']),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -172,48 +234,12 @@ class _ProductsListState extends State<ProductsList> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildCategory(
-      String categoryName, String imagePath, Color hoverColor) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedCategory = categoryName;
-        });
-        // Handle category click
-      },
-      child: Container(
-        width: 100.0,
-        padding: EdgeInsets.all(8.0),
-        color: selectedCategory == categoryName ? hoverColor : null,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(imagePath),
-                ),
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              categoryName,
-              style: TextStyle(
-                fontSize: 11.0,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+      floatingActionButton: _userType == UserType.Manager
+          ? FloatingActionButton(
+              onPressed: navigateToAddProductForm,
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
