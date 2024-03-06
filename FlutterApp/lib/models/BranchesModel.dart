@@ -27,6 +27,6 @@ class Branches {
       name: data['name'],
       location: data['location'],
       id: snapshot.id
-    ); // Set UUID when creating the object from Firestore data
+    ); 
   }
 }

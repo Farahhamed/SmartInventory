@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartinventory/services/ProductsService.dart';
 
 class EditProductScreen extends StatelessWidget {
   final int productId;
@@ -17,7 +16,7 @@ class EditProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: const Text('Edit Product'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,14 +25,14 @@ class EditProductScreen extends StatelessWidget {
           children: [
             TextField(
               controller: newNameController,
-              decoration: InputDecoration(labelText: 'New Product Name'),
+              decoration: const InputDecoration(labelText: 'New Product Name'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: newListPriceController,
-              decoration: InputDecoration(labelText: 'New List Price'),
+              decoration: const InputDecoration(labelText: 'New List Price'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 updateProduct(
@@ -43,7 +42,7 @@ class EditProductScreen extends StatelessWidget {
                 );
                 Navigator.pop(context); // Close the Edit Product form after updating
               },
-              child: Text('Update Product'),
+              child: const Text('Update Product'),
             ),
           ],
         ),

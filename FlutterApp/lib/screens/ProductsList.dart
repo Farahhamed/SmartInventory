@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/services/ProductsService.dart';
@@ -113,10 +115,10 @@ class _ProductsListState extends State<ProductsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products List'),
+        title: const Text('Products List'),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.menu_sharp,
             color: Colors.black,
           ),
@@ -126,7 +128,7 @@ class _ProductsListState extends State<ProductsList> {
         ),
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.filter_alt_outlined,
               color: Colors.black,
               size: 30,
@@ -145,7 +147,7 @@ class _ProductsListState extends State<ProductsList> {
                 cursorHeight: 35,
                 decoration: InputDecoration(
                   hintText: 'Search for a product',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(60.0),
                   ),
@@ -154,7 +156,7 @@ class _ProductsListState extends State<ProductsList> {
             ),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: records.length,
               itemBuilder: (context, index) {
                 return Padding(
@@ -172,7 +174,7 @@ class _ProductsListState extends State<ProductsList> {
                       height: 250.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.0),
-                        image: DecorationImage(
+                        image: const DecorationImage(
                           fit: BoxFit.cover,
                           image: AssetImage('assets/images/hair.png'),
                         ),
@@ -191,14 +193,14 @@ class _ProductsListState extends State<ProductsList> {
                                 children: [
                                   Text(
                                     records[index]['name'],
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.0,
                                     ),
                                   ),
                                   Text(
                                     'List Price: ${records[index]['list_price']}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14.0,
                                     ),
                                   ),
@@ -211,7 +213,7 @@ class _ProductsListState extends State<ProductsList> {
                               top: 0,
                               right: 0,
                               child: IconButton(
-                                icon: Icon(Icons.edit),
+                                icon: const Icon(Icons.edit),
                                 onPressed: () => editProduct(records[index]['id']),
                               ),
                             ),
@@ -220,7 +222,7 @@ class _ProductsListState extends State<ProductsList> {
                               top: 0,
                               left: 0,
                               child: IconButton(
-                                icon: Icon(Icons.delete),
+                                icon: const Icon(Icons.delete),
                                 onPressed: () => performDelete(records[index]['id']),
                               ),
                             ),
@@ -237,7 +239,7 @@ class _ProductsListState extends State<ProductsList> {
       floatingActionButton: _userType == UserType.Manager
           ? FloatingActionButton(
               onPressed: navigateToAddProductForm,
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             )
           : null,
     );
