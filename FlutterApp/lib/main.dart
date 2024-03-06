@@ -9,6 +9,7 @@ import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProductsScreen.dart';
+import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/screens/SignUpScreen.dart';
 import 'package:smartinventory/screens/StockControl/ABCScreen.dart';
 import 'package:smartinventory/screens/StockControl/stockControlScreen.dart';
