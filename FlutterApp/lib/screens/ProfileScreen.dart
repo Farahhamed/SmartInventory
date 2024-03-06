@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Profile Section
-              Row(
+              const Row(
                 children: [
                   CircleAvatar(
                     radius: 60,
@@ -60,14 +60,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               // Bio Section
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
                 'Pellentesque nec metus vel ligula cursus consectetur.',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   height: 40,
                   child: ElevatedButton(
@@ -75,27 +75,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Handle button press
                       print('Button pressed');
                     },
-                    child: Text(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color.fromARGB(
+                          255, 106, 180, 214), // Baby blue color
+                    ),
+                    child: const Text(
                       'Edit Profile',
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: AutofillHints.countryName,
                           color: Color.fromARGB(255, 245, 249, 250)),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color.fromARGB(
-                          255, 106, 180, 214), // Baby blue color
-                    ),
                   ),
                 ),
               ),
               // Personal Information Section
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(26),
+                padding: const EdgeInsets.all(26),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 238, 239, 241),
+                  color: const Color.fromARGB(255, 238, 239, 241),
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,12 +167,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(26),
+                padding: const EdgeInsets.all(26),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 238, 239, 241),
+                  color: const Color.fromARGB(255, 238, 239, 241),
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -17,8 +17,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     ActivityLogUI(),
     EmployeeList(),
-    ProductsList(),
-    ProfileScreen(),
+    const ProductsList(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -28,8 +28,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
-        color: Color.fromARGB(255, 177, 157, 234),
-        animationDuration: Duration(milliseconds: 300),
+        color: const Color.fromARGB(255, 177, 157, 234),
+        animationDuration: const Duration(milliseconds: 300),
         index: _currentIndex,
         onTap: (index) {
           setState(() {
@@ -41,14 +41,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.timeline, color: Colors.white),
+                icon: const Icon(Icons.timeline, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 0;
                   });
                 },
               ),
-              Text('Activity',
+              const Text('Activity',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
@@ -56,14 +56,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.people, color: Colors.white),
+                icon: const Icon(Icons.people, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 1;
                   });
                 },
               ),
-              Text('Employees',
+              const Text('Employees',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
@@ -71,14 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.shopping_cart, color: Colors.white),
+                icon: const Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 2;
                   });
                 },
               ),
-              Text('Products',
+              const Text('Products',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
@@ -86,14 +86,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
+                icon: const Icon(Icons.person, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 3;
                   });
                 },
               ),
-              Text('Profile',
+              const Text('Profile',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),

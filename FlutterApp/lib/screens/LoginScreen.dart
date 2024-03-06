@@ -1,7 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
-import 'package:smartinventory/screens/ProductsScreen.dart';
 import 'package:smartinventory/screens/SignUpScreen.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
@@ -17,17 +18,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formSignInKey = GlobalKey<FormState>();
   bool rememberPassword = true;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  AuthMethods _authMethods = AuthMethods(); // Instance of your auth methods
+  final AuthMethods _authMethods = AuthMethods(); // Instance of your auth methods
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       child: Column(
         children: [
-          Expanded(
+          const Expanded(
             flex: 1,
             child: SizedBox(
               height: 10,

@@ -1,44 +1,37 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/models/EmployeeModel.dart';
 
-class EmployeesService {
-  Future<List<Map<String, dynamic>>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('http://127.0.0.1:5000/get_employees'));
 
-    if (response.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(json.decode(response.body));
-    } else {
-      throw Exception('Failed to load data');
-    }
+class EmployeeService {
+  final CollectionReference _employeesCollection =
+      FirebaseFirestore.instance.collection('employees');
+
+  // Function to add an employee
+  Future<void> addEmployee(Employee employee) async {
+    await _employeesCollection.add(employee.toMap());
   }
 
-  Future<void> addEmployee(String employeeName, String job_title) async {
-    final url = Uri.parse('http://127.0.0.1:5000/add_employee');
-
-    try {
-      final employeeData = {
-        'name': employeeName,
-        'job_title': job_title,
-      };
-
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(employeeData),
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        print(
-            'Product added successfully. Product ID: ${responseData['employee_id']}');
-        // You can add any further actions or UI updates here
-      } else {
-        print('Failed to add product. Status code: ${response.statusCode}');
-        // Handle error cases or display a message to the user
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
+  // Function to edit an employee
+  Future<void> editEmployee(Employee employee) async {
+    await _employeesCollection.doc(employee.id).update(employee.toMap());
   }
+
+  // Function to delete an employee
+  Future<void> deleteEmployee(String employeeId) async {
+    await _employeesCollection.doc(employeeId).delete();
+  }
+
+  // Function to get all employees
+Stream<List<Employee>> getEmployees() {
+  return _employeesCollection.snapshots().asyncMap((snapshot) async {
+    List<Employee> employees = [];
+    for (DocumentSnapshot doc in snapshot.docs) {
+      Employee employee = await Employee.fromSnapshot(doc); // Await each call
+      employees.add(employee);
+    }
+    return employees;
+  });
+}
+
+
 }
