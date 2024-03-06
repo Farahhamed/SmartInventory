@@ -5,6 +5,7 @@ import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:smartinventory/screens/RFIDscreen.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ActivityLogUI(),
     EmployeeList(),
     ProductsList(),
+    RFIDscreen(),
     ProfileScreen(),
   ];
 
@@ -86,10 +88,25 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
+                icon: Icon(Icons.tag, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 3;
+                  });
+                },
+              ),
+              Text('RFID',
+                  style: TextStyle(color: Colors.white, fontSize: 9)),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.person, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 4;
                   });
                 },
               ),
