@@ -1,10 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smartinventory/models/BranchesModel.dart';
+import 'package:smartinventory/models/EmployeeModel.dart';
 import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
-import 'package:smartinventory/screens/ProfileScreen.dart';
+import 'package:smartinventory/screens/ProductsList.dart';
+import 'package:smartinventory/services/BranchService.dart';
+import 'package:smartinventory/services/EmployeeService.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/utilites/utils.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
@@ -23,6 +29,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
   String _selectedUserType = 'Manager';
+  String? _selectedBranchName; // Updated selected branch variable
+  BranchService _branchService = BranchService();
 
   final _formSignupKey = GlobalKey<FormState>();
   @override
@@ -54,6 +62,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // if string returned is success, user has been created
     if (result["res"] == "success" && result["user"] != null) {
+      // Create a new employee object
+      Employee newEmployee = Employee(
+        name: _usernameController.text,
+        position: _selectedUserType,
+        branch: await _branchService.getBranchByName(_selectedBranchName!),
+        id: result["user"].uid,
+        phoneNumber: _phoneController.text,
+      );
+
+      // Add the new employee to the employee collection
+      try {
+        await EmployeeService().addEmployee(newEmployee);
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(context, 'Failed to add employee: $e');
+        return;
+      }
+
       if (context.mounted) {
         context.read<UserProvider>().setUser(result["user"]);
         // Navigate to profile_screen.dart
@@ -243,6 +271,65 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
+                      // branch
+                      StreamBuilder<List<Branches>>(
+                        stream: BranchService().getBranches(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Text('No branches found.');
+                          }
+
+                          List<Branches> branches = snapshot.data!;
+
+                          return Builder(
+                            builder: (innerContext) =>
+                                DropdownButtonFormField<String>(
+                              value: _selectedBranchName,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedBranchName = newValue;
+                                });
+                              },
+                              items: branches
+                                  .map<DropdownMenuItem<String>>(
+                                    (branch) => DropdownMenuItem(
+                                      value: branch.name,
+                                      child: Text(branch.name),
+                                    ),
+                                  )
+                                  .toList(),
+                              decoration: InputDecoration(
+                                labelText: 'Branch',
+                                hintText: 'Select Branch',
+                                border: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color:
+                                        Colors.black12, // Default border color
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color:
+                                        Colors.black12, // Default border color
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(
+                        height: 25.0,
+                      ),
                       // password
                       TextFormField(
                         controller: _passController,
@@ -313,13 +400,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: InkWell(
                           onTap: () => signUpUser(),
                           child: Container(
-                            child: _isLoading
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.blueGrey,
-                                    ),
-                                  )
-                                : const Text('Sign Up'),
                             width: double.infinity,
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -332,6 +412,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: Color.fromARGB(
                                   255, 174, 203, 227), // Adjust the color
                             ),
+                            child: _isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.blueGrey,
+                                    ),
+                                  )
+                                : const Text('Sign Up'),
                           ),
                         ),
                       ),
@@ -372,7 +459,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 30.0,
                       ),
                       // sign up social media logo
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Icon(Icons.facebook),

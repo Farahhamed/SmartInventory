@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -8,6 +10,32 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late User? currentUser;
+  late Map<String, dynamic> userData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .get();
+
+      if (userSnapshot.exists && userSnapshot.data() != null) {
+        setState(() {
+          userData = userSnapshot.data()! as Map<String, dynamic>;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,34 +68,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Profile Section
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 60,
                     backgroundImage: AssetImage('assets/images/images.jpg'),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'John Doe',
-                        style: TextStyle(
+                        userData['username'] ?? 'John Doe',
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      Text('Software Engineer'),
+                      Text(userData['userType'] ?? 'Software Engineer'),
                     ],
                   ),
                 ],
               ),
 
               // Bio Section
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
                 'Pellentesque nec metus vel ligula cursus consectetur.',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   height: 40,
                   child: ElevatedButton(
@@ -75,49 +103,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Handle button press
                       print('Button pressed');
                     },
-                    child: Text(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color.fromARGB(
+                          255, 106, 180, 214), // Baby blue color
+                    ),
+                    child: const Text(
                       'Edit Profile',
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: AutofillHints.countryName,
                           color: Color.fromARGB(255, 245, 249, 250)),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color.fromARGB(
-                          255, 106, 180, 214), // Baby blue color
-                    ),
                   ),
                 ),
               ),
               // Personal Information Section
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(26),
+                padding: const EdgeInsets.all(26),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 238, 239, 241),
+                  color: const Color.fromARGB(255, 238, 239, 241),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Personal Information',
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 62, 62, 62)),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('First Name:',
+                        const Text('First Name:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('John',
-                            style: TextStyle(
+                        Text(userData['username'] ?? 'John',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -125,13 +153,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Last Name:',
+                        const Text('Last Name:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('Doe',
-                            style: TextStyle(
+                        Text(userData['lastName'] ?? 'Doe',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -139,13 +167,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Address:',
+                        const Text('Address:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('123 Main St',
-                            style: TextStyle(
+                        Text(userData['address'] ?? '123 Main St',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -153,13 +181,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Phone Number:',
+                        const Text('Phone Number:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('123-456-7890',
-                            style: TextStyle(
+                        Text(userData['phoneNumber'] ?? '123-456-7890',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -167,34 +195,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(26),
+                padding: const EdgeInsets.all(26),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 238, 239, 241),
+                  color: const Color.fromARGB(255, 238, 239, 241),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Employment Details',
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 62, 62, 62)),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Department:',
+                        const Text('Department:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('24',
-                            style: TextStyle(
+                        Text(userData['department'] ?? '24',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -202,13 +230,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Start Date:',
+                        const Text('Start Date:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('20/2/2020',
-                            style: TextStyle(
+                        Text(userData['startDate'] ?? '20/2/2020',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -216,13 +244,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('End Date:',
+                        const Text('End Date:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('Present',
-                            style: TextStyle(
+                        Text(userData['endDate'] ?? 'Present',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],
@@ -230,13 +258,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Employment Status:',
+                        const Text('Employment Status:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text('Active',
-                            style: TextStyle(
+                        Text(userData['employmentStatus'] ?? 'Active',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
                       ],

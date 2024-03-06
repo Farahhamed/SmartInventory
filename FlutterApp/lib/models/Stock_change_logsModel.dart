@@ -61,7 +61,7 @@ class StockChangeLogs {
         name: data['employeeId']['name'],
         position: data['employeeId']['position'],
         branch: data['employeeId']['branchId'],
-        id: '',
+        id: '', phoneNumber: data['employeeId']['phoneNumber'],
       ),
     );
   }

@@ -1,23 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:smartinventory/models/EmployeeModel.dart';
-import 'package:smartinventory/models/EmployeeTypeModel.dart';
 import 'package:smartinventory/models/UserModel.dart';
 
+
 class UserService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
 
-  Future<List<Employee>> getEmployees() async {
-    QuerySnapshot snapshot = await _firestore.collection('employees').get();
-    return snapshot.docs.map((doc) => Employee.fromSnapshot(doc)).toList();
+  Future<void> addUser(UserModel user) async {
+    await usersCollection.add(user.toJson());
   }
 
-  Future<List<EmployeeType>> getEmployeeTypes() async {
-    QuerySnapshot snapshot = await _firestore.collection('employeeTypes').get();
-    return snapshot.docs.map((doc) => EmployeeType.fromFirestore(doc)).toList();
+  Future<void> updateUser(String userId, UserModel newData) async {
+    await usersCollection.doc(userId).update(newData.toJson());
   }
 
-  Future<List<UserModel>> getUsers() async {
-    QuerySnapshot snapshot = await _firestore.collection('users').get();
-    return snapshot.docs.map((doc) => UserModel.fromSnapshot(doc)).toList();
+  Future<UserModel?> getUser(String userId) async {
+    final DocumentSnapshot snapshot = await usersCollection.doc(userId).get();
+    return snapshot.exists ? UserModel.fromSnapshot(snapshot) : null;
+  }
+
+  Future<void> deleteUser(String userId) async {
+    await usersCollection.doc(userId).delete();
   }
 }

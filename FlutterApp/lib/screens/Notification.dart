@@ -10,12 +10,12 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(60),
         child: AppBar(
-          title: Text('Notifications'),
+          title: const Text('Notifications'),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -23,9 +23,9 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: ListView(
-          children: [
+          children: const [
             SizedBox(height: 10),
             NotificationCard(
               icon: Icons.shopping_cart,
@@ -90,9 +90,9 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        contentPadding: EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.all(10),
         leading: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: iconColor,
             borderRadius: BorderRadius.circular(8),
@@ -103,10 +103,10 @@ class NotificationCard extends StatelessWidget {
           ),
         ),
         title: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
+          padding: const EdgeInsets.symmetric(vertical: 5),
           child: Text(
             title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         subtitle: Text(content),
