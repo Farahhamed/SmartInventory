@@ -3,7 +3,6 @@ import 'package:smartinventory/services/PredictService.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-
 class ForecastingScreen extends StatefulWidget {
   @override
   _ForecastingScreenState createState() => _ForecastingScreenState();
@@ -53,49 +52,49 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.white,
-        color: Color.fromARGB(255, 158, 125, 249),
-        animationDuration: Duration(milliseconds: 300),
-        index: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.home, color: Colors.white),
-              Text('Home', style: TextStyle(color: Colors.white, fontSize: 9)),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.auto_graph, color: Colors.white),
-              Text('Track', style: TextStyle(color: Colors.white, fontSize: 9)),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.settings, color: Colors.white),
-              Text('Settings',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.person, color: Colors.white),
-              Text('Profile',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
-            ],
-          ),
-        ],
-      ),
+      // bottomNavigationBar: CurvedNavigationBar(
+      //   backgroundColor: Colors.white,
+      //   color: Color.fromARGB(255, 158, 125, 249),
+      //   animationDuration: Duration(milliseconds: 300),
+      //   index: _currentIndex,
+      //   onTap: (index) {
+      //     setState(() {
+      //       _currentIndex = index;
+      //     });
+      //   },
+      //   items: [
+      //     Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: [
+      //         Icon(Icons.home, color: Colors.white),
+      //         Text('Home', style: TextStyle(color: Colors.white, fontSize: 9)),
+      //       ],
+      //     ),
+      //     Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: [
+      //         Icon(Icons.auto_graph, color: Colors.white),
+      //         Text('Track', style: TextStyle(color: Colors.white, fontSize: 9)),
+      //       ],
+      //     ),
+      //     Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: [
+      //         Icon(Icons.settings, color: Colors.white),
+      //         Text('Settings',
+      //             style: TextStyle(color: Colors.white, fontSize: 9)),
+      //       ],
+      //     ),
+      //     Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: [
+      //         Icon(Icons.person, color: Colors.white),
+      //         Text('Profile',
+      //             style: TextStyle(color: Colors.white, fontSize: 9)),
+      //       ],
+      //     ),
+      //   ],
+      // ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -248,4 +247,3 @@ class SalesData {
 
   SalesData(this.year, this.sales);
 }
-

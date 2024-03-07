@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:smartinventory/firebase_options.dart';
 import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
+import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
@@ -21,7 +22,7 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-    child: const MaterialApp(
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginScreen(),
     ),

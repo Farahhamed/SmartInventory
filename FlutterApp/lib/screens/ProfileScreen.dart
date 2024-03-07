@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/screens/Notification.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -55,7 +56,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Icons.notifications,
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
+              );
+            },
           ),
         ],
       ),
@@ -100,8 +106,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 40,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle button press
-                      print('Button pressed');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationPage()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       primary: const Color.fromARGB(
