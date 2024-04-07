@@ -8,7 +8,6 @@ import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
-import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/services/BranchService.dart';
 import 'package:smartinventory/services/EmployeeService.dart';
 import 'package:smartinventory/themes/theme.dart';
@@ -16,7 +15,7 @@ import 'package:smartinventory/utilites/utils.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -30,7 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isLoading = false;
   String _selectedUserType = 'Manager';
   String? _selectedBranchName; // Updated selected branch variable
-  BranchService _branchService = BranchService();
+  final BranchService _branchService = BranchService();
 
   final _formSignupKey = GlobalKey<FormState>();
   @override
@@ -87,7 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // Navigate to profile_screen.dart
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
         );
       }
     } else {

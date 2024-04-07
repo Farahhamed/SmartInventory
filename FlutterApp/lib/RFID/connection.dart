@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:smartinventory/RFID/device.dart';
-import 'package:smartinventory/RFID/led.dart';
 
 class SelectBondedDevicePage extends StatefulWidget {
   /// If true, on page start there is performed discovery upon the bonded devices.
@@ -11,10 +10,10 @@ class SelectBondedDevicePage extends StatefulWidget {
   final Function onCahtPage;
 
   const SelectBondedDevicePage(
-      {this.checkAvailability = true, required this.onCahtPage});
+      {super.key, this.checkAvailability = true, required this.onCahtPage});
 
   @override
-  _SelectBondedDevicePage createState() => new _SelectBondedDevicePage();
+  _SelectBondedDevicePage createState() => _SelectBondedDevicePage();
 }
 
 enum _DeviceAvailability {
@@ -28,7 +27,7 @@ class _DeviceWithAvailability extends BluetoothDevice {
   _DeviceAvailability availability;
   int? rssi;
 
-  _DeviceWithAvailability(this.device, this.availability, [this.rssi]): super(address: device.address);
+  _DeviceWithAvailability(this.device, this.availability): super(address: device.address);
 }
 
 class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
@@ -83,10 +82,10 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
       setState(() {
         Iterator i = devices.iterator;
         while (i.moveNext()) {
-          var _device = i.current;
-          if (_device.device == r.device) {
-            _device.availability = _DeviceAvailability.yes;
-            _device.rssi = r.rssi;
+          var device = i.current;
+          if (device.device == r.device) {
+            device.availability = _DeviceAvailability.yes;
+            device.rssi = r.rssi;
           }
         }
       });
@@ -102,7 +101,7 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
   @override
   void dispose() {
     // Avoid memory leak (`setState` after dispose) and cancel discovery
-    _discoveryStreamSubscription?.cancel();
+    _discoveryStreamSubscription.cancel();
 
     super.dispose();
   }
@@ -111,12 +110,12 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
   Widget build(BuildContext context) {
     List<BluetoothDeviceListEntry> list = devices
         .map(
-          (_device) => BluetoothDeviceListEntry(
-            device: _device.device,
+          (device) => BluetoothDeviceListEntry(
+            device: device.device,
             // rssi: _device.rssi,
             // enabled: _device.availability == _DeviceAvailability.yes,
             onTap: () {
-              widget.onCahtPage(_device.device);
+              widget.onCahtPage(device.device);
             }, rssi: 0, onLongPress: () {  },
           ),
         )

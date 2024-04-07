@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart'; // Import fl_chart library for pie chart
 
 class ProductDistributionPage extends StatelessWidget {
+  const ProductDistributionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Dummy data for product distribution (replace with actual data)
@@ -13,16 +15,16 @@ class ProductDistributionPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Distribution'),
+        title: const Text('Product Distribution'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
-          color: Color(0xFFF3E5F5), // Light pastel purple background color
+          color: const Color(0xFFF3E5F5), // Light pastel purple background color
           child: SingleChildScrollView(
             child: Column(
               children: [
-                ListTile(
+                const ListTile(
                   title: Text(
                     'Product Distribution',
                     style: TextStyle(
@@ -60,18 +62,18 @@ class ProductDistributionPage extends StatelessWidget {
                               'C', Colors.lightBlueAccent), // Pastel blue color
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                           height: 16), // Add space between legend and button
                       ElevatedButton(
                         onPressed: () {
                           // Handle button press to see details
                         },
-                        child: Text('See Details'),
+                        child: const Text('See Details'),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 16), // Add space at the bottom of the card
+                const SizedBox(height: 16), // Add space at the bottom of the card
               ],
             ),
           ),
@@ -125,11 +127,11 @@ class ProductDistributionPage extends StatelessWidget {
             height: 16,
             color: color,
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             label,
             style:
-                TextStyle(fontWeight: FontWeight.bold), // Make legend item bold
+                const TextStyle(fontWeight: FontWeight.bold), // Make legend item bold
           ),
         ],
       ),

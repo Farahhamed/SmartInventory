@@ -8,8 +8,10 @@ import './ChatPage.dart';
 //import './ChatPage2.dart';
 
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   @override
-  _MainPage createState() => new _MainPage();
+  _MainPage createState() => _MainPage();
 }
 
 class _MainPage extends State<MainPage> {
@@ -34,7 +36,7 @@ class _MainPage extends State<MainPage> {
       if (await FlutterBluetoothSerial.instance.isEnabled != null) {
         return false;
       }
-      await Future.delayed(Duration(milliseconds: 0xDD));
+      await Future.delayed(const Duration(milliseconds: 0xDD));
       return true;
     }).then((_) {
       // Update the address field
@@ -84,8 +86,8 @@ class _MainPage extends State<MainPage> {
       body: Container(
         child: ListView(
           children: <Widget>[
-            Divider(),
-            ListTile(title: const Text('General')),
+            const Divider(),
+            const ListTile(title: Text('General')),
             SwitchListTile(
               title: const Text('Enable Bluetooth'),
               value: _bluetoothState.isEnabled,
@@ -93,10 +95,11 @@ class _MainPage extends State<MainPage> {
                 // Do the request and update with the true value then
                 future() async {
                   // async lambda seems to not working
-                  if (value)
+                  if (value) {
                     await FlutterBluetoothSerial.instance.requestEnable();
-                  else
+                  } else {
                     await FlutterBluetoothSerial.instance.requestDisable();
+                  }
                 }
 
                 future().then((_) {
@@ -123,8 +126,8 @@ class _MainPage extends State<MainPage> {
               subtitle: Text(_name),
               onLongPress: null,
             ),
-            Divider(),
-            ListTile(title: const Text('Devices discovery and connection')),
+            const Divider(),
+            const ListTile(title: Text('Devices discovery and connection')),
             ListTile(
               title: ElevatedButton (
                 child: const Text('Connect to paired device to chat'),
@@ -133,18 +136,14 @@ class _MainPage extends State<MainPage> {
                       await Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
-                        return SelectBondedDevicePage(checkAvailability: false);
+                        return const SelectBondedDevicePage(checkAvailability: false);
                       },
                     ),
                   );
 
-                  if (selectedDevice != null) {
-                    print('Connect -> selected ' + selectedDevice.address);
-                    _startChat(context, selectedDevice);
-                  } else {
-                    print('Connect -> no device selected');
-                  }
-                },
+                  print('Connect -> selected ${selectedDevice.address}');
+                  _startChat(context, selectedDevice);
+                                },
               ),
             ),
           ],
