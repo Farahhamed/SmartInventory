@@ -8,6 +8,8 @@ import 'package:smartinventory/services/EmployeeService.dart'; // Import your Em
 class EmployeeList extends StatelessWidget {
   final EmployeeService _employeeService = EmployeeService();
 
+  EmployeeList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Employee>>(

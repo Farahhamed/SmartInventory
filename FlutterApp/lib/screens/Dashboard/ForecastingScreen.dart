@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/services/PredictService.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class ForecastingScreen extends StatefulWidget {
+  const ForecastingScreen({super.key});
+
   @override
   _ForecastingScreenState createState() => _ForecastingScreenState();
 }
@@ -19,7 +20,7 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
 
   List<SalesData> forecastingResults = [];
 
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   @override
   void initState() {
@@ -98,7 +99,7 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        title: Row(
+        title: const Row(
           children: [
             Expanded(
               child: Text(
@@ -120,11 +121,11 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
+              const Text(
                 'Forecasting Results',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
                 height: 400,
                 width: double.infinity,
@@ -136,11 +137,11 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Line Colors:',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
@@ -149,7 +150,7 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
                             children: [
                               _buildIndicator(
                                   color: Colors.purple, label: 'Actual'),
-                              SizedBox(
+                              const SizedBox(
                                   width: 8), // Adding space between indicators
                               _buildIndicator(
                                   color: Colors.blue, label: 'Forecasting'),
@@ -162,7 +163,7 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: SfCartesianChart(
-                          primaryXAxis: DateTimeAxis(),
+                          primaryXAxis: const DateTimeAxis(),
                           series: <CartesianSeries>[
                             // Renders spline area chart for actual results
                             SplineAreaSeries<SalesData, DateTime>(
@@ -231,10 +232,10 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
             shape: BoxShape.circle,
           ),
         ),
-        SizedBox(width: 4), // Adding space between the indicator and the label
+        const SizedBox(width: 4), // Adding space between the indicator and the label
         Text(
           label,
-          style: TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 14),
         ),
       ],
     );

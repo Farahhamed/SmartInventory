@@ -5,7 +5,7 @@ import 'package:smartinventory/services/EmployeeService.dart';
 class EmployeeEditPage extends StatefulWidget {
   final Employee employee;
 
-  EmployeeEditPage({required this.employee});
+  const EmployeeEditPage({super.key, required this.employee});
 
   @override
   _EmployeeEditPageState createState() => _EmployeeEditPageState();
