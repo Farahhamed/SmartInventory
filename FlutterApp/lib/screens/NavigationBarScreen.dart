@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/ActivityLogScreen.dart';
+import 'package:smartinventory/screens/AssignTags.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
@@ -20,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const ActivityLogUI(),
     EmployeeList(),
     const ProductsList(),
-    const RFIDscreen(),
+    const AssignTags(),
     const ProfileScreen(),
   ];
 
