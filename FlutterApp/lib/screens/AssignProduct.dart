@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
@@ -15,8 +16,14 @@ class _AssignProductState extends State<AssignProduct> {
   bool agreePersonalData = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _tag = 'No assigned Tag yet';
+  String _type = '';
+
   String _selectedProductType = 'Panadol';
   bool _isLoading = false;
+  String taguid = 'No assigned Tag yet';
+  String Payload = 'No Type';
+
+
 
     @override
   void dispose() {
@@ -46,13 +53,53 @@ class _AssignProductState extends State<AssignProduct> {
   }
 }
 
-
-   void _assignTag() {
-    setState(() {
-      _tag = 'Done';
-    });
+String _convertToHexString(List<int> bytes) {
+    return bytes
+        .map((byte) => byte.toRadixString(16).toUpperCase().padLeft(2, '0'))
+        .join(' ');
   }
 
+void _assignTag() async {
+    try {
+      bool isAvailable = await NfcManager.instance.isAvailable();
+      // String taguid = 'No tag is detected';
+
+      // We first check if NFC is available on the device.
+      if (isAvailable) {
+        // If NFC is available, start an NFC session and listen for NFC tags to be discovered.
+        NfcManager.instance.startSession(
+          onDiscovered: (NfcTag tag) async {
+            // Process NFC tag, When an NFC tag is discovered, print its data to the console.
+            debugPrint('NFC Tag Detected: $tag');
+            NdefMessage message =
+                NdefMessage([NdefRecord.createText('Product')]);
+            await Ndef.from(tag)?.write(message);
+            debugPrint('Data emitted successfully');
+            List<int> payload =
+                tag.data['ndef']['cachedMessage']['records'][0]['payload'];
+
+            String payloadString = String.fromCharCodes(payload);
+            payloadString = payloadString.substring(3, payloadString.length);
+            Payload = payloadString;
+            debugPrint('NFC Payload: $payloadString');
+            debugPrint('all entries: ${tag.data['ndef']['identifier']}');
+
+            taguid = _convertToHexString(tag.data['ndef']['identifier']);
+            debugPrint('new id: $taguid');
+          },
+        );
+      } else {
+        debugPrint('NFC not available.');
+      }
+    } catch (e) {
+      debugPrint('Error reading NFC: $e');
+    }
+
+    setState(() {
+      _tag = taguid;
+      _type = Payload;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -136,6 +183,8 @@ class _AssignProductState extends State<AssignProduct> {
                         onPressed: () => _assignTag(),
                         child: const Text('Read UID'),
                       ),
+                      // const SizedBox(width: 20),
+                          // Text('$_type')
                  ],
                ),
                 const SizedBox(
