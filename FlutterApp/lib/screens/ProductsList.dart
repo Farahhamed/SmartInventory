@@ -10,7 +10,7 @@ import 'package:smartinventory/screens/EditProductScreen.dart';
 enum UserType { Manager, Employee }
 
 class ProductsList extends StatefulWidget {
-  const ProductsList({Key? key}) : super(key: key);
+  const ProductsList({super.key});
 
   @override
   State<ProductsList> createState() => _ProductsListState();

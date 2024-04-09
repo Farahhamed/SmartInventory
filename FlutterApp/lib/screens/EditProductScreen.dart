@@ -4,7 +4,7 @@ class EditProductScreen extends StatelessWidget {
   final int productId;
   final Function(int, String, double) updateProduct;
 
-  EditProductScreen({
+  EditProductScreen({super.key, 
     required this.productId,
     required this.updateProduct,
   });

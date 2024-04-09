@@ -5,7 +5,7 @@ class AddProductScreen extends StatelessWidget {
   final TextEditingController listPriceController;
   final VoidCallback addProduct;
 
-  AddProductScreen({
+  const AddProductScreen({super.key, 
     required this.productNameController,
     required this.listPriceController,
     required this.addProduct,
@@ -15,7 +15,7 @@ class AddProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product'),
+        title: const Text('Add Product'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,31 +24,30 @@ class AddProductScreen extends StatelessWidget {
           children: [
             TextField(
               controller: productNameController,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
+              style: const TextStyle(fontSize: 18),
+              decoration: const InputDecoration(
                 labelText: 'Product Name',
                 labelStyle: TextStyle(fontSize: 16),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: listPriceController,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'List Price',
                 labelStyle: TextStyle(fontSize: 16),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
            ElevatedButton(
               onPressed: addProduct,
               style: ElevatedButton.styleFrom(
-                primary: Colors.indigo, // Button color
-                onPrimary: Colors.white, // Text color on button
-                padding: EdgeInsets.all(16.0),
+                foregroundColor: Colors.white, backgroundColor: Colors.indigo, // Text color on button
+                padding: const EdgeInsets.all(16.0),
               ),
-              child: Text(
+              child: const Text(
                 'Add New Product',
                 style: TextStyle(fontSize: 18),
               ),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Notification.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -59,7 +60,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
+
+                MaterialPageRoute(builder: (context) => EditProfilePage()),
               );
             },
           ),
@@ -109,11 +111,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NotificationPage()),
+                            builder: (context) => const NotificationPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: const Color.fromARGB(
+                      backgroundColor: const Color.fromARGB(
                           255, 106, 180, 214), // Baby blue color
                     ),
                     child: const Text(
