@@ -17,7 +17,7 @@ Future<void> main() async {
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
     child: const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: EditProfilePage(),
+      home: LoginScreen(),
     ),
   ));
 }

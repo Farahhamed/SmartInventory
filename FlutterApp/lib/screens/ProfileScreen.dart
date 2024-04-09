@@ -60,8 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-
-                MaterialPageRoute(builder: (context) => EditProfilePage()),
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             },
           ),
@@ -111,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const NotificationPage()),
+                            builder: (context) => EditProfilePage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

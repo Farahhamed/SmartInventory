@@ -6,7 +6,7 @@ import 'package:smartinventory/screens/StockControl/StockControlScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class NavbarDashboard extends StatefulWidget {
-  const NavbarDashboard({super.key});
+  const NavbarDashboard({Key? key}) : super(key: key);
 
   @override
   _NavbarDashboardState createState() => _NavbarDashboardState();
@@ -18,7 +18,6 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
   final List<Widget> _pages = [
     HomeScreen(),
     ForecastingScreen(),
-    const ForecastingScreen(),
     StockControlPage(),
     const ProductDistributionPage(),
   ];
@@ -42,64 +41,31 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-
-                icon: Icon(Icons.home, color: Colors.white),
-                icon: const Icon(Icons.timeline, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 0;
-                  });
-                },
-              ),
-
+              Icon(Icons.home, color: Colors.white),
               Text('Home', style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: Icon(Icons.timeline, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 1;
-                  });
-                },
-              ),
+              Icon(Icons.timeline, color: Colors.white),
               Text('Forecasting',
-
-              const Text('Forecasting',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.inventory, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 2;
-                  });
-                },
-              ),
-              const Text('Stock Control',
+              Icon(Icons.inventory, color: Colors.white),
+              Text('Stock Control',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.pie_chart, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 3;
-                  });
-                },
-              ),
-              const Text('Distribution',
+              Icon(Icons.pie_chart, color: Colors.white),
+              Text('Distribution',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
