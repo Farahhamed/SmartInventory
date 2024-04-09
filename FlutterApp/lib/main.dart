@@ -3,10 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:smartinventory/firebase_options.dart';
 import 'package:smartinventory/providers/provider.dart';
+
+import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
+
 import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/EditProfile.dart';
+<<<<<<< HEAD
 import 'package:smartinventory/screens/Homepage.dart';
+=======
+
+>>>>>>> cb05ae8b1f4d6ddabb03bf7c11ee7a09079c04d1
 import 'package:smartinventory/screens/LoginScreen.dart';
 
 Future<void> main() async {
@@ -18,7 +25,7 @@ Future<void> main() async {
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
     child: const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: NavbarDashboard(),
     ),
   ));
 }
