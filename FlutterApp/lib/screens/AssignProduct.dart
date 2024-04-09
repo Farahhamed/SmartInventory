@@ -1,106 +1,105 @@
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:nfc_manager/nfc_manager.dart';
-
-
-
-// class WriteNFC extends StatefulWidget {
-//   const WriteNFC({super.key});
-
-//   @override
-//   _WriteNFCState createState() => _WriteNFCState();
-// }
-
-// class _WriteNFCState extends State<WriteNFC> {
-//   String? selectedValue;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('NFC Writer'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             DropdownButton<String>(
-//               hint: const Text('Select a value'),
-//               value: selectedValue,
-//               onChanged: (String? value) {
-//                 setState(() {
-//                   selectedValue = value;
-//                 });
-//               },
-//               items: <String>['Employee', 'Product'].map((String value) {
-//                 return DropdownMenuItem<String>(
-//                   value: value,
-//                   child: Text(value),
-//                 );
-//               }).toList(),
-//             ),
-//             const SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: () {
-//                 _startNFCWriting(selectedValue);
-//               },
-//               child: const Text('Start NFC Writing'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
-class WriteNFC extends StatefulWidget {
-  const WriteNFC({super.key});
+class AssignProduct extends StatefulWidget {
+  const AssignProduct({super.key});
 
   @override
-  State<WriteNFC> createState() => _WriteNFCState();
+  State<AssignProduct> createState() => _AssignProductState();
 }
 
-class _WriteNFCState extends State<WriteNFC> {
+class _AssignProductState extends State<AssignProduct> {
   bool agreePersonalData = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _selectedValueType = 'Employee';
+  String _tag = 'No assigned Tag yet';
+  String _type = '';
+
+  String _selectedProductType = 'Panadol';
   bool _isLoading = false;
+  String taguid = 'No assigned Tag yet';
+  String Payload = 'No Type';
+
+
 
     @override
   void dispose() {
     super.dispose();
   }
-  void _startNFCWriting(String? selectedValue) async {
+
+    void _submitForm(BuildContext context) {
+  if (_formKey.currentState!.validate()) {
+    // Save the form data to Firestore
+    FirebaseFirestore.instance.collection('Assigned_Products').add({
+      'ProductType': _selectedProductType,
+      'UID': _tag,
+    }).then((value) {
+      // Successfully added data to Firestore
+      
+      // Show snackbar indicating success
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Product added successfully')),
+      );
+    }).catchError((error) {
+      // Handle errors here
+      // Show snackbar indicating failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add Product: $error')),
+      );
+    });
+  }
+}
+
+String _convertToHexString(List<int> bytes) {
+    return bytes
+        .map((byte) => byte.toRadixString(16).toUpperCase().padLeft(2, '0'))
+        .join(' ');
+  }
+
+void _assignTag() async {
     try {
       bool isAvailable = await NfcManager.instance.isAvailable();
+      // String taguid = 'No tag is detected';
+
+      // We first check if NFC is available on the device.
       if (isAvailable) {
-        NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-          try {
-            NdefMessage message = NdefMessage([NdefRecord.createText(selectedValue ?? '')]);
+        // If NFC is available, start an NFC session and listen for NFC tags to be discovered.
+        NfcManager.instance.startSession(
+          onDiscovered: (NfcTag tag) async {
+            // Process NFC tag, When an NFC tag is discovered, print its data to the console.
+            debugPrint('NFC Tag Detected: $tag');
+            NdefMessage message =
+                NdefMessage([NdefRecord.createText('Product')]);
             await Ndef.from(tag)?.write(message);
             debugPrint('Data emitted successfully');
-            Uint8List payload = message.records.first.payload;
-            String text = String.fromCharCodes(payload);
-            debugPrint("Written data: $text");
-            NfcManager.instance.stopSession();
-          } catch (e) {
-            debugPrint('Error emitting NFC data: $e');
-          }
-        });
+            List<int> payload =
+                tag.data['ndef']['cachedMessage']['records'][0]['payload'];
+
+            String payloadString = String.fromCharCodes(payload);
+            payloadString = payloadString.substring(3, payloadString.length);
+            Payload = payloadString;
+            debugPrint('NFC Payload: $payloadString');
+            debugPrint('all entries: ${tag.data['ndef']['identifier']}');
+
+            taguid = _convertToHexString(tag.data['ndef']['identifier']);
+            debugPrint('new id: $taguid');
+          },
+        );
       } else {
         debugPrint('NFC not available.');
       }
     } catch (e) {
-      debugPrint('Error writing to NFC: $e');
+      debugPrint('Error reading NFC: $e');
     }
-  }
 
+    setState(() {
+      _tag = taguid;
+      _type = Payload;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -132,7 +131,7 @@ class _WriteNFCState extends State<WriteNFC> {
                     children: [
                       // get started text
                       Text(
-                        'Write on Tags',
+                        'Assign Tag to Products',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
@@ -143,13 +142,13 @@ class _WriteNFCState extends State<WriteNFC> {
                         height: 40.0,
                       ),
                        DropdownButtonFormField<String>(
-                        value: _selectedValueType,
+                        value: _selectedProductType,
                         onChanged: (String? newValue) {
                           setState(() {
-                           _selectedValueType = newValue!;
+                           _selectedProductType = newValue!;
                           });
                         },
-                        items: <String>['Employee', 'Product']
+                        items: <String>['Panadol', 'Antinal', 'shampoo']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -157,8 +156,8 @@ class _WriteNFCState extends State<WriteNFC> {
                           );
                         }).toList(),
                         decoration: InputDecoration(
-                          labelText: 'Tag Type',
-                          hintText: 'Select Tag Type',
+                          labelText: 'Product Type',
+                          hintText: 'Select Product Type',
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12, // Default border color
@@ -176,11 +175,26 @@ class _WriteNFCState extends State<WriteNFC> {
                        const SizedBox(
                         height: 40.0,
                       ),
+              Row(
+                 children: [
+                   Text('$_tag'), 
+                   const SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () => _assignTag(),
+                        child: const Text('Read UID'),
+                      ),
+                      // const SizedBox(width: 20),
+                          // Text('$_type')
+                 ],
+               ),
+                const SizedBox(
+                        height: 25.0,
+                      ),
                       // signup button
                       SizedBox(
                         width: double.infinity,
                         child: InkWell(
-                          onTap: () => _startNFCWriting,
+                          onTap: () => _submitForm(context),
                           child: Container(
                             width: double.infinity,
                             alignment: Alignment.center,
@@ -200,7 +214,7 @@ class _WriteNFCState extends State<WriteNFC> {
                                       color: Colors.blueGrey,
                                     ),
                                   )
-                                : const Text('Start NFC writing '),
+                                : const Text('Add product '),
                           ),
                         ),
                       ),

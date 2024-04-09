@@ -8,7 +8,7 @@ class ProductCategory {
   // Constructor with UUID generation
   ProductCategory({
     required this.name,
-  }) : uuid = Uuid().v4(); // Generate UUID during instantiation
+  }) : uuid = const Uuid().v4(); // Generate UUID during instantiation
 
   // Function to convert ProductCategory object to a Map for Firestore
   Map<String, dynamic> toMap() => {

@@ -3,7 +3,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 
 
 class ReadNFC extends StatelessWidget {
-  const ReadNFC({Key? key}) : super(key: key);
+  const ReadNFC({super.key});
 
   @override
   Widget build(BuildContext context) {

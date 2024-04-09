@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  runApp(ActivityLogUI());
+  runApp(const ActivityLogUI());
 }
 
 class ActivityLogUI extends StatelessWidget {
+  const ActivityLogUI({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,16 +15,16 @@ class ActivityLogUI extends StatelessWidget {
       title: 'Activity Log',
       home: Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('Activity Log')),
+          title: const Center(child: Text('Activity Log')),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               // Add functionality to navigate back
             },
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
+        body: const Padding(
+          padding: EdgeInsets.symmetric(
               horizontal: 16.0), // Adjust horizontal padding as needed
           child: ActivityLog(),
         ),
@@ -32,6 +34,8 @@ class ActivityLogUI extends StatelessWidget {
 }
 
 class ActivityLog extends StatelessWidget {
+  const ActivityLog({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -53,18 +57,18 @@ class ActivityLog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Timeline on the left
-              Container(
+              SizedBox(
                 width: 50.0,
                 child: Column(
                   children: [
                     Text(
                       '${dateTime.day}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '${DateFormat.MMM().format(dateTime)}',
+                      DateFormat.MMM().format(dateTime),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     Container(
                       width: 10.0,
                       height: 10.0,
@@ -76,14 +80,14 @@ class ActivityLog extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 10.0),
+              const SizedBox(width: 10.0),
               // Vertical line
               Container(
                 width: 2.0,
                 height: 50.0, // Adjust height according to your UI
                 color: Colors.black,
               ),
-              SizedBox(width: 10.0),
+              const SizedBox(width: 10.0),
               // Card-like shape on the right
               Expanded(
                 child: Container(
@@ -91,13 +95,13 @@ class ActivityLog extends StatelessWidget {
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Activity type
                       Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             vertical: 5.0, horizontal: 10.0),
                         decoration: BoxDecoration(
                           color: isEntry ? Colors.orange : Colors.red,
@@ -105,58 +109,58 @@ class ActivityLog extends StatelessWidget {
                         ),
                         child: Text(
                           activityType,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       // Time
                       Row(
                         children: [
-                          Icon(Icons.access_time),
-                          SizedBox(width: 5.0),
+                          const Icon(Icons.access_time),
+                          const SizedBox(width: 5.0),
                           Text(
-                            '${DateFormat.Hms().format(dateTime)}',
-                            style: TextStyle(
+                            DateFormat.Hms().format(dateTime),
+                            style: const TextStyle(
                                 fontSize: 16.0, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       // Category and RFID details
                       Row(
                         children: [
-                          Icon(Icons.category),
-                          SizedBox(width: 5.0),
+                          const Icon(Icons.category),
+                          const SizedBox(width: 5.0),
                           Text(
                             category,
-                            style: TextStyle(fontSize: 16.0),
+                            style: const TextStyle(fontSize: 16.0),
                           ),
-                          Spacer(),
-                          Icon(Icons.confirmation_number),
-                          SizedBox(width: 5.0),
+                          const Spacer(),
+                          const Icon(Icons.confirmation_number),
+                          const SizedBox(width: 5.0),
                           Text(
                             itemRFID,
-                            style: TextStyle(fontSize: 16.0),
+                            style: const TextStyle(fontSize: 16.0),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       // Employee details
                       Row(
                         children: [
-                          Icon(Icons.person),
-                          SizedBox(width: 5.0),
+                          const Icon(Icons.person),
+                          const SizedBox(width: 5.0),
                           Text(employeeName),
-                          Spacer(),
+                          const Spacer(),
                           Container(
-                            padding: EdgeInsets.all(5.0),
+                            padding: const EdgeInsets.all(5.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               border: Border.all(color: Colors.black),
                             ),
                             child: Text(
                               employeeRFID,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],

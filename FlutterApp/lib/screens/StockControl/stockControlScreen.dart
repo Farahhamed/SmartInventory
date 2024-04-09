@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class StockControlPage extends StatelessWidget {
+  const StockControlPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stock Control'),
+        title: const Text('Stock Control'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -23,7 +25,7 @@ class StockControlPage extends StatelessWidget {
                   children: <Widget>[
                     // Background image here
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
                               'https://thumbs.dreamstime.com/b/promotional-mix-vector-concept-metaphor-sales-promotion-cartoon-web-icon-marketing-strategy-rebate-advertising-discount-offer-low-176602691.jpg'),
@@ -48,9 +50,9 @@ class StockControlPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -94,7 +96,7 @@ class StockControlPage extends StatelessWidget {
                   children: <Widget>[
                     // Background image here
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
                               'https://cdn3.iconfinder.com/data/icons/isometric-illustrations-3/350/216-1024.png'),
@@ -119,9 +121,9 @@ class StockControlPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -165,7 +167,7 @@ class StockControlPage extends StatelessWidget {
                   children: <Widget>[
                     // Background image here
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
                               'https://th.bing.com/th/id/R.d727a87d6a54abe3c232c7c6b8b7852e?rik=J6DxLdE9CuHmcw&riu=http%3a%2f%2fbvlogic.academy%2fimages%2fcourses%2f1658032598.jpg&ehk=U1oFYBDQgXrmlKWBpgEhIcTOOvEixY9a9aQ9pTdBrtE%3d&risl=&pid=ImgRaw&r=0'),
@@ -190,9 +192,9 @@ class StockControlPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
