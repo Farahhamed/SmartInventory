@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
+import 'package:smartinventory/screens/EmployeesListScreen.dart';
+import 'package:smartinventory/screens/ProductsList.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,8 +32,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://via.placeholder.com/150'), // Placeholder image URL
+              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
             ),
           ),
         ],
@@ -40,51 +42,76 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 10), // Added space above the first row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: CardWidget(
-                    icon: Icons.dashboard,
-                    text: 'Dashboard',
-                    count: '1',
-                    color: Colors.purple[100]!,
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: CardWidget(
+                      icon: Icons.dashboard,
+                      text: 'Dashboard',
+                      count: '1',
+                      color: Colors.purple[100]!,
+                    ),
                   ),
-                ),
-                SizedBox(width: 10), // Added space between the cards
-                Expanded(
-                  child: CardWidget(
-                    icon: Icons.people,
-                    text: 'Employees',
-                    count: '100',
-                    color: Colors.purple[100]!,
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EmployeeList()),
+                        );
+                      },
+                      child: CardWidget(
+                        icon: Icons.people,
+                        text: 'Employees',
+                        count: '100',
+                        color: Colors.purple[100]!,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            SizedBox(height: 10), // Added space between the rows
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: CardWidget(
-                    icon: Icons.shopping_basket,
-                    text: 'Products',
-                    count: '50',
-                    color: Colors.purple[100]!,
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductsList()),
+                );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: CardWidget(
+                      icon: Icons.shopping_basket,
+                      text: 'Products',
+                      count: '50',
+                      color: Colors.purple[100]!,
+                    ),
                   ),
-                ),
-                SizedBox(width: 10), // Added space between the cards
-                Expanded(
-                  child: CardWidget(
-                    icon: Icons.attach_money,
-                    text: 'Total Revenue',
-                    count: '\$10000',
-                    color: Colors.purple[100]!,
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: CardWidget(
+                      icon: Icons.attach_money,
+                      text: 'Total Revenue',
+                      count: '\$10000',
+                      color: Colors.purple[100]!,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

@@ -6,6 +6,7 @@ import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/EditProfile.dart';
+import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 
 Future<void> main() async {
