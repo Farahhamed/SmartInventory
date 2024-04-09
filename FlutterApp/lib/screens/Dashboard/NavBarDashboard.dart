@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
+import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/StockControl/ABCScreen.dart';
 import 'package:smartinventory/screens/StockControl/StockControlScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -15,6 +16,8 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
+    HomeScreen(),
+    ForecastingScreen(),
     const ForecastingScreen(),
     StockControlPage(),
     const ProductDistributionPage(),
@@ -40,6 +43,8 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
+
+                icon: Icon(Icons.home, color: Colors.white),
                 icon: const Icon(Icons.timeline, color: Colors.white),
                 onPressed: () {
                   setState(() {
@@ -47,6 +52,23 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
                   });
                 },
               ),
+
+              Text('Home', style: TextStyle(color: Colors.white, fontSize: 9)),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.timeline, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 1;
+                  });
+                },
+              ),
+              Text('Forecasting',
+
               const Text('Forecasting',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
@@ -58,7 +80,7 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
                 icon: const Icon(Icons.inventory, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    _currentIndex = 1;
+                    _currentIndex = 2;
                   });
                 },
               ),
@@ -73,7 +95,7 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
                 icon: const Icon(Icons.pie_chart, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    _currentIndex = 2;
+                    _currentIndex = 3;
                   });
                 },
               ),
