@@ -9,11 +9,7 @@ import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/EditProfile.dart';
-<<<<<<< HEAD
 import 'package:smartinventory/screens/Homepage.dart';
-=======
-
->>>>>>> cb05ae8b1f4d6ddabb03bf7c11ee7a09079c04d1
 import 'package:smartinventory/screens/LoginScreen.dart';
 
 Future<void> main() async {
