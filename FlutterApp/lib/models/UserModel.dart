@@ -23,7 +23,6 @@ class UserModel {
         "userType": userType,
       };
 
-
   static UserModel fromSnapshot(DocumentSnapshot snapshot) {
     var data = snapshot.data() as Map<String, dynamic>;
 
