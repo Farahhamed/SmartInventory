@@ -74,6 +74,11 @@ flutter:
     - assets/images/drugs.png
     - assets/images/kitty.png
     - assets/images/image-removebg-preview.png
+    - assets/images/cold (2).png
+    - assets/images/stomach.png
+    - assets/images/headache.png
+    - assets/images/pain killers.png
+    - assets/images/a5er category.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
