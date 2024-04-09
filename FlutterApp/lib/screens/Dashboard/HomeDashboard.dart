@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(120.0),
             child: Container(
-              color: Colors.blue,
+              color: Color.fromARGB(255, 139, 84, 251),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

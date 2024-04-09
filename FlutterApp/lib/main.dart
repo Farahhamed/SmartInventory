@@ -24,7 +24,7 @@ Future<void> main() async {
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: NavbarDashboard(),
     ),
   ));
 }
