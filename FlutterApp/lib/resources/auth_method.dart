@@ -23,51 +23,50 @@ class AuthMethods {
   }
 
   Future<Map<String, dynamic>> signUpUser({
-  required String email,
-  required String username,
-  required String password,
-  required String phoneNumber,
-  required String userType,
-}) async {
-  Map<String, dynamic> result = {"res": "Error occurred"};
-  try {
-    if (email.isNotEmpty &&
-        username.isNotEmpty &&
-        password.isNotEmpty &&
-        phoneNumber.isNotEmpty &&
-        userType.isNotEmpty) {
-      UserCredential cred = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    required String email,
+    required String username,
+    required String password,
+    required String phoneNumber,
+    required String userType,
+  }) async {
+    Map<String, dynamic> result = {"res": "Error occurred"};
+    try {
+      if (email.isNotEmpty &&
+          username.isNotEmpty &&
+          password.isNotEmpty &&
+          phoneNumber.isNotEmpty &&
+          userType.isNotEmpty) {
+        UserCredential cred = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
 
-      // Firebase automatically generates UID
-      String uid = cred.user!.uid;
+        // Firebase automatically generates UID
+        String uid = cred.user!.uid;
 
-      UserModel user = UserModel(
-        username: username,
-        email: email,
-        uid: uid,
-        phoneNumber: phoneNumber,
-        userType: userType,
-      );
+        UserModel user = UserModel(
+          username: username,
+          email: email,
+          uid: uid,
+          phoneNumber: phoneNumber,
+          userType: userType,
+        );
 
-      await _firestore.collection('users').doc(uid).set(
-            user.toJson(),
-          );
+        await _firestore.collection('users').doc(uid).set(
+              user.toJson(),
+            );
 
-      result["res"] = "success";
-      result["user"] = user;
-    } else {
-      result["res"] = "User registration failed";
+        result["res"] = "success";
+        result["user"] = user;
+      } else {
+        result["res"] = "User registration failed";
+      }
+    } catch (err) {
+      result["res"] = err.toString();
     }
-  } catch (err) {
-    result["res"] = err.toString();
+
+    return result;
   }
-
-  return result;
-}
-
 
   Future<Map<String, dynamic>> loginUser({
     required String email,
@@ -105,34 +104,32 @@ class AuthMethods {
   }
 
   Future<String> getUserTypeFromFirestore(String uid) async {
-  try {
-    // Access Firestore collection "users" and document with the provided UID
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
+    try {
+      // Access Firestore collection "users" and document with the provided UID
+      DocumentSnapshot snapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
-    // Check if the document exists
-    if (snapshot.exists) {
-      // Get the data from the document
-      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      // Check if the document exists
+      if (snapshot.exists) {
+        // Get the data from the document
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-      // Check if the user type field exists in the document
-      if (data.containsKey('userType')) {
-        // Return the user type
-        return data['userType'];
+        // Check if the user type field exists in the document
+        if (data.containsKey('userType')) {
+          // Return the user type
+          return data['userType'];
+        } else {
+          // User type field does not exist, handle accordingly
+          return 'Unknown';
+        }
       } else {
-        // User type field does not exist, handle accordingly
+        // Document does not exist, handle accordingly
         return 'Unknown';
       }
-    } else {
-      // Document does not exist, handle accordingly
+    } catch (error) {
+      // Error occurred, handle accordingly
+      print('Error fetching user type: $error');
       return 'Unknown';
     }
-  } catch (error) {
-    // Error occurred, handle accordingly
-    print('Error fetching user type: $error');
-    return 'Unknown';
   }
-}
 }
