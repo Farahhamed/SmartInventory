@@ -7,10 +7,10 @@ CORS(app)
 
 def connect_to_odoo():
 
-    url = "http://localhost:8069"
-    db = "Smart_Inventory"
-    username = "admin"
-    password = "admin"
+    url = "https://smart-inventory1.odoo.com/"
+    db = "smart-inventory1"
+    username = "hamza2008441@miuegypt.edu.eg"
+    password = "Slamdunk7"
 
     common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
     uid = common.authenticate(db, username, password, {})
