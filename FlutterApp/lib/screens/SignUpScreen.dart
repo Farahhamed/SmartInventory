@@ -131,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFF164863), // Use #164863 color
+                          color: lightColorScheme.primary,
                         ),
                       ),
                       const SizedBox(
@@ -364,7 +364,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 agreePersonalData = value!;
                               });
                             },
-                            activeColor: Color(0xFF164863), // Use #164863 color
+                            activeColor: Color(0xFF164863),
                           ),
                           const Text(
                             'I agree to the processing of ',
@@ -376,7 +376,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             'Personal data',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF164863), // Use #164863 color
+                              color: lightColorScheme.primary,
                             ),
                           ),
                         ],
