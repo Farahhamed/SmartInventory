@@ -42,7 +42,6 @@ class AuthMethods {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
-          
         );
 
         // Firebase automatically generates UID
