@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
@@ -15,14 +16,15 @@ class AssignEmployee extends StatefulWidget {
 class _AssignEmployeeState extends State<AssignEmployee> {
   bool agreePersonalData = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _passController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   String _tag = 'No assigned Tag';
   String _type = '';
 
-  String _selectedEmployeeType = 'Manager';
+  String _selectedUserType = 'Manager';
   bool _isLoading = false;
   String taguid = 'No assigned Tag';
   String Payload = 'No Type';
@@ -31,39 +33,69 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   void dispose() {
     super.dispose();
     _emailController.dispose();
-    _nameController.dispose();
+    _usernameController.dispose();
     _ageController.dispose();
+    _passController.dispose();
     _phoneController.dispose();
   }
 
-  void _submitForm(BuildContext context) {
+  void _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
+      Map<String, dynamic> result = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      username: _usernameController.text,
+      password: _passController.text,
+      phoneNumber: _phoneController.text,
+      Age : _ageController.text,
+      userType: _selectedUserType,
+      TagUid: taguid,
+    );
+    
+    try {
+  // Successfully added data to Firestore
+  // Clear the form fields
+  _usernameController.clear();
+  _passController.clear();
+  _emailController.clear();
+  _phoneController.clear();
+  _ageController.clear();
+  // Show snackbar indicating success
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Employee added successfully')),
+  );
+} catch (error) {
+  // Handle errors here
+  // Show snackbar indicating failure
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Failed to add employee: $error')),
+  );
+}
+
       // Save the form data to Firestore
-      FirebaseFirestore.instance.collection('Register_employees').add({
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'phone number': _phoneController.text,
-        'age': int.parse(_ageController.text),
-        'employeeType': _selectedEmployeeType,
-        'UID': _tag,
-      }).then((value) {
-        // Successfully added data to Firestore
-        // Clear the form fields
-        _nameController.clear();
-        _emailController.clear();
-        _phoneController.clear();
-        _ageController.clear();
-        // Show snackbar indicating success
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Employee added successfully')),
-        );
-      }).catchError((error) {
-        // Handle errors here
-        // Show snackbar indicating failure
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add employee: $error')),
-        );
-      });
+  //     FirebaseFirestore.instance.collection('Register_employees').add({
+  //       'name': _usernameController.text,
+  //       'age': int.parse(_ageController.text),
+  //       'employeeType': _selectedUserType,
+  //       'UID': _tag,
+  //     }).then((value) {
+  //       // Successfully added data to Firestore
+  //       // Clear the form fields
+  //       _usernameController.clear();
+  //       _passController.clear();
+  //       _emailController.clear();
+  //       _phoneController.clear();
+  //       _ageController.clear();
+  //       // Show snackbar indicating success
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Employee added successfully')),
+  //       );
+  //     }).catchError((error) {
+  //       // Handle errors here
+  //       // Show snackbar indicating failure
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Failed to add employee: $error')),
+  //       );
+  //     });
     }
   }
 
@@ -158,7 +190,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       ),
                       // full name
                       TextFormField(
-                        controller: _nameController,
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Full name';
@@ -168,38 +200,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                         decoration: InputDecoration(
                           label: const Text('Full Name'),
                           hintText: 'Enter Full Name',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // email
-                      TextFormField(
-                        controller: _emailController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Email';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Email'),
-                          hintText: 'Enter Email',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -286,10 +286,10 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       ),
                       //Employee type
                       DropdownButtonFormField<String>(
-                        value: _selectedEmployeeType,
+                        value: _selectedUserType,
                         onChanged: (String? newValue) {
                           setState(() {
-                            _selectedEmployeeType = newValue!;
+                            _selectedUserType = newValue!;
                           });
                         },
                         items: <String>['Manager', 'Supervisor', 'Employee']
@@ -319,7 +319,72 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
-
+                      // email
+                      TextFormField(
+                        controller: _emailController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter Email';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('Email'),
+                          hintText: 'Enter Email',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                       // password
+                      TextFormField(
+                        controller: _passController,
+                        obscureText: true,
+                        obscuringCharacter: '*',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter Password';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('Password'),
+                          hintText: 'Enter Password',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
                       Row(
                         children: [
                           Text('$_tag'),

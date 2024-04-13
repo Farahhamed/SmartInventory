@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Notification.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (currentUser != null) {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('Register_employees')
           .doc(currentUser!.uid)
           .get();
 
@@ -59,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const NotificationPage()),
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             },
           ),
@@ -83,11 +84,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userData['username'] ?? 'John Doe',
+                        userData['name'] ?? " ",
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      Text(userData['userType'] ?? 'Software Engineer'),
+                      Text(userData['employeeType'] ?? ' '),
                     ],
                   ),
                 ],
@@ -109,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const NotificationPage()),
+                            builder: (context) => EditProfilePage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
