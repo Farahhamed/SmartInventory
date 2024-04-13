@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartinventory/models/BranchesModel.dart';
@@ -114,7 +112,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Container(
               padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
               decoration: const BoxDecoration(
-                color: Colors.white,
+                color: Color.fromARGB(255, 246, 246, 246),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40.0),
                   topRight: Radius.circular(40.0),
@@ -129,17 +127,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       // get started text
                       Text(
-                        'Get Started',
+                        'Sign Up',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: lightColorScheme.primary,
+                          color: Color(0xFF164863), // Use #164863 color
                         ),
                       ),
                       const SizedBox(
                         height: 40.0,
                       ),
-                      // full name
                       TextFormField(
                         controller: _usernameController,
                         validator: (value) {
@@ -156,13 +153,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -171,7 +168,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // email
                       TextFormField(
                         controller: _emailController,
                         validator: (value) {
@@ -188,13 +184,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -203,7 +199,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // phone number
                       TextFormField(
                         controller: _phoneController,
                         validator: (value) {
@@ -220,13 +215,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -235,7 +230,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // userType
                       DropdownButtonFormField<String>(
                         value: _selectedUserType,
                         onChanged: (String? newValue) {
@@ -255,13 +249,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           hintText: 'Select User Type',
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -308,15 +302,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 hintText: 'Select Branch',
                                 border: OutlineInputBorder(
                                   borderSide: const BorderSide(
-                                    color:
-                                        Colors.black12, // Default border color
+                                    color: Colors.black12,
                                   ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
-                                    color:
-                                        Colors.black12, // Default border color
+                                    color: Colors.black12,
                                   ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -348,13 +340,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -363,7 +355,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // i agree to the processing
                       Row(
                         children: [
                           Checkbox(
@@ -373,7 +364,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 agreePersonalData = value!;
                               });
                             },
-                            activeColor: lightColorScheme.primary,
+                            activeColor: Color(0xFF164863), // Use #164863 color
                           ),
                           const Text(
                             'I agree to the processing of ',
@@ -385,7 +376,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             'Personal data',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: lightColorScheme.primary,
+                              color: Color(0xFF164863), // Use #164863 color
                             ),
                           ),
                         ],
@@ -402,14 +393,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             width: double.infinity,
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const ShapeDecoration(
+                            decoration: ShapeDecoration(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(12),
                                 ),
                               ),
-                              color: Color.fromARGB(
-                                  255, 174, 203, 227), // Adjust the color
+                              color: Color(0xFF9BBEC8),
                             ),
                             child: _isLoading
                                 ? const Center(
@@ -417,7 +407,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       color: Colors.blueGrey,
                                     ),
                                   )
-                                : const Text('Sign Up'),
+                                : const Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
                           ),
                         ),
                       ),
@@ -434,18 +428,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: Colors.grey.withOpacity(0.5),
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 10,
-                            ),
-                            child: Text(
-                              'Sign up with',
-                              style: TextStyle(
-                                color: Colors.black45,
-                              ),
-                            ),
-                          ),
+                          // const Padding(
+                          //   padding: EdgeInsets.symmetric(
+                          //     vertical: 0,
+                          //     horizontal: 10,
+                          //   ),
+                          //   // child: Text(
+                          //   //   'Sign up with',
+                          //   //   style: TextStyle(
+                          //   //     color: Colors.black45,
+                          //   //   ),
+                          //   // ),
+                          // ),
                           Expanded(
                             child: Divider(
                               thickness: 0.7,
@@ -457,16 +451,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 30.0,
                       ),
-                      // sign up social media logo
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.facebook),
-                          //   Icon(Icons.),
-                          //   Icon(Logos.google),
-                          //   Icon(Logos.apple),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //   children: [
+                      //     Icon(Icons.facebook, color: Color(0xFF427D9D)),
+                      //     // Icon(Icons.chrome_reader_mode_rounded), // Google icon
+                      //     // Icon(Icons.twitter), // Twitter icon
+                      //   ],
+                      // ),
                       const SizedBox(
                         height: 25.0,
                       ),
@@ -493,7 +485,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               'Sign in',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: lightColorScheme.primary,
+                                color: Color(0xFF164863), // Use #164863 color
                               ),
                             ),
                           ),
