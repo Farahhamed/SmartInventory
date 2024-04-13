@@ -51,8 +51,8 @@ class EmployeeList extends StatelessWidget {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('RFID: ${document['UID'] ?? ''}'),
-                      Text('Phone Number: ${document['phone number'] ?? ''}'),
+                      Text('RFID: ${document['Tag'] ?? ''}'),
+                      Text('Employee Type: ${document['employeeType'] ?? ''}'),
                     ],
                   ),
                   trailing: Row(

@@ -12,7 +12,7 @@ class AuthMethods {
         _auth.currentUser; // Get the current authenticated user.
     if (currentUser != null) {
       DocumentSnapshot snap = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('Register_employees')
           .doc(currentUser.uid)
           .get(); // Get the user document from Firestore.
       return UserModel.fromSnapshot(
@@ -28,6 +28,9 @@ class AuthMethods {
     required String password,
     required String phoneNumber,
     required String userType,
+    required String Age,
+     String UID = '',
+    required String TagUid,
   }) async {
     Map<String, dynamic> result = {"res": "Error occurred"};
     try {
@@ -50,9 +53,11 @@ class AuthMethods {
           uid: uid,
           phoneNumber: phoneNumber,
           userType: userType,
+          Age: Age,
+          TagUid: TagUid,
         );
 
-        await _firestore.collection('users').doc(uid).set(
+        await _firestore.collection('Register_employees').doc(uid).set(
               user.toJson(),
             );
 
@@ -107,7 +112,7 @@ class AuthMethods {
     try {
       // Access Firestore collection "users" and document with the provided UID
       DocumentSnapshot snapshot =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+          await FirebaseFirestore.instance.collection('Register_employees').doc(uid).get();
 
       // Check if the document exists
       if (snapshot.exists) {
@@ -115,9 +120,9 @@ class AuthMethods {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
         // Check if the user type field exists in the document
-        if (data.containsKey('userType')) {
+        if (data.containsKey('employeeType')) {
           // Return the user type
-          return data['userType'];
+          return data['employeeType'];
         } else {
           // User type field does not exist, handle accordingly
           return 'Unknown';

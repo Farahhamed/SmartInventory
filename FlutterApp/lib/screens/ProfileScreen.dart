@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (currentUser != null) {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('Register_employees')
           .doc(currentUser!.uid)
           .get();
 
@@ -84,11 +84,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userData['username'] ?? 'John Doe',
+                        userData['name'] ?? " ",
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      Text(userData['userType'] ?? 'Software Engineer'),
+                      Text(userData['employeeType'] ?? ' '),
                     ],
                   ),
                 ],
