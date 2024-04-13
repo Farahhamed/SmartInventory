@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/models/UserModel.dart';
@@ -49,11 +50,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
+      if (user != null) { 
+        DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection('Register_employees')
+          .doc(user.uid)
+          .get();
         // Create a new UserModel with updated data
         UserModel updatedUser = UserModel(
           username: user.displayName ?? '',
           email: user.email ?? '',
+          Age: snap['Age'] ?? '',
+          TagUid: snap['TagUid'] ?? '',
           uid: user.uid,
           phoneNumber: phoneNumberController.text,
           userType: '',
@@ -241,7 +248,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 // Save functionality here
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.green,
+                                backgroundColor: Colors.green,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -263,7 +270,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 // Cancel functionality here
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey,
+                                backgroundColor: Colors.grey,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
