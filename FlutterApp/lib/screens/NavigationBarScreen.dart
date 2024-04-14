@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/ActivityLogScreen.dart';
-import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
+import 'package:smartinventory/screens/AssignTags.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
@@ -9,6 +9,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:smartinventory/screens/RFIDscreen.dart';
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -89,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.tag, color: Colors.white),
+                icon: const Icon(Icons.tag, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 3;
@@ -103,14 +105,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.person, color: Colors.white),
+                icon: const Icon(Icons.person, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 4;
                   });
                 },
               ),
-              Text('Profile',
+              const Text('Profile',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),

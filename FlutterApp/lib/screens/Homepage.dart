@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
+import 'package:smartinventory/screens/EmployeesListScreen.dart';
+import 'package:smartinventory/screens/ProductsList.dart';
 
 void main() {
   runApp(MyApp());
@@ -296,8 +299,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

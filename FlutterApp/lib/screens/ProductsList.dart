@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/services/ProductsService.dart';
@@ -10,7 +8,7 @@ import 'package:smartinventory/screens/EditProductScreen.dart';
 enum UserType { Manager, Employee }
 
 class ProductsList extends StatefulWidget {
-  const ProductsList({Key? key}) : super(key: key);
+  const ProductsList({super.key});
 
   @override
   State<ProductsList> createState() => _ProductsListState();
@@ -72,7 +70,8 @@ class _ProductsListState extends State<ProductsList> {
     Navigator.pop(context);
   }
 
-  Future<void> updateProduct(int productId, String newName, double newListPrice) async {
+  Future<void> updateProduct(
+      int productId, String newName, double newListPrice) async {
     await odooMethodsHelper.updateProduct(productId, newName, newListPrice);
     fetchData();
   }
@@ -214,7 +213,8 @@ class _ProductsListState extends State<ProductsList> {
                               right: 0,
                               child: IconButton(
                                 icon: const Icon(Icons.edit),
-                                onPressed: () => editProduct(records[index]['id']),
+                                onPressed: () =>
+                                    editProduct(records[index]['id']),
                               ),
                             ),
                           if (_userType == UserType.Manager)
@@ -223,7 +223,8 @@ class _ProductsListState extends State<ProductsList> {
                               left: 0,
                               child: IconButton(
                                 icon: const Icon(Icons.delete),
-                                onPressed: () => performDelete(records[index]['id']),
+                                onPressed: () =>
+                                    performDelete(records[index]['id']),
                               ),
                             ),
                         ],

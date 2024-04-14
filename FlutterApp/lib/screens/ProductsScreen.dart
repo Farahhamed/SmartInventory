@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum UserType { Manager, Employee }
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+  const ProductsScreen({super.key});
 
   @override
   _OdooMethodsViewState createState() => _OdooMethodsViewState();
@@ -130,8 +130,7 @@ class _OdooMethodsViewState extends State<ProductsScreen> {
               child: ElevatedButton(
                 onPressed: navigateToAddProductForm,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.indigo,
-                  onPrimary: Colors.white,
+                  foregroundColor: Colors.white, backgroundColor: Colors.indigo,
                   padding: const EdgeInsets.all(16.0),
                 ),
                 child: const Text(
@@ -163,8 +162,7 @@ class _OdooMethodsViewState extends State<ProductsScreen> {
                               ElevatedButton(
                                 onPressed: () => editProduct(records[index]['id']),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.orange,
-                                  onPrimary: Colors.white,
+                                  foregroundColor: Colors.white, backgroundColor: Colors.orange,
                                   padding: const EdgeInsets.all(8.0),
                                 ),
                                 child: const Text('Edit'),
@@ -173,8 +171,7 @@ class _OdooMethodsViewState extends State<ProductsScreen> {
                               ElevatedButton(
                                 onPressed: () => performDelete(records[index]['id']),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.red,
-                                  onPrimary: Colors.white,
+                                  foregroundColor: Colors.white, backgroundColor: Colors.red,
                                   padding: const EdgeInsets.all(8.0),
                                 ),
                                 child: const Text('Delete'),

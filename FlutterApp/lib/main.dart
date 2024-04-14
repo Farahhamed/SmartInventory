@@ -9,6 +9,13 @@ import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
+import 'package:smartinventory/screens/AssignEmployee.dart';
+import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
+import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
+import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
+import 'package:smartinventory/screens/EditProfile.dart';
+import 'package:smartinventory/screens/Homepage.dart';
+import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
 
 Future<void> main() async {
@@ -18,7 +25,7 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-    child: MaterialApp(
+    child: const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     ),

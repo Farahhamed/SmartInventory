@@ -1,43 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart'; // Import fl_chart library for pie chart
+import 'package:fl_chart/fl_chart.dart';
+import 'package:smartinventory/services/ProductsService.dart';
 
-class ProductDistributionPage extends StatelessWidget {
+class ProductDistributionPage extends StatefulWidget {
+  const ProductDistributionPage({Key? key}) : super(key: key);
+
+  @override
+  _ProductDistributionPageState createState() =>
+      _ProductDistributionPageState();
+}
+
+class _ProductDistributionPageState extends State<ProductDistributionPage> {
+  late Map<String, int> productDistribution;
+  late List<Map<String, dynamic>> products;
+  final ProductService odooMethodsHelper = ProductService();
+  late double thresholdA;
+  late double thresholdB;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    products = await odooMethodsHelper.fetchData();
+    calculateThresholds();
+    productDistribution = categorizeProducts(products);
+    setState(() {});
+  }
+
+  void calculateThresholds() {
+    double totalListPrice = products.fold(
+      0, (previousValue, element) => previousValue + element['list_price']);
+
+    thresholdA = totalListPrice * 0.2;
+    thresholdB = totalListPrice * 0.4;
+  }
+
+  Map<String, int> categorizeProducts(List<Map<String, dynamic>> products) {
+    products.sort((a, b) => b['list_price'].compareTo(a['list_price']));
+
+    int countA = 0;
+    int countB = 0;
+    int countC = 0;
+
+    for (var product in products) {
+      if (product['list_price'] >= thresholdA) {
+        countA++;
+      } else if (product['list_price'] >= thresholdB && product['list_price'] < thresholdA ) {
+        countB++;
+      } else {
+        countC++;
+      }
+    }
+
+    return {
+      'Category A': countA,
+      'Category B': countB,
+      'Category C': countC,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Dummy data for product distribution (replace with actual data)
-    Map<String, int> productDistribution = {
-      'Category A': 30,
-      'Category B': 40,
-      'Category C': 30,
-    };
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Distribution'),
+        title: const Text('Product Distribution'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
-          color: Color(0xFFF3E5F5), // Light pastel purple background color
+          color: const Color(0xFFF3E5F5),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                ListTile(
+                const ListTile(
                   title: Text(
                     'Product Distribution',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold), // Make title bold
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
                     'The importance of the current products based on ABC method',
-                    style: TextStyle(
-                        color: Colors.purple), // Purple subtitle text color
+                    style: TextStyle(color: Colors.purple),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SizedBox(
-                    height: 300, // Set height for the pie chart
+                    height: 300,
                     child: PieChart(
                       PieChartData(
                         sections: _getSections(productDistribution),
@@ -52,26 +103,22 @@ class ProductDistributionPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildLegend(
-                              'A', Colors.redAccent), // Pastel red color
-                          _buildLegend(
-                              'B', Colors.amberAccent), // Pastel yellow color
-                          _buildLegend(
-                              'C', Colors.lightBlueAccent), // Pastel blue color
+                          _buildLegend('A', Colors.redAccent),
+                          _buildLegend('B', Colors.amberAccent),
+                          _buildLegend('C', Colors.lightBlueAccent),
                         ],
                       ),
-                      SizedBox(
-                          height: 16), // Add space between legend and button
+                      const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          // Handle button press to see details
+                          _showDetailsDialog(productDistribution, products);
                         },
-                        child: Text('See Details'),
+                        child: const Text('See Details'),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 16), // Add space at the bottom of the card
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -80,7 +127,6 @@ class ProductDistributionPage extends StatelessWidget {
     );
   }
 
-  // Helper method to create pie chart sections
   List<PieChartSectionData> _getSections(Map<String, int> distribution) {
     List<PieChartSectionData> sections = [];
     distribution.forEach((category, count) {
@@ -96,28 +142,22 @@ class ProductDistributionPage extends StatelessWidget {
     return sections;
   }
 
-  // Helper method to get color for each category
   Color _getColorForCategory(String category) {
     switch (category) {
       case 'Category A':
-        return Colors.redAccent
-            .withOpacity(0.7); // Lighter shade of red with opacity
+        return Colors.redAccent.withOpacity(0.7);
       case 'Category B':
-        return Colors.amberAccent
-            .withOpacity(0.7); // Lighter shade of yellow with opacity
+        return Colors.amberAccent.withOpacity(0.7);
       case 'Category C':
-        return Colors.lightBlueAccent
-            .withOpacity(0.7); // Lighter shade of blue with opacity
+        return Colors.lightBlueAccent.withOpacity(0.7);
       default:
         return Colors.grey;
     }
   }
 
-  // Helper method to build legend for each category
   Widget _buildLegend(String label, Color color) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(vertical: 4.0), // Add vertical padding
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Container(
@@ -125,14 +165,91 @@ class ProductDistributionPage extends StatelessWidget {
             height: 16,
             color: color,
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             label,
-            style:
-                TextStyle(fontWeight: FontWeight.bold), // Make legend item bold
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
+
+  void _showDetailsDialog(Map<String, int> distribution, List<Map<String, dynamic>> products) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Product Details'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: distribution.entries.map((entry) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entry.key,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  ..._getProductsForCategory(entry.key, products),
+                  const SizedBox(height: 16),
+                ],
+              );
+            }).toList(),
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Close'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  List<Widget> _getProductsForCategory(String category, List<Map<String, dynamic>> products) {
+  List<Widget> productWidgets = [];
+
+  // Filter products based on category
+  List<Map<String, dynamic>> categoryProducts = [];
+  switch (category) {
+    case 'Category A':
+      categoryProducts = products.where((product) {
+        return product['list_price'] >= thresholdA;
+      }).toList();
+      break;
+    case 'Category B':
+      categoryProducts = products.where((product) {
+        return product['list_price'] >= thresholdB && product['list_price'] < thresholdA;
+      }).toList();
+      break;
+    case 'Category C':
+      categoryProducts = products.where((product) {
+        return product['list_price'] < thresholdB && product['list_price'] < thresholdA;
+      }).toList();
+      break;
+  }
+
+  // Add product widgets
+  categoryProducts.forEach((product) {
+    productWidgets.add(
+      ListTile(
+        title: Text(product['name']),
+        subtitle: Text('List Price: \$${product['list_price']}'),
+      ),
+    );
+  });
+
+  return productWidgets;
+}
+
 }
