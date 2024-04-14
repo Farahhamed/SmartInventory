@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:smartinventory/resources/auth_method.dart';
@@ -23,7 +24,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   TextEditingController _phoneController = TextEditingController();
   String _tag = 'No assigned Tag';
   String _type = '';
-
   String _selectedUserType = 'Manager';
   bool _isLoading = false;
   String taguid = 'No assigned Tag';
@@ -38,66 +38,75 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     _passController.dispose();
     _phoneController.dispose();
   }
+ Future<bool> checkTag() async {
+  // Reference to the Firestore collection
+  CollectionReference check = FirebaseFirestore.instance.collection('Register_employees');
 
+  try {
+    
+    QuerySnapshot querySnapshot = await check.get();
+
+   for(QueryDocumentSnapshot document in querySnapshot.docs ){
+      final data = document.data() as Map<String, dynamic>;
+      print(data["Tag"]);
+      if(data["Tag"] == _tag){
+          return true;
+      }
+   }
+  } catch (error) {
+    // Handle errors
+    print('Error checking tag: $error');
+   
+  }
+    return false;
+}
   void _submitForm(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      Map<String, dynamic> result = await AuthMethods().signUpUser(
+  if (_formKey.currentState!.validate()) {
+    if (_tag == 'No assigned Tag') {
+      // Show an error message if the tag has not been scanned
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please scan the tag')),
+      );
+      return; // Exit the method without submitting the form
+    }
+      if(await checkTag()){
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Tag already exists')),
+      );
+      return; 
+      }
+  
+    Map<String, dynamic> result = await AuthMethods().signUpUser(
       email: _emailController.text,
       username: _usernameController.text,
       password: _passController.text,
       phoneNumber: _phoneController.text,
-      Age : _ageController.text,
+      Age: _ageController.text,
       userType: _selectedUserType,
       TagUid: taguid,
     );
-    
-    try {
-  // Successfully added data to Firestore
-  // Clear the form fields
-  _usernameController.clear();
-  _passController.clear();
-  _emailController.clear();
-  _phoneController.clear();
-  _ageController.clear();
-  // Show snackbar indicating success
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Employee added successfully')),
-  );
-} catch (error) {
-  // Handle errors here
-  // Show snackbar indicating failure
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Failed to add employee: $error')),
-  );
-}
 
-      // Save the form data to Firestore
-  //     FirebaseFirestore.instance.collection('Register_employees').add({
-  //       'name': _usernameController.text,
-  //       'age': int.parse(_ageController.text),
-  //       'employeeType': _selectedUserType,
-  //       'UID': _tag,
-  //     }).then((value) {
-  //       // Successfully added data to Firestore
-  //       // Clear the form fields
-  //       _usernameController.clear();
-  //       _passController.clear();
-  //       _emailController.clear();
-  //       _phoneController.clear();
-  //       _ageController.clear();
-  //       // Show snackbar indicating success
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Employee added successfully')),
-  //       );
-  //     }).catchError((error) {
-  //       // Handle errors here
-  //       // Show snackbar indicating failure
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed to add employee: $error')),
-  //       );
-  //     });
+    try {
+      // Successfully added data to Firestore
+      // Clear the form fields
+      _usernameController.clear();
+      _passController.clear();
+      _emailController.clear();
+      _phoneController.clear();
+      _ageController.clear();
+      // Show snackbar indicating success
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Employee added successfully')),
+      );
+    } catch (error) {
+      // Handle errors here
+      // Show snackbar indicating failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add employee: $error')),
+      );
     }
   }
+}
 
   String _convertToHexString(List<int> bytes) {
     return bytes
@@ -223,9 +232,19 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       // Age
                       TextFormField(
                         controller: _ageController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(2),
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter Your Age ';
+                            return 'Please enter Your Age';
+                          }
+                          // Check if the entered value is a valid two-digit number
+                          int age = int.tryParse(value)!;
+                          if (age < 10 || age > 99) {
+                            return 'Please enter a valid  age';
                           }
                           return null;
                         },
@@ -249,15 +268,26 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                           ),
                         ),
                       ),
+
                       const SizedBox(
                         height: 25.0,
                       ),
                       // phone number
                       TextFormField(
                         controller: _phoneController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(11),
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Phone Number';
+                          }
+                          // Check if the entered value is a valid phone number format
+                          if (!RegExp(r'^(010|011|012|015)\d{8}$')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid phone number';
                           }
                           return null;
                         },
@@ -284,6 +314,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
+
                       //Employee type
                       DropdownButtonFormField<String>(
                         value: _selectedUserType,
@@ -322,9 +353,15 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       // email
                       TextFormField(
                         controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Email';
+                          }
+                          // Use a regular expression to validate email format
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email address';
                           }
                           return null;
                         },
@@ -348,10 +385,11 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                           ),
                         ),
                       ),
+
                       const SizedBox(
                         height: 25.0,
                       ),
-                       // password
+                      // password
                       TextFormField(
                         controller: _passController,
                         obscureText: true,
