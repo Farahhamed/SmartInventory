@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/ActivityLogScreen.dart';
 import 'package:smartinventory/screens/AssignTags.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
+import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -18,11 +19,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const ActivityLogUI(),
     EmployeeList(),
-    const ProductsList(),
-    const AssignTags(),
-    const ProfileScreen(),
+    ProductsList(),
+    HomePageScreen(),
+    RFIDscreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -32,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
-        color: const Color.fromARGB(255, 177, 157, 234),
+        color: const Color.fromRGBO(66, 125, 157, 1),
         animationDuration: const Duration(milliseconds: 300),
         index: _currentIndex,
         onTap: (index) {
@@ -45,25 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.timeline, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 0;
-                  });
-                },
-              ),
-              const Text('Activity',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
                 icon: const Icon(Icons.people, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    _currentIndex = 1;
+                    _currentIndex = 0;
                   });
                 },
               ),
@@ -78,11 +64,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: const Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    _currentIndex = 2;
+                    _currentIndex = 1;
                   });
                 },
               ),
               const Text('Products',
+                  style: TextStyle(color: Colors.white, fontSize: 9)),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.white), // Home icon
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 2;
+                  });
+                },
+              ),
+              const Text('Home',
                   style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
@@ -97,8 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              const Text('RFID',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
+              Text('RFID', style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
           Column(
