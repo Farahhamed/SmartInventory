@@ -112,6 +112,195 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ],
           ),
         ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.all(32.0),
+              child: Text(
+                '  Welcome to GoodsGuardian',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Color.fromRGBO(66, 125, 157, 1),
+                  shadows: [
+                    Shadow(
+                      color: Color.fromRGBO(155, 190, 200, 1),
+                      offset: Offset(2, 3),
+                      blurRadius: 3,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(155, 190, 200, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child:
+                                  Image.asset('assets/images/removedbgIDK.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Employees',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '2500 employees',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(187, 132, 147, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child: Image.asset('assets/images/cold.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Products',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '50000 Products',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10), // Adding space between the columns
+                Expanded(
+                  child: Column(
+                    children: [
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(119, 176, 170, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child: Image.asset(
+                                  'assets/images/creamRemovebg.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'RFID Tags',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '565665 Tags',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(219, 175, 160, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.yellow,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child: Image.asset('assets/images/drugs.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Mahmoud',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '1 70da',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
