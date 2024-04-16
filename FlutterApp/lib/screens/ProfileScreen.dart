@@ -75,9 +75,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Profile Section
               Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/images/images.jpg'),
+                    backgroundImage: NetworkImage(userData['pic']),
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -97,8 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Bio Section
               const SizedBox(height: 16),
               const Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                'Pellentesque nec metus vel ligula cursus consectetur.',
+                'A member of the GoodGuardian family',
               ),
               const SizedBox(height: 16),
               Center(
@@ -149,12 +148,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('First Name:',
+                        const Text('Name:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['username'] ?? 'John',
+                        Text(userData['name'] ?? '',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -163,12 +162,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Last Name:',
+                        const Text('Email:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['lastName'] ?? 'Doe',
+                        Text(userData['email'] ?? '',
+                            style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Age:',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                        Text(userData['age'] ?? '',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -182,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['address'] ?? '123 Main St',
+                        Text(userData['address'] ?? ' ay haga',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -196,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['phoneNumber'] ?? '123-456-7890',
+                        Text(userData['phone number'] ?? ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -226,12 +239,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Department:',
+                        const Text('Position:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['department'] ?? '24',
+                        Text(userData['employeeType'] ?? ' ',
+                            style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Assigned Tag:',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                        Text(userData['Tag'] ?? ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -245,35 +272,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['startDate'] ?? '20/2/2020',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('End Date:',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['endDate'] ?? 'Present',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Employment Status:',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['employmentStatus'] ?? 'Active',
+                        Text(
+                            userData['DateOfEmployment'] != null
+                                ? '${(userData['DateOfEmployment'] as Timestamp).toDate().toLocal().toString().split(' ')[0]}'
+                                : ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),

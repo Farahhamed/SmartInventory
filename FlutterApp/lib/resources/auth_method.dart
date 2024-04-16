@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:smartinventory/models/UserModel.dart';
 
 class AuthMethods {
@@ -29,8 +32,10 @@ class AuthMethods {
     required String phoneNumber,
     required String userType,
     required String Age,
-     String UID = '',
+    String UID = '',
     required String TagUid,
+    File? myimage,
+    required String address,
   }) async {
     Map<String, dynamic> result = {"res": "Error occurred"};
     try {
@@ -46,23 +51,37 @@ class AuthMethods {
 
         // Firebase automatically generates UID
         String uid = cred.user!.uid;
-
-        UserModel user = UserModel(
-          username: username,
-          email: email,
-          uid: uid,
-          phoneNumber: phoneNumber,
-          userType: userType,
-          Age: Age,
-          TagUid: TagUid,
-        );
-
-        await _firestore.collection('Register_employees').doc(uid).set(
-              user.toJson(),
+        String pic;
+        if (myimage != null) {
+          // User? currentUser = FirebaseAuth.instance.currentUser;
+          try {
+            final ref =
+                FirebaseStorage.instance.ref().child('ProfilePicture/$uid/pic');
+            await ref.putFile(myimage!);
+            pic = await ref.getDownloadURL();
+            UserModel user = UserModel(
+              username: username,
+              email: email,
+              uid: uid,
+              phoneNumber: phoneNumber,
+              userType: userType,
+              Age: Age,
+              TagUid: TagUid,
+              address: address,
+              pic: pic,
+              DateOfEmployment: DateTime.now(),
             );
 
+            await _firestore.collection('Register_employees').doc(uid).set(
+                  user.toJson(),
+                );
         result["res"] = "success";
         result["user"] = user;
+          } catch (e) {
+            print('error occured');
+          }
+        }
+
       } else {
         result["res"] = "User registration failed";
       }
@@ -111,8 +130,10 @@ class AuthMethods {
   Future<String> getUserTypeFromFirestore(String uid) async {
     try {
       // Access Firestore collection "users" and document with the provided UID
-      DocumentSnapshot snapshot =
-          await FirebaseFirestore.instance.collection('Register_employees').doc(uid).get();
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Register_employees')
+          .doc(uid)
+          .get();
 
       // Check if the document exists
       if (snapshot.exists) {
