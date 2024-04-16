@@ -77,8 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: 
-                         NetworkImage(userData['pic']),
+                    backgroundImage: NetworkImage(userData['pic']),
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -273,7 +272,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['DateOfEmployment'] ?? ' ',
+                        Text(
+                            userData['DateOfEmployment'] != null
+                                ? '${(userData['DateOfEmployment'] as Timestamp).toDate().toLocal().toString().split(' ')[0]}'
+                                : ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
