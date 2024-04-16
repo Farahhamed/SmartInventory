@@ -7,7 +7,10 @@ class UserModel {
   final String phoneNumber;
   final String userType;
   final String Age;
-  final String TagUid ;
+  final String TagUid;
+  final String address;
+  final DateTime DateOfEmployment;
+  final String pic ;
 
   UserModel({
     required this.username,
@@ -17,6 +20,9 @@ class UserModel {
     required this.userType,
     required this.Age,
     required this.TagUid,
+    required this.address,
+    required this.DateOfEmployment,
+    required this.pic,
   });
 
   Map<String, dynamic> toJson() => {
@@ -25,21 +31,27 @@ class UserModel {
         "UID": uid,
         "phone number": phoneNumber,
         "employeeType": userType,
-        "age" : Age,
-        "Tag" : TagUid,
+        "age": Age,
+        "Tag": TagUid,
+        "address": address,
+        "DateOfEmployment": DateOfEmployment,
+        "pic":pic,
       };
 
   static UserModel fromSnapshot(DocumentSnapshot snapshot) {
     var data = snapshot.data() as Map<String, dynamic>;
 
     return UserModel(
-      username : data['name'],
-      email: data['email'],
-      uid: data['UID'],
-      phoneNumber: data['phone number'],
-      userType : data['employeeType'],
-      Age: data['age'],
-      TagUid :data['Tag']
-    );
+        username: data['name'],
+        email: data['email'],
+        uid: data['UID'],
+        phoneNumber: data['phone number'],
+        userType: data['employeeType'],
+        Age: data['age'],
+        TagUid: data['Tag'],
+        address: data['address'],
+        DateOfEmployment: data['DateOfEmployment'],
+        pic : data['pic'],
+        );
   }
 }

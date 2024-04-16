@@ -45,6 +45,8 @@ dependencies:
   syncfusion_flutter_charts: any
   curved_navigation_bar: any
   fl_chart: any
+  image_picker: ^1.0.8
+  firebase_storage: ^11.7.2
 dev_dependencies:
   cloud_firestore: ^4.14.0
   curved_navigation_bar: ^1.0.3

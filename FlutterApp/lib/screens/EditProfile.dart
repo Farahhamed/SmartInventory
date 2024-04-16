@@ -64,6 +64,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           uid: user.uid,
           phoneNumber: phoneNumberController.text,
           userType: '',
+          DateOfEmployment: snap['DateOfEmployment'] ?? '',
+          address: snap['address'] ?? '',
+          pic: snap['pic'] ?? '',
         );
 
         // Update user data using your user service
