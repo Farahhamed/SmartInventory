@@ -12,158 +12,294 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: HomePageScreen(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePageScreen extends StatefulWidget {
+  const HomePageScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomePageScreen> createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends State<HomePageScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Home', style: TextStyle(fontSize: 20)),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: CircleAvatar(
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-            ),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: CardWidget(
-                      icon: Icons.dashboard,
-                      text: 'Dashboard',
-                      count: '1',
-                      color: Colors.purple[100]!,
-                    ),
+    return Container(
+      margin: EdgeInsets.all(16.0),
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(200.0),
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(180),
+                  bottomRight: Radius.circular(20),
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                child: Image.asset(
+                  'assets/images/appbar.png',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(180),
+                    bottomRight: Radius.circular(20),
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EmployeeList()),
-                        );
-                      },
-                      child: CardWidget(
-                        icon: Icons.people,
-                        text: 'Employees',
-                        count: '100',
-                        color: Colors.purple[100]!,
+                  child: Container(
+                    color: Colors.black.withOpacity(0.4),
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(100),
+                  bottomRight: Radius.circular(20),
+                ),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  title: Center(
+                    child: Text(
+                      'Home',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProductsList()),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: CardWidget(
-                      icon: Icons.shopping_basket,
-                      text: 'Products',
-                      count: '50',
-                      color: Colors.purple[100]!,
-                    ),
+                  leading: IconButton(
+                    icon: Icon(Icons.menu),
+                    color: Colors.white,
+                    onPressed: () {
+                      // Open side menu
+                    },
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: CardWidget(
-                      icon: Icons.attach_money,
-                      text: 'Total Revenue',
-                      count: '\$10000',
-                      color: Colors.purple[100]!,
+                  actions: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 16.0),
+                      child: IconButton(
+                        icon: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/kitty.png'),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Navigate to profile page
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class CardWidget extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final String count;
-  final Color color;
-
-  CardWidget({
-    required this.icon,
-    required this.text,
-    required this.count,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              size: 40.0,
-              color: Colors.black,
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+            Container(
+              margin: EdgeInsets.all(32.0),
+              child: Text(
+                '  Welcome to GoodsGuardian',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Color.fromRGBO(66, 125, 157, 1),
+                  shadows: [
+                    Shadow(
+                      color: Color.fromRGBO(155, 190, 200, 1),
+                      offset: Offset(2, 3),
+                      blurRadius: 3,
+                    ),
+                  ],
+                ),
               ),
             ),
-            SizedBox(height: 2.0),
-            Text(
-              count,
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.black54,
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(155, 190, 200, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child:
+                                  Image.asset('assets/images/removedbgIDK.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Employees',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '2500 employees',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(187, 132, 147, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child: Image.asset('assets/images/cold.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Products',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '50000 Products',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10), // Adding space between the columns
+                Expanded(
+                  child: Column(
+                    children: [
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(119, 176, 170, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child: Image.asset(
+                                  'assets/images/creamRemovebg.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'RFID Tags',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '565665 Tags',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Card(
+                        margin: EdgeInsets.all(16),
+                        color: Color.fromRGBO(219, 175, 160, 1),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.yellow,
+                              ),
+                              width: 50,
+                              height: 50,
+                              margin: EdgeInsets.all(16),
+                              child: Image.asset('assets/images/drugs.png'),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Mahmoud',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '1 70da',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
