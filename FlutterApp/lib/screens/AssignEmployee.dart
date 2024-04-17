@@ -224,7 +224,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                     children: [
                       // get started text
                       Text(
-                        'Assign Tag to employee',
+                        'Add a new employee',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
