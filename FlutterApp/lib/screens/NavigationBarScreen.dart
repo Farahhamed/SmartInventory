@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/ActivityLogScreen.dart';
 import 'package:smartinventory/screens/AssignTags.dart';
@@ -23,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ProductsList(),
     HomePageScreen(),
     RFIDscreen(),
-    ProfileScreen(),
+    ProfileScreen(uid:FirebaseAuth.instance.currentUser!.uid),
   ];
 
   @override

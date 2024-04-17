@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Notification.dart';
+import 'package:smartinventory/utilites/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String uid;
+  const ProfileScreen({super.key, required this.uid});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -14,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late User? currentUser;
   late Map<String, dynamic> userData;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -22,12 +25,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> fetchUserData() async {
+    setState(() {
+      isLoading = true;
+    }); 
+    try{
     currentUser = FirebaseAuth.instance.currentUser;
 
     if (currentUser != null) {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('Register_employees')
-          .doc(currentUser!.uid)
+          .doc(widget.uid)
           .get();
 
       if (userSnapshot.exists && userSnapshot.data() != null) {
@@ -37,10 +44,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
   }
+  catch (e) {
+      showSnackBar(context, e.toString()); // show error in a snack bar
+    }
+    setState(() {
+      isLoading = false; //after data is retrived, no more loading
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return isLoading
+        ? const Center(
+            child:
+                CircularProgressIndicator(), // if isLoading is true, show loading in ui
+          )
+        : Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(
