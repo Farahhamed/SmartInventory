@@ -3,19 +3,19 @@ import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 
-void main() {
-  runApp(MyApp());
-}
+// void main() {
+//   runApp(MyApp());
+// }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePageScreen(),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: HomePageScreen(),
+//     );
+//   }
+// }
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({Key? key}) : super(key: key);
@@ -280,13 +280,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Mahmoud',
+                                  'Branches',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  '1 70da',
+                                  '2 branches',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
@@ -299,8 +299,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                     ],
                   ),
-              ),
-                ],
+                ),
+              ],
             ),
           ],
         ),
