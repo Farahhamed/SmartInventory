@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/ActivityLogScreen.dart';
 import 'package:smartinventory/screens/AssignTags.dart';
@@ -6,7 +7,6 @@ import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:smartinventory/screens/RFIDscreen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -22,8 +22,8 @@ class _MyHomePageState extends State<MyHomePage> {
     EmployeeList(),
     ProductsList(),
     HomePageScreen(),
-    RFIDscreen(),
-    ProfileScreen(),
+    AssignTags(),
+    ProfileScreen(uid:FirebaseAuth.instance.currentUser!.uid),
   ];
 
   @override

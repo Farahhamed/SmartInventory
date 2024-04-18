@@ -100,7 +100,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
           phoneNumber: _phoneController.text,
           Age: _ageController.text,
           userType: _selectedUserType,
-          TagUid: taguid,
+          TagUid: _tag,
           myimage: _image,
           address: _addressController.text);
 
@@ -224,7 +224,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                     children: [
                       // get started text
                       Text(
-                        'Assign Tag to employee',
+                        'Add a new employee',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
