@@ -7,7 +7,6 @@ import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:smartinventory/screens/RFIDscreen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -23,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
     EmployeeList(),
     ProductsList(),
     HomePageScreen(),
-    RFIDscreen(),
+    AssignTags(),
     ProfileScreen(uid:FirebaseAuth.instance.currentUser!.uid),
   ];
 

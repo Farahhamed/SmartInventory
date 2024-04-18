@@ -33,7 +33,6 @@ class EmployeeList extends StatelessWidget {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(context);
           },
         ),
       ),

@@ -71,20 +71,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.notifications,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
-              );
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(
+        //       Icons.notifications,
+        //       color: Colors.black,
+        //     ),
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => NotificationPage()),
+        //       );
+        //     },
+        //   ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -120,32 +120,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 'A member of the GoodGuardian family',
               ),
               const SizedBox(height: 16),
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EditProfilePage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 106, 180, 214), // Baby blue color
-                    ),
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: AutofillHints.countryName,
-                          color: Color.fromARGB(255, 245, 249, 250)),
-                    ),
-                  ),
-                ),
-              ),
+              // Center(
+              //   child: SizedBox(
+              //     width: double.infinity,
+              //     height: 40,
+              //     child: ElevatedButton(
+              //       onPressed: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => EditProfilePage()),
+              //         );
+              //       },
+              //       style: ElevatedButton.styleFrom(
+              //         backgroundColor: const Color.fromARGB(
+              //             255, 106, 180, 214), // Baby blue color
+              //       ),
+              //       child: const Text(
+              //         'Edit Profile',
+              //         style: TextStyle(
+              //             fontSize: 16,
+              //             fontFamily: AutofillHints.countryName,
+              //             color: Color.fromARGB(255, 245, 249, 250)),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               // Personal Information Section
               const SizedBox(height: 16),
               Container(

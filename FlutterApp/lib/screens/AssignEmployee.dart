@@ -100,7 +100,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
           phoneNumber: _phoneController.text,
           Age: _ageController.text,
           userType: _selectedUserType,
-          TagUid: taguid,
+          TagUid: _tag,
           myimage: _image,
           address: _addressController.text);
 
