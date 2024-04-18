@@ -33,7 +33,7 @@ dependencies:
   curved_navigation_bar: any
   firebase_auth: any
   firebase_core: ^2.24.2
-  firebase_storage: ^11.7.2
+  firebase_storage: ^11.6.9
   fl_chart: any
   flutter:
     sdk: flutter
@@ -91,6 +91,7 @@ flutter:
     - assets/images/pain killers.png
     - assets/images/a5er category.png
     - assets/images/inventory.png
+    - assets/images/blurryInventory.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
