@@ -113,30 +113,47 @@ class _ProductsListState extends State<ProductsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Products List'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu_sharp,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.filter_alt_outlined,
-              color: Colors.black,
-              size: 30,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight + 16.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: AppBar(
+            title: const Text('Products List'),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.menu_sharp,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            onPressed: () {},
+            actions: [
+              Ink(
+                decoration: BoxDecoration(
+                  color: Color(0xFFBB8493), // Background color BB8493
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    if (_userType == UserType.Manager) {
+                      navigateToAddProductForm();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0), // Add padding throughout the page
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -160,7 +177,6 @@ class _ProductsListState extends State<ProductsList> {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
                     vertical: 8.0,
                   ),
                   child: Card(
@@ -169,7 +185,6 @@ class _ProductsListState extends State<ProductsList> {
                     ),
                     color: Colors.grey[100],
                     child: Container(
-                      width: double.infinity,
                       height: 250.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.0),
