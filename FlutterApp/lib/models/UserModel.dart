@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/models/BranchesModel.dart';
 
 class UserModel {
   final String username;
@@ -11,6 +12,7 @@ class UserModel {
   final String address;
   final DateTime DateOfEmployment;
   final String pic ;
+  final String branchId;
 
   UserModel({
     required this.username,
@@ -23,6 +25,7 @@ class UserModel {
     required this.address,
     required this.DateOfEmployment,
     required this.pic,
+    required this.branchId,
   });
 
   Map<String, dynamic> toJson() => {
@@ -36,6 +39,7 @@ class UserModel {
         "address": address,
         "DateOfEmployment": DateOfEmployment,
         "pic":pic,
+        "branchId": branchId,
       };
 
   static UserModel fromSnapshot(DocumentSnapshot snapshot) {
@@ -52,6 +56,7 @@ class UserModel {
         address: data['address'],
         DateOfEmployment: data['DateOfEmployment'],
         pic : data['pic'],
+        branchId: data['branchId'],
         );
   }
 }

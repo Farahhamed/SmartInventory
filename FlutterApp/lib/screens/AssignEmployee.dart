@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:smartinventory/models/BranchesModel.dart';
 import 'package:smartinventory/resources/auth_method.dart';
+import 'package:smartinventory/services/BranchService.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +27,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   TextEditingController _ageController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-
+  String _selectedBranchName = ' ';
   String _tag = 'No assigned Tag';
   String _type = '';
   String _selectedUserType = 'Manager';
@@ -33,6 +35,8 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   String taguid = 'No assigned Tag';
   String Payload = 'No Type';
   File? _image;
+  List<String>? branchLocations;
+  List<String> branchids=[];
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
@@ -43,6 +47,35 @@ class _AssignEmployeeState extends State<AssignEmployee> {
         ;
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getBranches();
+  }
+
+  String _getBranchIndex(String name) {
+    int index = branchLocations!.indexOf(name);
+    return branchids[index];
+  }
+
+  void _getBranches() {
+    Stream<List<Branches>> branchesStream = BranchService().getBranches();
+
+    branchesStream.listen((List<Branches> branches) {
+      List<String> branchLocationslocal = [];
+      List<String> branchidslocal = [];
+
+      for (var branch in branches) {
+        branchLocationslocal.add(branch.location);
+        branchidslocal.add(branch.id);
+      }
+      setState(() {
+        branchLocations = branchLocationslocal;
+        branchids = branchidslocal;
+      });
+    });
   }
 
   @override
@@ -94,15 +127,17 @@ class _AssignEmployeeState extends State<AssignEmployee> {
       }
 
       Map<String, dynamic> result = await AuthMethods().signUpUser(
-          email: _emailController.text,
-          username: _usernameController.text,
-          password: _passController.text,
-          phoneNumber: _phoneController.text,
-          Age: _ageController.text,
-          userType: _selectedUserType,
-          TagUid: _tag,
-          myimage: _image,
-          address: _addressController.text);
+        email: _emailController.text,
+        username: _usernameController.text,
+        password: _passController.text,
+        phoneNumber: _phoneController.text,
+        Age: _ageController.text,
+        userType: _selectedUserType,
+        TagUid: _tag,
+        myimage: _image,
+        address: _addressController.text,
+        branchId: _getBranchIndex(_selectedBranchName),
+      );
 
       try {
         // Successfully added data to Firestore
@@ -387,6 +422,48 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
+
+                      // branch
+                      DropdownButtonFormField<String>(
+                        value: null,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedBranchName = newValue!;
+                          });
+                        },
+                        items: branchLocations
+                            ?.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                          labelText: 'Branch',
+                          hintText: 'Select Branch',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+// ###########################################################################################################################################################
+
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      //address
                       TextFormField(
                         controller: _addressController,
                         validator: (value) {
