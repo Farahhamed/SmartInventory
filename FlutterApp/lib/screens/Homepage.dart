@@ -28,10 +28,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16.0),
+      margin: EdgeInsets.all(20.0),
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(200.0),
+          preferredSize: Size.fromHeight(220.0),
           child: Stack(
             children: [
               ClipRRect(
@@ -121,9 +121,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
             Container(
               margin: EdgeInsets.all(32.0),
               child: Text(
-                '  Welcome to GoodsGuardian',
+                '    Welcome to GoodsGuardian',
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
                   color: Color.fromRGBO(66, 125, 157, 1),
@@ -152,11 +152,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                 shape: BoxShape.circle,
                                 color: Colors.red,
                               ),
-                              width: 50,
-                              height: 50,
-                              margin: EdgeInsets.all(16),
-                              child:
-                                  Image.asset('assets/images/removedbgIDK.png'),
+                              width: 30,
+                              height: 35,
+                              margin: EdgeInsets.all(17),
+                              child: Container(
+                                // Wrapping Image.asset inside a Container
+                                width: 25,
+                                height: 35,
+                                child: Image.asset(
+                                    'assets/images/removedbgIDK.png'),
+                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,10 +170,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   'Employees',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                   ),
                                 ),
                                 Text(
-                                  '2500 employees',
+                                  '2500 ',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
@@ -188,12 +194,17 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.green,
+                                color: Colors.red,
                               ),
-                              width: 50,
-                              height: 50,
-                              margin: EdgeInsets.all(16),
-                              child: Image.asset('assets/images/cold.png'),
+                              width: 30,
+                              height: 35,
+                              margin: EdgeInsets.all(17),
+                              child: Container(
+                                // Wrapping Image.asset inside a Container
+                                width: 30,
+                                height: 40,
+                                child: Image.asset('assets/images/cold.png'),
+                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,10 +213,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   'Products',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                   ),
                                 ),
                                 Text(
-                                  '50000 Products',
+                                  '50000',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
@@ -231,13 +243,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.blue,
+                                color: Colors.red,
                               ),
-                              width: 50,
-                              height: 50,
-                              margin: EdgeInsets.all(16),
-                              child: Image.asset(
-                                  'assets/images/creamRemovebg.png'),
+                              width: 30,
+                              height: 35,
+                              margin: EdgeInsets.all(17),
+                              child: Container(
+                                // Wrapping Image.asset inside a Container
+                                width: 30,
+                                height: 40,
+                                child: Image.asset(
+                                    'assets/images/creamRemovebg.png'),
+                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,10 +263,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   'RFID Tags',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                   ),
                                 ),
                                 Text(
-                                  '565665 Tags',
+                                  '565665',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 10,
@@ -269,12 +287,17 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.yellow,
+                                color: Colors.red,
                               ),
-                              width: 50,
-                              height: 50,
-                              margin: EdgeInsets.all(16),
-                              child: Image.asset('assets/images/drugs.png'),
+                              width: 30,
+                              height: 35,
+                              margin: EdgeInsets.all(17),
+                              child: Container(
+                                // Wrapping Image.asset inside a Container
+                                width: 30,
+                                height: 40,
+                                child: Image.asset('assets/images/drugs.png'),
+                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,6 +306,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                   'Branches',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                   ),
                                 ),
                                 Text(
