@@ -2,6 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: ProductDistributionPage(),
+//     );
+//   }
+// }
+
 class ProductDistributionPage extends StatefulWidget {
   const ProductDistributionPage({Key? key}) : super(key: key);
 
@@ -32,7 +46,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
 
   void calculateThresholds() {
     double totalListPrice = products.fold(
-      0, (previousValue, element) => previousValue + element['list_price']);
+        0, (previousValue, element) => previousValue + element['list_price']);
 
     thresholdA = totalListPrice * 0.2;
     thresholdB = totalListPrice * 0.4;
@@ -48,7 +62,8 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
     for (var product in products) {
       if (product['list_price'] >= thresholdA) {
         countA++;
-      } else if (product['list_price'] >= thresholdB && product['list_price'] < thresholdA ) {
+      } else if (product['list_price'] >= thresholdB &&
+          product['list_price'] < thresholdA) {
         countB++;
       } else {
         countC++;
@@ -175,81 +190,84 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
     );
   }
 
-  void _showDetailsDialog(Map<String, int> distribution, List<Map<String, dynamic>> products) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Product Details'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: distribution.entries.map((entry) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    entry.key,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+  void _showDetailsDialog(
+      Map<String, int> distribution, List<Map<String, dynamic>> products) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Product Details'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: distribution.entries.map((entry) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.key,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  ..._getProductsForCategory(entry.key, products),
-                  const SizedBox(height: 16),
-                ],
-              );
-            }).toList(),
+                    const SizedBox(height: 4),
+                    ..._getProductsForCategory(entry.key, products),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }).toList(),
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Close'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-  List<Widget> _getProductsForCategory(String category, List<Map<String, dynamic>> products) {
-  List<Widget> productWidgets = [];
-
-  // Filter products based on category
-  List<Map<String, dynamic>> categoryProducts = [];
-  switch (category) {
-    case 'Category A':
-      categoryProducts = products.where((product) {
-        return product['list_price'] >= thresholdA;
-      }).toList();
-      break;
-    case 'Category B':
-      categoryProducts = products.where((product) {
-        return product['list_price'] >= thresholdB && product['list_price'] < thresholdA;
-      }).toList();
-      break;
-    case 'Category C':
-      categoryProducts = products.where((product) {
-        return product['list_price'] < thresholdB && product['list_price'] < thresholdA;
-      }).toList();
-      break;
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  // Add product widgets
-  categoryProducts.forEach((product) {
-    productWidgets.add(
-      ListTile(
-        title: Text(product['name']),
-        subtitle: Text('List Price: \$${product['list_price']}'),
-      ),
-    );
-  });
+  List<Widget> _getProductsForCategory(
+      String category, List<Map<String, dynamic>> products) {
+    List<Widget> productWidgets = [];
 
-  return productWidgets;
-}
+    // Filter products based on category
+    List<Map<String, dynamic>> categoryProducts = [];
+    switch (category) {
+      case 'Category A':
+        categoryProducts = products.where((product) {
+          return product['list_price'] >= thresholdA;
+        }).toList();
+        break;
+      case 'Category B':
+        categoryProducts = products.where((product) {
+          return product['list_price'] >= thresholdB &&
+              product['list_price'] < thresholdA;
+        }).toList();
+        break;
+      case 'Category C':
+        categoryProducts = products.where((product) {
+          return product['list_price'] < thresholdB &&
+              product['list_price'] < thresholdA;
+        }).toList();
+        break;
+    }
 
+    // Add product widgets
+    categoryProducts.forEach((product) {
+      productWidgets.add(
+        ListTile(
+          title: Text(product['name']),
+          subtitle: Text('List Price: \$${product['list_price']}'),
+        ),
+      );
+    });
+
+    return productWidgets;
+  }
 }
