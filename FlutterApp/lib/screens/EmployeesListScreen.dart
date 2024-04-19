@@ -2,9 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/AssignEmployee.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
+import 'package:smartinventory/services/UserService.dart'; // Import your UserService
 
-class EmployeeList extends StatelessWidget {
+class EmployeeList extends StatefulWidget {
   const EmployeeList({Key? key}) : super(key: key);
+
+  @override
+  _EmployeeListState createState() => _EmployeeListState();
+}
+
+class _EmployeeListState extends State<EmployeeList> {
+  late TextEditingController _searchController;
+  final UserService _userService = UserService(); // Initialize UserService
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +28,7 @@ class EmployeeList extends StatelessWidget {
         title: Row(
           children: [
             Text('Employees List'),
-            Spacer(), // Add spacer to push the button to the right
+            Spacer(),
             FloatingActionButton(
               onPressed: () {
                 Navigator.push(
@@ -21,8 +36,8 @@ class EmployeeList extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => AssignEmployee()),
                 );
               },
-               tooltip: 'Add employee',
-                child: Icon(Icons.add),
+              tooltip: 'Add employee',
+              child: Icon(Icons.add),
             ),
           ],
         ),
@@ -32,8 +47,7 @@ class EmployeeList extends StatelessWidget {
             Icons.menu_sharp,
             color: Colors.black,
           ),
-          onPressed: () {
-          },
+          onPressed: () {},
         ),
       ),
       body: Column(
@@ -41,6 +55,10 @@ class EmployeeList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {}); // Trigger rebuild on text change
+              },
               cursorHeight: 35,
               decoration: InputDecoration(
                 hintText: 'Search for an Employee',
@@ -53,7 +71,11 @@ class EmployeeList extends StatelessWidget {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('Register_employees').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('Register_employees')
+                  .where('name', isGreaterThanOrEqualTo: _searchController.text.trim())
+                  .where('name', isLessThan: _searchController.text.trim() + 'z')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -107,7 +129,7 @@ class EmployeeList extends StatelessWidget {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('RFID: ${document['Tag'] ?? ''}'),
+                                Text('Tag: ${document['Tag'] ?? ''}'),
                                 Text('Employee Type: ${document['employeeType'] ?? ''}'),
                               ],
                             ),
@@ -124,7 +146,31 @@ class EmployeeList extends StatelessWidget {
                                   icon: Icon(Icons.delete),
                                   color: Colors.red,
                                   onPressed: () {
-                                    // Implement delete functionality
+                                    // Show a confirmation dialog before deleting
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Delete Employee'),
+                                          content: Text('Are you sure you want to delete this employee?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop(); // Close the dialog
+                                              },
+                                              child: Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                _userService.deleteEmployee(document['UID']); // Call delete function from UserService
+                                                Navigator.of(context).pop(); // Close the dialog
+                                              },
+                                              child: Text('Delete'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ],
@@ -141,5 +187,11 @@ class EmployeeList extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

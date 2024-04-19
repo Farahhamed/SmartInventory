@@ -35,6 +35,8 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   String taguid = 'No assigned Tag';
   String Payload = 'No Type';
   File? _image;
+  List<String>? branchLocations;
+  List<String> branchids=[];
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
@@ -45,6 +47,35 @@ class _AssignEmployeeState extends State<AssignEmployee> {
         ;
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getBranches();
+  }
+
+  String _getBranchIndex(String name) {
+    int index = branchLocations!.indexOf(name);
+    return branchids[index];
+  }
+
+  void _getBranches() {
+    Stream<List<Branches>> branchesStream = BranchService().getBranches();
+
+    branchesStream.listen((List<Branches> branches) {
+      List<String> branchLocationslocal = [];
+      List<String> branchidslocal = [];
+
+      for (var branch in branches) {
+        branchLocationslocal.add(branch.location);
+        branchidslocal.add(branch.id);
+      }
+      setState(() {
+        branchLocations = branchLocationslocal;
+        branchids = branchidslocal;
+      });
+    });
   }
 
   @override
@@ -96,18 +127,17 @@ class _AssignEmployeeState extends State<AssignEmployee> {
       }
 
       Map<String, dynamic> result = await AuthMethods().signUpUser(
-          email: _emailController.text,
-          username: _usernameController.text,
-          password: _passController.text,
-          phoneNumber: _phoneController.text,
-          Age: _ageController.text,
-          userType: _selectedUserType,
-          TagUid: _tag,
-          myimage: _image,
-          address: _addressController.text,
-          branchId : _selectedBranchName,
-          
-          );
+        email: _emailController.text,
+        username: _usernameController.text,
+        password: _passController.text,
+        phoneNumber: _phoneController.text,
+        Age: _ageController.text,
+        userType: _selectedUserType,
+        TagUid: _tag,
+        myimage: _image,
+        address: _addressController.text,
+        branchId: _getBranchIndex(_selectedBranchName),
+      );
 
       try {
         // Successfully added data to Firestore
@@ -392,59 +422,43 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                       // branch
-                      StreamBuilder<List<Branches>>(
-                        stream: BranchService().getBranches(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Text('No branches found.');
-                          }
 
-                          List<Branches> branches = snapshot.data!;
-
-                          return Builder(
-                            builder: (innerContext) =>
-                                DropdownButtonFormField<String>(
-                              value: _selectedBranchName,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  _selectedBranchName = newValue!;
-                                });
-                              },
-                              items: branches
-                                  .map<DropdownMenuItem<String>>(
-                                    (branch) => DropdownMenuItem(
-                                      value: branch.id,
-                                      child: Text(branch.location),
-                                    ),
-                                  )
-                                  .toList(),
-                              decoration: InputDecoration(
-                                labelText: 'Branch',
-                                hintText: 'Select Branch',
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Colors.black12,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Colors.black12,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          );
+                      // branch
+                      DropdownButtonFormField<String>(
+                        value: null,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedBranchName = newValue!;
+                          });
                         },
+                        items: branchLocations
+                            ?.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                          labelText: 'Branch',
+                          hintText: 'Select Branch',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12, // Default border color
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+// ###########################################################################################################################################################
 
                       const SizedBox(
                         height: 25.0,

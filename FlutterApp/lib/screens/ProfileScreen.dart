@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Map<String, dynamic> fetchedUser = userSnapshot.data()! as Map<String, dynamic>;
            DocumentSnapshot branchSnapshot = await FirebaseFirestore.instance
             .collection('branches')
-            .doc(widget.uid)
+            .doc(fetchedUser['branchId'])
             .get();
             Map<String, dynamic> fetchedBranch = branchSnapshot.data()! as Map<String, dynamic>;
           setState(() {
