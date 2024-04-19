@@ -24,8 +24,7 @@ class _EmployeeListState extends State<EmployeeList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: 16.0, vertical: 16.0), // Add padding horizontally
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0), // Add padding horizontally
       child: Scaffold(
         appBar: AppBar(
           title: Row(
@@ -52,40 +51,40 @@ class _EmployeeListState extends State<EmployeeList> {
               color: Colors.black,
             ),
             onPressed: () {},
+          ),
         ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {}); // Trigger rebuild on text change
-              },
-              cursorHeight: 35,
-              decoration: InputDecoration(
-                hintText: 'Search for an Employee',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(60.0),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {}); // Trigger rebuild on text change
+                },
+                cursorHeight: 35,
+                decoration: InputDecoration(
+                  hintText: 'Search for an Employee',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(60.0),
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Register_employees')
-                  .where('name', isGreaterThanOrEqualTo: _searchController.text.trim())
-                  .where('name', isLessThan: _searchController.text.trim() + 'z')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('Register_employees')
+                    .where('name', isGreaterThanOrEqualTo: _searchController.text.trim())
+                    .where('name', isLessThan: _searchController.text.trim() + 'z')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
                   if (snapshot.hasError) {
                     return Center(
@@ -112,60 +111,30 @@ class _EmployeeListState extends State<EmployeeList> {
                               builder: (context) =>
                                   ProfileScreen(uid: document['UID']),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Tag: ${document['Tag'] ?? ''}'),
-                                Text('Employee Type: ${document['employeeType'] ?? ''}'),
-                              ],
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            elevation: 2.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
                             ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    // Implement edit functionality
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    // Show a confirmation dialog before deleting
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('Delete Employee'),
-                                          content: Text('Are you sure you want to delete this employee?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop(); // Close the dialog
-                                              },
-                                              child: Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                _userService.deleteEmployee(document['UID']); // Call delete function from UserService
-                                                Navigator.of(context).pop(); // Close the dialog
-                                              },
-                                              child: Text('Delete'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                child: Icon(Icons.person),
+                              ),
+                              title: Text(
+                                document['name'] ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('RFID: ${document['Tag'] ?? ''}'),
-                                  Text(
-                                      'Employee Type: ${document['employeeType'] ?? ''}'),
+                                  Text('Tag: ${document['Tag'] ?? ''}'),
+                                  Text('Employee Type: ${document['employeeType'] ?? ''}'),
                                 ],
                               ),
                               trailing: Row(
@@ -181,7 +150,31 @@ class _EmployeeListState extends State<EmployeeList> {
                                     icon: Icon(Icons.delete),
                                     color: Colors.red,
                                     onPressed: () {
-                                      // Implement delete functionality
+                                      // Show a confirmation dialog before deleting
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Delete Employee'),
+                                            content: Text('Are you sure you want to delete this employee?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(); // Close the dialog
+                                                },
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _userService.deleteEmployee(document['UID']); // Call delete function from UserService
+                                                  Navigator.of(context).pop(); // Close the dialog
+                                                },
+                                                child: Text('Delete'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],
