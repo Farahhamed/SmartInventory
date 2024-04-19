@@ -67,6 +67,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           DateOfEmployment: snap['DateOfEmployment'] ?? '',
           address: snap['address'] ?? '',
           pic: snap['pic'] ?? '',
+          branchId : snap['branchId'] ?? '',
         );
 
         // Update user data using your user service

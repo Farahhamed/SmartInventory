@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:smartinventory/models/BranchesModel.dart';
 import 'package:smartinventory/resources/auth_method.dart';
+import 'package:smartinventory/services/BranchService.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +27,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   TextEditingController _ageController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-
+  String _selectedBranchName = ' ';
   String _tag = 'No assigned Tag';
   String _type = '';
   String _selectedUserType = 'Manager';
@@ -102,7 +104,10 @@ class _AssignEmployeeState extends State<AssignEmployee> {
           userType: _selectedUserType,
           TagUid: _tag,
           myimage: _image,
-          address: _addressController.text);
+          address: _addressController.text,
+          branchId : _selectedBranchName,
+          
+          );
 
       try {
         // Successfully added data to Firestore
@@ -387,6 +392,64 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
+                       // branch
+                      StreamBuilder<List<Branches>>(
+                        stream: BranchService().getBranches(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Text('No branches found.');
+                          }
+
+                          List<Branches> branches = snapshot.data!;
+
+                          return Builder(
+                            builder: (innerContext) =>
+                                DropdownButtonFormField<String>(
+                              value: _selectedBranchName,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedBranchName = newValue!;
+                                });
+                              },
+                              items: branches
+                                  .map<DropdownMenuItem<String>>(
+                                    (branch) => DropdownMenuItem(
+                                      value: branch.id,
+                                      child: Text(branch.location),
+                                    ),
+                                  )
+                                  .toList(),
+                              decoration: InputDecoration(
+                                labelText: 'Branch',
+                                hintText: 'Select Branch',
+                                border: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Colors.black12,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Colors.black12,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      //address
                       TextFormField(
                         controller: _addressController,
                         validator: (value) {

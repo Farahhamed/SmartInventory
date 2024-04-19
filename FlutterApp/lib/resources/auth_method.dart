@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:smartinventory/models/BranchesModel.dart';
 import 'package:smartinventory/models/UserModel.dart';
 
 class AuthMethods {
@@ -32,6 +33,7 @@ class AuthMethods {
     required String phoneNumber,
     required String userType,
     required String Age,
+    required String branchId,
     String UID = '',
     required String TagUid,
     File? myimage,
@@ -69,6 +71,7 @@ class AuthMethods {
               TagUid: TagUid,
               address: address,
               pic: pic,
+              branchId : branchId,
               DateOfEmployment: DateTime.now(),
             );
 
