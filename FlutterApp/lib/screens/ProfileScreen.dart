@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Notification.dart';
+import 'package:smartinventory/utilites/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final String uid;
+  const ProfileScreen({super.key, required this.uid});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -13,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late User? currentUser;
   late Map<String, dynamic> userData;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -21,12 +25,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> fetchUserData() async {
+    setState(() {
+      isLoading = true;
+    }); 
+    try{
     currentUser = FirebaseAuth.instance.currentUser;
 
     if (currentUser != null) {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser!.uid)
+          .collection('Register_employees')
+          .doc(widget.uid)
           .get();
 
       if (userSnapshot.exists && userSnapshot.data() != null) {
@@ -36,10 +44,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
   }
+  catch (e) {
+      showSnackBar(context, e.toString()); // show error in a snack bar
+    }
+    setState(() {
+      isLoading = false; //after data is retrived, no more loading
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return isLoading
+        ? const Center(
+            child:
+                CircularProgressIndicator(), // if isLoading is true, show loading in ui
+          )
+        : Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(
@@ -50,20 +71,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.notifications,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
-              );
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(
+        //       Icons.notifications,
+        //       color: Colors.black,
+        //     ),
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => NotificationPage()),
+        //       );
+        //     },
+        //   ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -74,20 +95,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Profile Section
               Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/images/images.jpg'),
+                    backgroundImage: NetworkImage(userData['pic']),
                   ),
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userData['username'] ?? 'John Doe',
+                        userData['name'] ?? " ",
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      Text(userData['userType'] ?? 'Software Engineer'),
+                      Text(userData['employeeType'] ?? ' '),
                     ],
                   ),
                 ],
@@ -96,36 +117,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Bio Section
               const SizedBox(height: 16),
               const Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                'Pellentesque nec metus vel ligula cursus consectetur.',
+                'A member of the GoodGuardian family',
               ),
               const SizedBox(height: 16),
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NotificationPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color.fromARGB(
-                          255, 106, 180, 214), // Baby blue color
-                    ),
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: AutofillHints.countryName,
-                          color: Color.fromARGB(255, 245, 249, 250)),
-                    ),
-                  ),
-                ),
-              ),
+              // Center(
+              //   child: SizedBox(
+              //     width: double.infinity,
+              //     height: 40,
+              //     child: ElevatedButton(
+              //       onPressed: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => EditProfilePage()),
+              //         );
+              //       },
+              //       style: ElevatedButton.styleFrom(
+              //         backgroundColor: const Color.fromARGB(
+              //             255, 106, 180, 214), // Baby blue color
+              //       ),
+              //       child: const Text(
+              //         'Edit Profile',
+              //         style: TextStyle(
+              //             fontSize: 16,
+              //             fontFamily: AutofillHints.countryName,
+              //             color: Color.fromARGB(255, 245, 249, 250)),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               // Personal Information Section
               const SizedBox(height: 16),
               Container(
@@ -148,12 +168,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('First Name:',
+                        const Text('Name:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['username'] ?? 'John',
+                        Text(userData['name'] ?? '',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -162,12 +182,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Last Name:',
+                        const Text('Email:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['lastName'] ?? 'Doe',
+                        Text(userData['email'] ?? '',
+                            style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Age:',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                        Text(userData['age'] ?? '',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -181,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['address'] ?? '123 Main St',
+                        Text(userData['address'] ?? ' ay haga',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -195,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['phoneNumber'] ?? '123-456-7890',
+                        Text(userData['phone number'] ?? ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -225,12 +259,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Department:',
+                        const Text('Position:',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['department'] ?? '24',
+                        Text(userData['employeeType'] ?? ' ',
+                            style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Assigned Tag:',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 64, 58, 58))),
+                        Text(userData['Tag'] ?? ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),
@@ -244,35 +292,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['startDate'] ?? '20/2/2020',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('End Date:',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['endDate'] ?? 'Present',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Employment Status:',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 64, 58, 58))),
-                        Text(userData['employmentStatus'] ?? 'Active',
+                        Text(
+                            userData['DateOfEmployment'] != null
+                                ? '${(userData['DateOfEmployment'] as Timestamp).toDate().toLocal().toString().split(' ')[0]}'
+                                : ' ',
                             style: const TextStyle(
                                 fontSize: 14,
                                 color: Color.fromARGB(255, 64, 58, 58))),

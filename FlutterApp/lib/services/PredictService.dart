@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class PredictService {
-  static final String baseUrl =
+  static const String baseUrl =
       "http://127.0.0.1:5000"; // Replace with your API URL
 
   static Future<List<String>> trainModel() async {

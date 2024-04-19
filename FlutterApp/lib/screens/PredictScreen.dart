@@ -3,7 +3,7 @@ import 'package:smartinventory/services/PredictService.dart';
 
 //  const PredictScreen({Key? key}) : super(key: key);
 class PredictScreen extends StatefulWidget {
-  const PredictScreen({Key? key}) : super(key: key);
+  const PredictScreen({super.key});
   @override
   _PredictScreenState createState() => _PredictScreenState();
 }
@@ -34,17 +34,17 @@ class _PredictScreenState extends State<PredictScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prediction Screen'),
+        title: const Text('Prediction Screen'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'Prediction Results:',
               style: TextStyle(fontSize: 20),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Display the prediction results as a list
 
             Expanded(
@@ -52,7 +52,7 @@ class _PredictScreenState extends State<PredictScreen> {
                     future: _loadPredictionResults(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
@@ -85,6 +85,20 @@ class _PredictScreenState extends State<PredictScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: PredictScreen(),
     );
   }
 }

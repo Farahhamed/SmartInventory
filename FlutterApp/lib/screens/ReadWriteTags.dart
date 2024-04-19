@@ -1,63 +1,19 @@
-// import 'package:flutter/material.dart';
-// import 'package:smartinventory/RFID/MainPage.dart';
-// import 'package:smartinventory/RFID/writenfc.dart';
-
-// class RFIDscreen extends StatelessWidget {
-//   const RFIDscreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('RFID Screen'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => const MainPage()),
-//                 );
-//               },
-//               child: const Text('Read Tag'),
-//             ),
-//             const SizedBox(height: 20), // Add space of 20 pixels between buttons
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => const WriteNFC()),
-//                 );
-//               },
-//               child: const Text('Write on Tag'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:smartinventory/RFID/MainPage.dart';
 import 'package:smartinventory/RFID/writenfc.dart';
-import 'package:smartinventory/screens/AssignTags.dart';
-import 'package:smartinventory/screens/ReadWriteTags.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
-class RFIDscreen extends StatefulWidget {
-  const RFIDscreen({super.key});
+class ReadWriteTags extends StatefulWidget {
+  const ReadWriteTags({super.key});
 
   @override
-  State<RFIDscreen> createState() => _RFIDscreenState();
+  State<ReadWriteTags> createState() => _ReadWriteTagsState();
 }
 
-class _RFIDscreenState extends State<RFIDscreen> {
+class _ReadWriteTagsState extends State<ReadWriteTags> {
   bool agreePersonalData = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -99,7 +55,7 @@ class _RFIDscreenState extends State<RFIDscreen> {
                     children: [
                       // get started text
                       Text(
-                        'RFID Tags ',
+                        'Read and Write on Tags ',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
@@ -116,7 +72,7 @@ class _RFIDscreenState extends State<RFIDscreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const ReadWriteTags()),
+                              MaterialPageRoute(builder: (context) => const WriteNFC()),
                             );
                           },
                           child: Container(
@@ -138,7 +94,7 @@ class _RFIDscreenState extends State<RFIDscreen> {
                                       color: Colors.blueGrey,
                                     ),
                                   )
-                                : const Text('Read and Write on Tags  '),
+                                : const Text('Write on Tag  '),
                           ),
                         ),
                       ),
@@ -151,7 +107,7 @@ class _RFIDscreenState extends State<RFIDscreen> {
                           onTap: ()  {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AssignTags()),
+                              MaterialPageRoute(builder: (context) => MainPage()),
                             );
                           },
                           child: Container(
@@ -173,7 +129,7 @@ class _RFIDscreenState extends State<RFIDscreen> {
                                       color: Colors.blueGrey,
                                     ),
                                   )
-                                : const Text('Assign  Tags '),
+                                : const Text('Read Tag '),
                           ),
                         ),
                       ),

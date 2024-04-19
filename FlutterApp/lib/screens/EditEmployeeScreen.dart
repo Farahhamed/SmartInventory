@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/models/EmployeeModel.dart';
-import 'package:smartinventory/services/EmployeeService.dart'; 
+import 'package:smartinventory/services/EmployeeService.dart';
 
 class EmployeeEditPage extends StatefulWidget {
   final Employee employee;
 
-  EmployeeEditPage({required this.employee});
+  const EmployeeEditPage({super.key, required this.employee});
 
   @override
   _EmployeeEditPageState createState() => _EmployeeEditPageState();
@@ -21,7 +21,8 @@ class _EmployeeEditPageState extends State<EmployeeEditPage> {
     super.initState();
     _nameController = TextEditingController(text: widget.employee.name);
     _positionController = TextEditingController(text: widget.employee.position);
-    _phoneNumberController = TextEditingController(text: widget.employee.phoneNumber);
+    _phoneNumberController =
+        TextEditingController(text: widget.employee.phoneNumber);
   }
 
   @override
@@ -67,17 +68,17 @@ class _EmployeeEditPageState extends State<EmployeeEditPage> {
   }
 
   void _saveChanges() {
-  // Update employee data and save changes to Firestore
-  Employee updatedEmployee = Employee(
-    name: _nameController.text,
-    position: _positionController.text,
-    phoneNumber: _phoneNumberController.text,
-    branch: widget.employee.branch,
-    id: widget.employee.id,
-  );
-  EmployeeService().editEmployee(updatedEmployee);
-  
-  // Navigate back to the previous screen
-  Navigator.of(context).pop();
-}
+    // Update employee data and save changes to Firestore
+    Employee updatedEmployee = Employee(
+      name: _nameController.text,
+      position: _positionController.text,
+      phoneNumber: _phoneNumberController.text,
+      branch: widget.employee.branch,
+      id: widget.employee.id,
+    );
+    EmployeeService().editEmployee(updatedEmployee);
+
+    // Navigate back to the previous screen
+    Navigator.of(context).pop();
+  }
 }

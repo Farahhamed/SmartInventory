@@ -6,10 +6,10 @@ import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/SignUpScreen.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
- // Import your auth methods
+// Import your auth methods
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -21,7 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final AuthMethods _authMethods = AuthMethods(); // Instance of your auth methods
+  final AuthMethods _authMethods =
+      AuthMethods(); // Instance of your auth methods
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(
                         width: double.infinity,
+                        height: 40,
                         child: ElevatedButton(
                           onPressed: () {
                             _login(); // Call the login method when the button is pressed
@@ -182,59 +184,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Colors.grey.withOpacity(0.5),
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 10,
-                            ),
-                            child: Text(
-                              'Sign in with',
-                              style: TextStyle(
-                                color: Colors.black45,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              thickness: 0.7,
-                              color: Colors.grey.withOpacity(0.5),
-                            ),
-                          ),
+                          // const Padding(
+                          //   padding: EdgeInsets.symmetric(
+                          //     vertical: 0,
+                          //     horizontal: 10,
+                          //   ),
+                          //   child: Text(
+                          //     'Sign in with',
+                          //     style: TextStyle(
+                          //       color: Colors.black45,
+                          //     ),
+                          //   ),
+                          // ),
+                          // Expanded(
+                          //   child: Divider(
+                          //     thickness: 0.7,
+                          //     color: Colors.grey.withOpacity(0.5),
+                          //   ),
+                          // ),
                         ],
                       ),
                       const SizedBox(
                         height: 25.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Don\'t have an account? ',
-                            style: TextStyle(
-                              color: Colors.black45,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (e) => const SignUpScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Sign up',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: lightColorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20.0,
                       ),
                     ],
                   ),
@@ -248,37 +219,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() async {
-  // Validate form
-  if (_formSignInKey.currentState!.validate()) {
-    // Get email and password from controllers
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+    // Validate form
+    if (_formSignInKey.currentState!.validate()) {
+      // Get email and password from controllers
+      String email = _emailController.text.trim();
+      String password = _passwordController.text.trim();
 
-    // Call the login method from AuthMethods
-    Map<String, dynamic> result = await _authMethods.loginUser(
-      email: email,
-      password: password,
-    );
-
-    // Check the result
-    if (!result['error']) {
-      // Fetch the user type from Firestore
-
-      // Navigate to the profile screen and pass the user type
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MyHomePage(),
-        ),
+      // Call the login method from AuthMethods
+      Map<String, dynamic> result = await _authMethods.loginUser(
+        email: email,
+        password: password,
       );
-    } else {
-      // Login failed, show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['res']),
-        ),
-      );
+
+      // Check the result
+      if (!result['error']) {
+        // Fetch the user type from Firestore
+
+        // Navigate to the profile screen and pass the user type
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MyHomePage(),
+          ),
+        );
+      } else {
+        // Login failed, show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['res']),
+          ),
+        );
+      }
     }
   }
-}
 }

@@ -1,129 +1,144 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import 'package:smartinventory/models/EmployeeModel.dart'; // Import your Employee model
-import 'package:smartinventory/screens/EditEmployeeScreen.dart';
-import 'package:smartinventory/services/EmployeeService.dart'; // Import your EmployeeService
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/screens/AssignEmployee.dart';
+import 'package:smartinventory/screens/ProfileScreen.dart';
 
 class EmployeeList extends StatelessWidget {
-  final EmployeeService _employeeService = EmployeeService();
+  const EmployeeList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Employee>>(
-  stream: _employeeService.getEmployees(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (snapshot.hasError) {
-      return Center(
-        child: Text('Error: ${snapshot.error}'),
-      );
-    }
-
-    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-      return const Center(
-        child: Text('No employees found.'),
-      );
-    }
-
-        return ListView.builder(
-          itemCount: snapshot.data?.length,
-          itemBuilder: (context, index) {
-            Employee employee = snapshot.data![index];
-            bool isMorningShift = index % 2 == 0;
-
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                elevation: 2.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30.0,
-                    backgroundColor: isMorningShift
-                        ? const Color.fromARGB(255, 188, 175, 62)
-                        : const Color.fromARGB(255, 36, 76, 108),
-                    child: const Icon(Icons.person),
-                  ),
-                  title: Text(
-                    employee.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('RFID: ${employee.id}'),
-                      Text('Phone Number: ${employee.phoneNumber}'),
-                      Text('Branch: ${employee.branch.name}'),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          _editEmployee(context, employee);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        color: Colors.red,
-                        onPressed: () {
-                          _deleteEmployee(context, employee.id);
-                        },
-                      ),
-                    ],
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Text('Employees List'),
+            Spacer(), // Add spacer to push the button to the right
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AssignEmployee()),
+                );
+              },
+              tooltip: 'Add employee',
+              child: Icon(Icons.add),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu_sharp,
+            color: Colors.black,
+          ),
+          onPressed: () {},
+        ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              cursorHeight: 35,
+              decoration: InputDecoration(
+                hintText: 'Search for an Employee',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(60.0),
                 ),
               ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _editEmployee(BuildContext context, Employee employee) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => EmployeeEditPage(employee: employee),
-    ),
-  );
-}
-
-  void _deleteEmployee(BuildContext context, String employeeId) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Deletion'),
-        content: const Text('Are you sure you want to delete this employee?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
-            },
-            child: const Text('Cancel'),
+            ),
           ),
-          TextButton(
-            onPressed: () async {
-              // Call delete employee function from service
-              await _employeeService.deleteEmployee(employeeId);
-              Navigator.of(context).pop(); // Close dialog
-            },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Register_employees')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Text('No employees found.'),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
+
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProfileScreen(uid: document['UID']),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 2.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Icon(Icons.person),
+                            ),
+                            title: Text(
+                              document['name'] ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('RFID: ${document['Tag'] ?? ''}'),
+                                Text(
+                                    'Employee Type: ${document['employeeType'] ?? ''}'),
+                              ],
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    // Implement edit functionality
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    // Implement delete functionality
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
