@@ -21,8 +21,8 @@ class EmployeeList extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => AssignEmployee()),
                 );
               },
-               tooltip: 'Add employee',
-                child: Icon(Icons.add),
+              tooltip: 'Add employee',
+              child: Icon(Icons.add),
             ),
           ],
         ),
@@ -32,8 +32,7 @@ class EmployeeList extends StatelessWidget {
             Icons.menu_sharp,
             color: Colors.black,
           ),
-          onPressed: () {
-          },
+          onPressed: () {},
         ),
       ),
       body: Column(
@@ -53,7 +52,9 @@ class EmployeeList extends StatelessWidget {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('Register_employees').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('Register_employees')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -83,7 +84,8 @@ class EmployeeList extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfileScreen(uid: document['UID']),
+                            builder: (context) =>
+                                ProfileScreen(uid: document['UID']),
                           ),
                         );
                       },
@@ -108,7 +110,8 @@ class EmployeeList extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('RFID: ${document['Tag'] ?? ''}'),
-                                Text('Employee Type: ${document['employeeType'] ?? ''}'),
+                                Text(
+                                    'Employee Type: ${document['employeeType'] ?? ''}'),
                               ],
                             ),
                             trailing: Row(
