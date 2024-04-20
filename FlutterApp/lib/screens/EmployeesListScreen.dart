@@ -76,8 +76,6 @@ class _EmployeeListState extends State<EmployeeList> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('Register_employees')
-                    .where('name', isGreaterThanOrEqualTo: _searchController.text.trim())
-                    .where('name', isLessThan: _searchController.text.trim() + 'z')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,10 +96,23 @@ class _EmployeeListState extends State<EmployeeList> {
                     );
                   }
 
+                  // Filter the documents based on the case-insensitive search query
+                  var filteredDocs = snapshot.data!.docs.where((document) {
+                    var name = (document['name'] ?? '').toLowerCase(); // Convert to lowercase
+                    var searchQuery = _searchController.text.trim().toLowerCase(); // Convert to lowercase
+                    return name.contains(searchQuery);
+                  }).toList();
+
+                  if (filteredDocs.isEmpty) {
+                    return Center(
+                      child: Text('No matching employees found.'),
+                    );
+                  }
+
                   return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
+                    itemCount: filteredDocs.length,
                     itemBuilder: (context, index) {
-                      DocumentSnapshot document = snapshot.data!.docs[index];
+                      DocumentSnapshot document = filteredDocs[index];
 
                       return InkWell(
                         onTap: () {
