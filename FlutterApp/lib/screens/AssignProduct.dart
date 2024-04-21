@@ -4,6 +4,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
+import 'package:smartinventory/widgets/FormScaffold.dart';
 
 class AssignProduct extends StatefulWidget {
   const AssignProduct({super.key});
@@ -23,43 +24,41 @@ class _AssignProductState extends State<AssignProduct> {
   String taguid = 'No assigned Tag yet';
   String Payload = 'No Type';
 
-
-
-    @override
+  @override
   void dispose() {
     super.dispose();
   }
 
-    void _submitForm(BuildContext context) {
-  if (_formKey.currentState!.validate()) {
-    // Save the form data to Firestore
-    FirebaseFirestore.instance.collection('Assigned_Products').add({
-      'ProductType': _selectedProductType,
-      'UID': _tag,
-    }).then((value) {
-      // Successfully added data to Firestore
-      
-      // Show snackbar indicating success
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Product added successfully')),
-      );
-    }).catchError((error) {
-      // Handle errors here
-      // Show snackbar indicating failure
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add Product: $error')),
-      );
-    });
-  }
-}
+  void _submitForm(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      // Save the form data to Firestore
+      FirebaseFirestore.instance.collection('Assigned_Products').add({
+        'ProductType': _selectedProductType,
+        'UID': _tag,
+      }).then((value) {
+        // Successfully added data to Firestore
 
-String _convertToHexString(List<int> bytes) {
+        // Show snackbar indicating success
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Product added successfully')),
+        );
+      }).catchError((error) {
+        // Handle errors here
+        // Show snackbar indicating failure
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add Product: $error')),
+        );
+      });
+    }
+  }
+
+  String _convertToHexString(List<int> bytes) {
     return bytes
         .map((byte) => byte.toRadixString(16).toUpperCase().padLeft(2, '0'))
         .join(' ');
   }
 
-void _assignTag() async {
+  void _assignTag() async {
     try {
       bool isAvailable = await NfcManager.instance.isAvailable();
       // String taguid = 'No tag is detected';
@@ -100,9 +99,10 @@ void _assignTag() async {
       _type = Payload;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
+    return FormScaffold(
       child: Column(
         children: [
           const Expanded(
@@ -141,11 +141,11 @@ void _assignTag() async {
                       const SizedBox(
                         height: 40.0,
                       ),
-                       DropdownButtonFormField<String>(
+                      DropdownButtonFormField<String>(
                         value: _selectedProductType,
                         onChanged: (String? newValue) {
                           setState(() {
-                           _selectedProductType = newValue!;
+                            _selectedProductType = newValue!;
                           });
                         },
                         items: <String>['Panadol', 'Antinal', 'shampoo']
@@ -172,41 +172,40 @@ void _assignTag() async {
                           ),
                         ),
                       ),
-                       const SizedBox(
+                      const SizedBox(
                         height: 40.0,
                       ),
-              Row(
-                 children: [
-                   Text('$_tag'), 
-                   const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () => _assignTag(),
-                        child: const Text('Read UID'),
-                      ),
-                      // const SizedBox(width: 20),
+                      Row(
+                        children: [
+                          Text('$_tag'),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () => _assignTag(),
+                            child: const Text('Read UID'),
+                          ),
+                          // const SizedBox(width: 20),
                           // Text('$_type')
-                 ],
-               ),
-                const SizedBox(
+                        ],
+                      ),
+                      const SizedBox(
                         height: 25.0,
                       ),
                       // signup button
                       SizedBox(
-                        width: double.infinity,
+                        width: 300,
                         child: InkWell(
                           onTap: () => _submitForm(context),
                           child: Container(
-                            width: double.infinity,
+                            width: 300,
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             decoration: const ShapeDecoration(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(12),
+                                  Radius.circular(50),
                                 ),
                               ),
-                              color: Color.fromARGB(
-                                  255, 174, 203, 227), // Adjust the color
+                              color: Color.fromARGB(255, 174, 203, 227),
                             ),
                             child: _isLoading
                                 ? const Center(
@@ -214,7 +213,12 @@ void _assignTag() async {
                                       color: Colors.blueGrey,
                                     ),
                                   )
-                                : const Text('Add product '),
+                                : const Text(
+                                    'Add product ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                           ),
                         ),
                       ),
