@@ -73,6 +73,7 @@ class AuthMethods {
               pic: pic,
               branchId : branchId,
               DateOfEmployment: DateTime.now(),
+              IsDeleted: false,
             );
 
             await _firestore.collection('Register_employees').doc(uid).set(

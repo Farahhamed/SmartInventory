@@ -11,8 +11,9 @@ class UserModel {
   final String TagUid;
   final String address;
   final DateTime DateOfEmployment;
-  final String pic ;
+  final String pic;
   final String branchId;
+  final bool IsDeleted;
 
   UserModel({
     required this.username,
@@ -26,6 +27,7 @@ class UserModel {
     required this.DateOfEmployment,
     required this.pic,
     required this.branchId,
+    required this.IsDeleted
   });
 
   Map<String, dynamic> toJson() => {
@@ -38,25 +40,27 @@ class UserModel {
         "Tag": TagUid,
         "address": address,
         "DateOfEmployment": DateOfEmployment,
-        "pic":pic,
+        "pic": pic,
         "branchId": branchId,
+        "IsDeleted": IsDeleted,
       };
 
   static UserModel fromSnapshot(DocumentSnapshot snapshot) {
     var data = snapshot.data() as Map<String, dynamic>;
 
     return UserModel(
-        username: data['name'],
-        email: data['email'],
-        uid: data['UID'],
-        phoneNumber: data['phone number'],
-        userType: data['employeeType'],
-        Age: data['age'],
-        TagUid: data['Tag'],
-        address: data['address'],
-        DateOfEmployment: data['DateOfEmployment'],
-        pic : data['pic'],
-        branchId: data['branchId'],
-        );
+      username: data['name'],
+      email: data['email'],
+      uid: data['UID'],
+      phoneNumber: data['phone number'],
+      userType: data['employeeType'],
+      Age: data['age'],
+      TagUid: data['Tag'],
+      address: data['address'],
+      DateOfEmployment: data['DateOfEmployment'],
+      pic: data['pic'],
+      branchId: data['branchId'],
+      IsDeleted: data['IsDeleted']
+    );
   }
 }
