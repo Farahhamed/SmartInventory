@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
+import 'package:input_quantity/input_quantity.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class _AddProductState extends State<AddProduct> {
   String _description = '';
   String _selectedCategory = 'Cold'; // Default category
   double _price = 0.0;
+  int _quantity = 0;
   File? _image;
 
   Future<void> _getImage() async {
@@ -162,6 +164,17 @@ class _AddProductState extends State<AddProduct> {
                       },
                     ),
                     const SizedBox(height: 30),
+                    // Quantity field
+                    const SizedBox(height: 30),
+                    InputQuantity(
+                      quantity: _quantity,
+                      onChanged: (value) {
+                        setState(() {
+                          _quantity = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 30),
                     // Submit Button
                     Center(
                       child: SizedBox(
@@ -174,6 +187,7 @@ class _AddProductState extends State<AddProduct> {
                             print('Description: $_description');
                             print('Category: $_selectedCategory');
                             print('Price: $_price');
+                            print('Quantity: $_quantity');
                           },
                           child: const Text('Add Product'),
                           style: ElevatedButton.styleFrom(
