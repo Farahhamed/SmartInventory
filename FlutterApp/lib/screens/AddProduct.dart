@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
-import 'package:input_quantity/input_quantity.dart'; // Import the QuantityInput widget
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key}) : super(key: key);
