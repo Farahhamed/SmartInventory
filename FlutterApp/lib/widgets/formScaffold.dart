@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FormScaffold extends StatelessWidget {
-  final Widget body;
-
-  const FormScaffold({Key? key, required this.body}) : super(key: key);
-
+  const FormScaffold({super.key, this.child});
+  final Widget? child;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,34 +14,17 @@ class FormScaffold extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF427D9D), // Starting color
-                  Color(0xFF9BBEC8), // Ending color
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-            ),
+          Image.asset(
+            'assets/images/formBackground.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
-          body,
+          SafeArea(
+            child: child!,
+          ),
         ],
       ),
     );
   }
 }
-
-// void main() {
-//   runApp(MaterialApp(
-//     home: FormScaffold(
-//       body: Center(
-//         child: Text(
-//           'Your form content goes here',
-//           style: TextStyle(color: Colors.white),
-//         ),
-//       ),
-//     ),
-//   ));
-// }
