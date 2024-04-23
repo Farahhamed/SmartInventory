@@ -10,11 +10,14 @@ class UserService {
   // Deleting employee from Firestore and Firebase Authentication
   Future<void> deleteEmployee(String uid) async {
     try {
+      employeeCollection.doc(uid).update({
+      'IsDeleted': true,
+    });
       // Delete from Firestore
-      await employeeCollection.doc(uid).delete();
+      // await employeeCollection.doc(uid).delete();
 
-      // Delete from Firebase Authentication
-      await _auth.currentUser?.delete();
+      // // Delete from Firebase Authentication
+      // await _auth.currentUser?.delete();
     } catch (err) {
       print('Error deleting employee: $err');
       throw err; // Rethrow the error for handling in UI

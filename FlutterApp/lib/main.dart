@@ -4,21 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:smartinventory/firebase_options.dart';
 import 'package:smartinventory/providers/provider.dart';
-import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
-import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
-import 'package:smartinventory/screens/EditProfile.dart';
-import 'package:smartinventory/screens/Homepage.dart';
-import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
-import 'package:smartinventory/screens/AssignEmployee.dart';
-import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
-import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
-import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
-import 'package:smartinventory/screens/EditProfile.dart';
-import 'package:smartinventory/screens/Homepage.dart';
-import 'package:smartinventory/screens/LoginScreen.dart';
-import 'package:smartinventory/screens/NavigationBarScreen.dart';
-import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
 
 Future<void> main() async {

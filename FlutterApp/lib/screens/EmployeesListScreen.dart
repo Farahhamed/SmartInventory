@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/AssignEmployee.dart';
@@ -101,7 +102,7 @@ class _EmployeeListState extends State<EmployeeList> {
                     var name = (document['name'] ?? '').toLowerCase(); // Convert to lowercase
                     var searchQuery = _searchController.text.trim().toLowerCase(); // Convert to lowercase
                     return name.contains(searchQuery);
-                  }).toList();
+                  }).where((element) => element['IsDeleted']==false && element['UID']!=FirebaseAuth.instance.currentUser?.uid).toList();
 
                   if (filteredDocs.isEmpty) {
                     return Center(
