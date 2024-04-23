@@ -3,17 +3,14 @@ import 'package:uuid/uuid.dart';
 
 class ProductCategory {
   final String name;
-  String uuid; // Remove final from uuid
+  final String id; 
 
-  // Constructor with UUID generation
-  ProductCategory({
-    required this.name,
-  }) : uuid = const Uuid().v4(); // Generate UUID during instantiation
+  ProductCategory({required this.name, required this.id});
 
   // Function to convert ProductCategory object to a Map for Firestore
   Map<String, dynamic> toMap() => {
         "name": name,
-        "uuid": uuid,
+        "id": id,
       };
 
   // Function to create a ProductCategory object from a Firestore document
@@ -22,7 +19,7 @@ class ProductCategory {
 
     return ProductCategory(
       name: data['name'],
-    )..uuid =
-        data['uuid']; // Set UUID when creating the object from Firestore data
+      id: data["id"],
+    );
   }
 }
