@@ -50,7 +50,16 @@ class AuthMethods {
           email: email,
           password: password,
         );
-
+        
+         if (cred.user != null) {
+          print('User created successfully!');
+          // You can also access user information like uid
+          print('User ID: ${cred.user?.uid}');
+        } else {
+          // User creation failed
+          print('User creation failed.');
+          return result;
+        }
         // Firebase automatically generates UID
         String uid = cred.user!.uid;
         String pic;
