@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartinventory/screens/AddProduct.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/AddProductScreen.dart';
@@ -112,137 +113,147 @@ class _ProductsListState extends State<ProductsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Products List'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.menu_sharp,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.filter_alt_outlined,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: 16.0, vertical: 16.0), // Add padding around the page
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Products List'), // Removed unnecessary space
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.menu_sharp,
               color: Colors.black,
-              size: 30,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
+          actions: [
+            Ink(
+              decoration: BoxDecoration(
+                color: Color(0xFFBB8493),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddProduct()),
+                  );
+                },
+                tooltip: 'Add Product',
+              ),
+            ),
+          ],
+        ),
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 cursorHeight: 35,
                 decoration: InputDecoration(
                   hintText: 'Search for a product',
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(60.0),
                   ),
                 ),
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: records.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    color: Colors.grey[100],
-                    child: Container(
-                      width: double.infinity,
-                      height: 250.0,
-                      decoration: BoxDecoration(
+            Expanded(
+              child: ListView.builder(
+                itemCount: records.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage('assets/images/hair.png'),
+                      ),
+                      color: Colors.grey[100],
+                      child: Container(
+                        height: 250.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/images/hair.png'),
+                          ),
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(12.0),
+                                color: Colors.white.withOpacity(0.8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      records[index]['name'],
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      'List Price: ${records[index]['list_price']}',
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            if (_userType == UserType.Manager)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () =>
+                                      editProduct(records[index]['id']),
+                                ),
+                              ),
+                            if (_userType == UserType.Manager)
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () =>
+                                      performDelete(records[index]['id']),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(12.0),
-                              color: Colors.white.withOpacity(0.8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    records[index]['name'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    'List Price: ${records[index]['list_price']}',
-                                    style: const TextStyle(
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (_userType == UserType.Manager)
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () =>
-                                    editProduct(records[index]['id']),
-                              ),
-                            ),
-                          if (_userType == UserType.Manager)
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () =>
-                                    performDelete(records[index]['id']),
-                              ),
-                            ),
-                        ],
-                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ],
         ),
+        floatingActionButton: _userType == UserType.Manager
+            ? FloatingActionButton(
+                onPressed: navigateToAddProductForm,
+                child: Icon(Icons.add),
+              )
+            : null,
       ),
-      floatingActionButton: _userType == UserType.Manager
-          ? FloatingActionButton(
-              onPressed: navigateToAddProductForm,
-              child: const Icon(Icons.add),
-            )
-          : null,
     );
   }
 }

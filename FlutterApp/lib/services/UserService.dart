@@ -1,25 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/models/UserModel.dart';
 
-
 class UserService {
-  final CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection('users');
+  final CollectionReference employeeCollection =
+      FirebaseFirestore.instance.collection('Register_employees');
+     final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> addUser(UserModel user) async {
-    await usersCollection.add(user.toJson());
-  }
+  // Deleting employee from Firestore and Firebase Authentication
+  Future<void> deleteEmployee(String uid) async {
+    try {
+      employeeCollection.doc(uid).update({
+      'IsDeleted': true,
+    });
+      // Delete from Firestore
+      // await employeeCollection.doc(uid).delete();
 
-  Future<void> updateUser(String userId, UserModel newData) async {
-    await usersCollection.doc(userId).update(newData.toJson());
-  }
-
-  Future<UserModel?> getUser(String userId) async {
-    final DocumentSnapshot snapshot = await usersCollection.doc(userId).get();
-    return snapshot.exists ? UserModel.fromSnapshot(snapshot) : null;
-  }
-
-  Future<void> deleteUser(String userId) async {
-    await usersCollection.doc(userId).delete();
+      // // Delete from Firebase Authentication
+      // await _auth.currentUser?.delete();
+    } catch (err) {
+      print('Error deleting employee: $err');
+      throw err; // Rethrow the error for handling in UI
+    }
   }
 }

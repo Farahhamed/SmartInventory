@@ -1,16 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/AssignEmployee.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
+import 'package:smartinventory/services/UserService.dart'; // Import your UserService
 
-class EmployeeList extends StatelessWidget {
+class EmployeeList extends StatefulWidget {
   const EmployeeList({Key? key}) : super(key: key);
+
+  @override
+  _EmployeeListState createState() => _EmployeeListState();
+}
+
+class _EmployeeListState extends State<EmployeeList> {
+  late TextEditingController _searchController;
+  final UserService _userService = UserService(); // Initialize UserService
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: 16.0, vertical: 16.0), // Add padding horizontally
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0), // Add padding horizontally
       child: Scaffold(
         appBar: AppBar(
           title: Row(
@@ -42,8 +57,12 @@ class EmployeeList extends StatelessWidget {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {}); // Trigger rebuild on text change
+                },
                 cursorHeight: 35,
                 decoration: InputDecoration(
                   hintText: 'Search for an Employee',
@@ -54,7 +73,6 @@ class EmployeeList extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 8),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -79,10 +97,23 @@ class EmployeeList extends StatelessWidget {
                     );
                   }
 
+                  // Filter the documents based on the case-insensitive search query
+                  var filteredDocs = snapshot.data!.docs.where((document) {
+                    var name = (document['name'] ?? '').toLowerCase(); // Convert to lowercase
+                    var searchQuery = _searchController.text.trim().toLowerCase(); // Convert to lowercase
+                    return name.contains(searchQuery);
+                  }).where((element) => element['IsDeleted']==false && element['UID']!=FirebaseAuth.instance.currentUser?.uid).toList();
+
+                  if (filteredDocs.isEmpty) {
+                    return Center(
+                      child: Text('No matching employees found.'),
+                    );
+                  }
+
                   return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
+                    itemCount: filteredDocs.length,
                     itemBuilder: (context, index) {
-                      DocumentSnapshot document = snapshot.data!.docs[index];
+                      DocumentSnapshot document = filteredDocs[index];
 
                       return InkWell(
                         onTap: () {
@@ -114,9 +145,8 @@ class EmployeeList extends StatelessWidget {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('RFID: ${document['Tag'] ?? ''}'),
-                                  Text(
-                                      'Employee Type: ${document['employeeType'] ?? ''}'),
+                                  Text('Tag: ${document['Tag'] ?? ''}'),
+                                  Text('Employee Type: ${document['employeeType'] ?? ''}'),
                                 ],
                               ),
                               trailing: Row(
@@ -132,7 +162,31 @@ class EmployeeList extends StatelessWidget {
                                     icon: Icon(Icons.delete),
                                     color: Colors.red,
                                     onPressed: () {
-                                      // Implement delete functionality
+                                      // Show a confirmation dialog before deleting
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Delete Employee'),
+                                            content: Text('Are you sure you want to delete this employee?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(); // Close the dialog
+                                                },
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _userService.deleteEmployee(document['UID']); // Call delete function from UserService
+                                                  Navigator.of(context).pop(); // Close the dialog
+                                                },
+                                                child: Text('Delete'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],
@@ -150,5 +204,11 @@ class EmployeeList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }
