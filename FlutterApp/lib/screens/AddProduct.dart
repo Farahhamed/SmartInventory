@@ -35,7 +35,7 @@ class _AddProductState extends State<AddProduct> {
     return FormScaffold(
       child: Column(
         children: [
-          Expanded(
+          const Expanded(
             flex: 1,
             child: SizedBox(height: 10),
           ),
@@ -54,7 +54,7 @@ class _AddProductState extends State<AddProduct> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Add Product',
                         style: TextStyle(
@@ -118,7 +118,7 @@ class _AddProductState extends State<AddProduct> {
                       decoration: InputDecoration(
                         labelText: 'Category',
                         hintText: 'Choose a category',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Colors.black26,
                         ),
                         contentPadding:
@@ -167,7 +167,7 @@ class _AddProductState extends State<AddProduct> {
                     // Quantity Input
                     Row(
                       children: [
-                        Text(
+                        const Text(
                           'Quantity',
                           style: TextStyle(fontSize: 18),
                         ),
@@ -185,10 +185,10 @@ class _AddProductState extends State<AddProduct> {
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color:
-                                        const Color.fromRGBO(155, 190, 200, 1),
+                                        Color.fromRGBO(155, 190, 200, 1),
                                   ),
                                   child: const Icon(Icons.remove),
                                 ),
@@ -196,7 +196,7 @@ class _AddProductState extends State<AddProduct> {
                               const SizedBox(width: 10),
                               Text(
                                 '$_quantity',
-                                style: TextStyle(fontSize: 18),
+                                style: const TextStyle(fontSize: 18),
                               ),
                               const SizedBox(width: 10),
                               InkWell(
@@ -207,10 +207,10 @@ class _AddProductState extends State<AddProduct> {
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color:
-                                        const Color.fromRGBO(155, 190, 200, 1),
+                                        Color.fromRGBO(155, 190, 200, 1),
                                   ),
                                   child: const Icon(Icons.add),
                                 ),
@@ -321,9 +321,9 @@ class QuantitySelector extends StatelessWidget {
           },
           child: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color.fromRGBO(155, 190, 200, 1),
+              color: Color.fromRGBO(155, 190, 200, 1),
             ),
             child: const Icon(Icons.remove),
           ),
@@ -331,7 +331,7 @@ class QuantitySelector extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           '$value',
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
         ),
         const SizedBox(width: 10),
         InkWell(
@@ -340,9 +340,9 @@ class QuantitySelector extends StatelessWidget {
           },
           child: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color.fromRGBO(155, 190, 200, 1),
+              color: Color.fromRGBO(155, 190, 200, 1),
             ),
             child: const Icon(Icons.add),
           ),

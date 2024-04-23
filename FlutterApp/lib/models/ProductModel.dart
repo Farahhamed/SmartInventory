@@ -1,43 +1,54 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/models/Product_categoryModel.dart';
 
 class Product {
   final String name;
-  final String volume;
-  final String weight;
-  final String active;
+  final int quantity;
+  final String description;
+  final String price;
+  final ProductCategory categoryId;
   final String imageUrl;
-  final String uuid;
+  final String id;
 
   const Product({
     required this.name,
-    required this.volume,
-    required this.weight,
-    required this.active,
+    required this.quantity,
+    required this.description,
+    required this.price,
+    required this.categoryId,
     required this.imageUrl,
-    required this.uuid,
+    required this.id,
   });
 
   // Function to convert Product object to a Map for Firestore
   Map<String, dynamic> toMap() => {
         "name": name,
-        "volume": volume,
-        "weight": weight,
-        "active": active,
+        "quantity": quantity,
+        "description": description,
+        "price": price,
+        "categoryId": categoryId,
         "imageUrl": imageUrl, // Store image URL in Firestore
-        "uuid": uuid,
+        "uid": id,
       };
 
   // Function to create a Product object from a Firestore document
-  static Product fromSnapshot(DocumentSnapshot snapshot) {
-    var data = snapshot.data() as Map<String, dynamic>;
+  static Future<Product> fromSnapshot(DocumentSnapshot snapshot) async {
+  var data = snapshot.data() as Map<String, dynamic>;
+  
+  // Fetch the branch document from Firestore
+  DocumentSnapshot categorySnapshot = await FirebaseFirestore.instance.collection('category').doc(data['categoryId']).get();
+  
+  // Create a Branches object using data from the branch document
+  ProductCategory category = ProductCategory.fromSnapshot(categorySnapshot);
 
     return Product(
       name: data['name'],
-      volume: data['volume'],
-      weight: data['weight'],
-      active: data['active'],
+      quantity: data['quantity'],
+      description: data['description'],
+      price: data['price'],
       imageUrl: data['imageUrl'],
-      uuid: data['uuid'],
+      id: snapshot.id,
+      categoryId: category,
     );
   }
 }

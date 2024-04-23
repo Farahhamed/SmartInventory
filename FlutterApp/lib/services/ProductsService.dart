@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartinventory/models/ProductModel.dart';
 
 class ProductService {
   String localhost = "http://127.0.0.1:5000";
 
-  Future<List<Map<String, dynamic>>> fetchData() async {
+  Future<List<Map<String, dynamic>>> fetchDataOdoo() async {
     final response = await http.get(Uri.parse('$localhost/get_products'));
 
     if (response.statusCode == 200) {
@@ -14,7 +16,7 @@ class ProductService {
     }
   }
 
-  Future<void> addProduct(String productName, double listPrice) async {
+  Future<void> addProductOdoo(String productName, double listPrice) async {
     final url = Uri.parse('$localhost/add_product');
 
     try {
@@ -43,7 +45,7 @@ class ProductService {
     }
   }
 
-  Future<void> updateProduct(
+  Future<void> updateProductOdoo(
       int productId, String newName, double newListPrice) async {
     final url = Uri.parse('$localhost/update_product');
 
@@ -74,7 +76,7 @@ class ProductService {
     }
   }
 
-  Future<void> deleteProduct(int productId) async {
+  Future<void> deleteProductOdoo(int productId) async {
     final url = Uri.parse('$localhost/delete_product/$productId');
 
     try {
@@ -98,4 +100,54 @@ class ProductService {
       print('Error: $error');
     }
   }
+
+final CollectionReference _productsCollection =
+    FirebaseFirestore.instance.collection('products');
+
+Future<void> addProduct(Product product) async {
+  // Check if the product already exists
+  QuerySnapshot querySnapshot = await _productsCollection
+      .where('productId', isEqualTo: product.id)
+      .limit(1)
+      .get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    print('Product with ID ${product.id} already exists');
+    return; 
+  }
+
+  // Product doesn't exist, so add it
+  await _productsCollection.add(product.toMap());
+}
+
+Future<void> editProduct(Product product) async {
+  // Check if the product already exists
+  QuerySnapshot querySnapshot = await _productsCollection
+      .where('productId', isEqualTo: product.id)
+      .limit(1)
+      .get();
+
+  if (querySnapshot.docs.isEmpty) {
+    print('Product with ID ${product.id} does not exist');
+    return; 
+  }
+
+  // Product exists, so edit it
+  await _productsCollection.doc(product.id).update(product.toMap());
+}
+
+Future<void> deleteProduct(String productId) async {
+  await _productsCollection.doc(productId).delete();
+}
+
+Stream<List<Product>> getProduct() {
+  return _productsCollection.snapshots().asyncMap((snapshot) async {
+    List<Product> products = [];
+    for (DocumentSnapshot doc in snapshot.docs) {
+      Product product = await Product.fromSnapshot(doc);
+      products.add(product);
+    }
+    return products;
+  });
+}
 }
