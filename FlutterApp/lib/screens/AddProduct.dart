@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
+import 'package:input_quantity/input_quantity.dart'; // Import the QuantityInput widget
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key}) : super(key: key);
@@ -15,6 +16,8 @@ class _AddProductState extends State<AddProduct> {
   String _description = '';
   String _selectedCategory = 'Cold'; // Default category
   double _price = 0.0;
+  int _quantity = 0; // Initialize quantity
+
   File? _image;
 
   Future<void> _getImage() async {
@@ -162,6 +165,75 @@ class _AddProductState extends State<AddProduct> {
                       },
                     ),
                     const SizedBox(height: 30),
+                    // Quantity Input
+                    Row(
+                      children: [
+                        Text(
+                          'Quantity',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  if (_quantity > 0) {
+                                    setState(() {
+                                      _quantity--;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        const Color.fromRGBO(155, 190, 200, 1),
+                                  ),
+                                  child: const Icon(Icons.remove),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                '$_quantity',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              const SizedBox(width: 10),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _quantity++;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        const Color.fromRGBO(155, 190, 200, 1),
+                                  ),
+                                  child: const Icon(Icons.add),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: _buildTextField(
+                            labelText: 'Quantity',
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                _quantity = int.tryParse(value) ?? 0;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 30),
                     // Submit Button
                     Center(
                       child: SizedBox(
@@ -174,6 +246,7 @@ class _AddProductState extends State<AddProduct> {
                             print('Description: $_description');
                             print('Category: $_selectedCategory');
                             print('Price: $_price');
+                            print('Quantity: $_quantity');
                           },
                           child: const Text('Add Product'),
                           style: ElevatedButton.styleFrom(
@@ -224,6 +297,58 @@ class _AddProductState extends State<AddProduct> {
       ),
       keyboardType: keyboardType,
       onChanged: onChanged,
+    );
+  }
+}
+
+class QuantitySelector extends StatelessWidget {
+  final int value;
+  final ValueChanged<int>? onChanged;
+
+  const QuantitySelector({
+    required this.value,
+    this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {
+            if (value > 0) {
+              onChanged?.call(value - 1);
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color.fromRGBO(155, 190, 200, 1),
+            ),
+            child: const Icon(Icons.remove),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          '$value',
+          style: TextStyle(fontSize: 18),
+        ),
+        const SizedBox(width: 10),
+        InkWell(
+          onTap: () {
+            onChanged?.call(value + 1);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color.fromRGBO(155, 190, 200, 1),
+            ),
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 }
