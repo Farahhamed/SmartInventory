@@ -102,8 +102,8 @@ class _AssignProductState extends State<AssignProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return FormScaffold(
-      child: Column(
+    return Scaffold(
+      body: Column(
         children: [
           const Expanded(
             flex: 1,

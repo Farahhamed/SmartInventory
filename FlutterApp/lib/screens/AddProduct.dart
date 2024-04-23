@@ -31,7 +31,7 @@ class _AddProductState extends State<AddProduct> {
   @override
   Widget build(BuildContext context) {
     return FormScaffold(
-      child: Column(
+      body: Column(
         children: [
           Expanded(
             flex: 1,
@@ -177,8 +177,7 @@ class _AddProductState extends State<AddProduct> {
                           },
                           child: const Text('Add Product'),
                           style: ElevatedButton.styleFrom(
-                            primary: const Color.fromRGBO(112, 66, 100, 1),
-                            onPrimary: Colors.white,
+                            foregroundColor: Colors.white, backgroundColor: const Color.fromRGBO(112, 66, 100, 1),
                           ),
                         ),
                       ),
