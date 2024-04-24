@@ -56,14 +56,14 @@ class _ProductsListState extends State<ProductsList> {
   }
 
   Future<void> fetchData() async {
-    final data = await odooMethodsHelper.fetchData();
+    final data = await odooMethodsHelper.fetchDataOdoo();
     setState(() {
       records = data;
     });
   }
 
   Future<void> addProduct() async {
-    await odooMethodsHelper.addProduct(
+    await odooMethodsHelper.addProductOdoo(
       productNameController.text,
       double.parse(listPriceController.text),
     );
@@ -73,7 +73,7 @@ class _ProductsListState extends State<ProductsList> {
 
   Future<void> updateProduct(
       int productId, String newName, double newListPrice) async {
-    await odooMethodsHelper.updateProduct(productId, newName, newListPrice);
+    await odooMethodsHelper.updateProductOdoo(productId, newName, newListPrice);
     fetchData();
   }
 
@@ -104,7 +104,7 @@ class _ProductsListState extends State<ProductsList> {
 
   void performDelete(int productId) async {
     try {
-      await odooMethodsHelper.deleteProduct(productId);
+      await odooMethodsHelper.deleteProductOdoo(productId);
       fetchData();
     } catch (error) {
       print('Error deleting product: $error');
