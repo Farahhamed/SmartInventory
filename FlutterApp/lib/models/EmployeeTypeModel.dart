@@ -14,7 +14,7 @@ class EmployeeType{
     Map data = doc.data() as Map<String, dynamic>;
     return EmployeeType(
       id: doc.id,
-      name: data['Name'],
+      name: data['name'],
     );
   }
 }

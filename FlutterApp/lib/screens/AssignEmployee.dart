@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:smartinventory/models/BranchesModel.dart';
+import 'package:smartinventory/models/EmployeeTypeModel.dart';
 import 'package:smartinventory/resources/auth_method.dart';
 import 'package:smartinventory/services/BranchService.dart';
+import 'package:smartinventory/services/EmployeeTypeService.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,13 +32,14 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   String _selectedBranchName = ' ';
   String _tag = 'No assigned Tag';
   String _type = '';
-  String _selectedUserType = 'Manager';
   bool _isLoading = false;
   String taguid = 'No assigned Tag';
   String Payload = 'No Type';
   File? _image;
   List<String>? branchLocations;
   List<String> branchids=[];
+  String _selectedUserType = '';
+  List<EmployeeType> _employeeTypes = [];
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
@@ -53,8 +56,25 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   void initState() {
     super.initState();
     _getBranches();
+    _fetchEmployeeTypes();
+      
   }
 
+  Future<void> _fetchEmployeeTypes() async {
+    final QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('employee_type').get();
+
+    setState(() {
+      _employeeTypes = querySnapshot.docs
+          .map((doc) => EmployeeType.fromFirestore(doc))
+          .toList();
+      // Set default value if needed
+      if (_employeeTypes.isNotEmpty) {
+        _selectedUserType = _employeeTypes[0].name;
+      }
+    });
+  }
+ 
   String _getBranchIndex(String name) {
     int index = branchLocations!.indexOf(name);
     return branchids[index];
@@ -441,32 +461,31 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       ),
 
                       //Employee type
-                      DropdownButtonFormField<String>(
+                       DropdownButtonFormField<String>(
                         value: _selectedUserType,
                         onChanged: (String? newValue) {
                           setState(() {
                             _selectedUserType = newValue!;
                           });
                         },
-                        items: <String>['Manager', 'Supervisor', 'Employee']
-                            .map<DropdownMenuItem<String>>((String value) {
+                        items: _employeeTypes.map((type) {
                           return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                            value: type.name,
+                            child: Text(type.name),
                           );
                         }).toList(),
                         decoration: InputDecoration(
-                          labelText: 'Employee Type',
-                          hintText: 'Select Employee Type',
+                          labelText: 'User Type',
+                          hintText: 'Select User Type',
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -511,8 +530,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
-// ###########################################################################################################################################################
-
                       const SizedBox(
                         height: 25.0,
                       ),
