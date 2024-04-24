@@ -511,11 +511,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
-// ###########################################################################################################################################################
-
-                      const SizedBox(
-                        height: 25.0,
-                      ),
                       //address
                       TextFormField(
                         controller: _addressController,
