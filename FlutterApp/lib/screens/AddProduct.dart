@@ -1,6 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smartinventory/models/ProductModel.dart';
+import 'package:smartinventory/models/Product_categoryModel.dart';
+import 'package:smartinventory/services/CategoriesServices.dart';
+import 'package:smartinventory/services/ProductsService.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
 
 class AddProduct extends StatefulWidget {
@@ -13,11 +17,30 @@ class AddProduct extends StatefulWidget {
 class _AddProductState extends State<AddProduct> {
   String _productName = '';
   String _description = '';
-  String _selectedCategory = 'Cold'; // Default category
+  ProductCategory? _selectedCategory; // Default category
   double _price = 0.0;
   int _quantity = 0; // Initialize quantity
 
+  final ProductService _productService = ProductService();
+  final CategoryService _categoryService = CategoryService();
+
+  List<ProductCategory> _categories = [];
+
   File? _image;
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    _categoryService.getCategory().listen((categories) {
+      setState(() {
+        _categories = categories;
+        _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
+      });
+    });
+  }
 
   Future<void> _getImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -28,6 +51,43 @@ class _AddProductState extends State<AddProduct> {
         _image = File(image.path);
       });
     }
+  }
+
+ Future<void> _addProductToFirebase() async {
+    if (_productName.isEmpty ||
+        _description.isEmpty ||
+        _selectedCategory == null ||
+        _price <= 0 ||
+        _quantity <= 0) {
+      return;
+    }
+
+    Product newProduct = Product(
+      name: _productName,
+      quantity: _quantity,
+      description: _description,
+      price: _price,
+      categoryId: _selectedCategory!.id,
+      imageUrl: '', // You can set the image URL if needed
+      id: '', // You can set the ID if needed
+    );
+
+    bool success = await _productService.addProduct(newProduct);
+
+    setState(() {
+      _productName = '';
+      _description = '';
+      _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
+      _price = 0.0;
+      _quantity = 0;
+      _image = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(success ? 'Product added successfully' : 'Product already exists'),
+      ),
+    );
   }
 
   @override
@@ -114,23 +174,23 @@ class _AddProductState extends State<AddProduct> {
                     ),
                     const SizedBox(height: 30),
                     // Category Dropdown
-                    DropdownButtonFormField<String>(
+                    DropdownButtonFormField<ProductCategory>(
                       decoration: InputDecoration(
                         labelText: 'Category',
                         hintText: 'Choose a category',
-                        hintStyle: const TextStyle(
+                        hintStyle: TextStyle(
                           color: Colors.black26,
                         ),
                         contentPadding:
                             const EdgeInsets.only(left: 20, right: 12),
                         border: OutlineInputBorder(
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                             color: Color(0xFFBB8493),
                           ),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                             color: Color(0xFFBB8493),
                           ),
                           borderRadius: BorderRadius.circular(50),
@@ -139,16 +199,15 @@ class _AddProductState extends State<AddProduct> {
                         fillColor: Colors.white,
                       ),
                       value: _selectedCategory,
-                      items: ['Cold', 'Pain Killer', 'Hair Products']
-                          .map((category) {
-                        return DropdownMenuItem<String>(
+                      items: _categories.map((category) {
+                        return DropdownMenuItem<ProductCategory>(
                           value: category,
-                          child: Text(category),
+                          child: Text(category.name),
                         );
                       }).toList(),
                       onChanged: (value) {
                         setState(() {
-                          _selectedCategory = value!;
+                          _selectedCategory = value;
                         });
                       },
                     ),
@@ -187,8 +246,7 @@ class _AddProductState extends State<AddProduct> {
                                   padding: const EdgeInsets.all(8),
                                   decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                        Color.fromRGBO(155, 190, 200, 1),
+                                    color: Color.fromRGBO(155, 190, 200, 1),
                                   ),
                                   child: const Icon(Icons.remove),
                                 ),
@@ -209,8 +267,7 @@ class _AddProductState extends State<AddProduct> {
                                   padding: const EdgeInsets.all(8),
                                   decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                        Color.fromRGBO(155, 190, 200, 1),
+                                    color: Color.fromRGBO(155, 190, 200, 1),
                                   ),
                                   child: const Icon(Icons.add),
                                 ),
@@ -239,14 +296,8 @@ class _AddProductState extends State<AddProduct> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Implement your form submission logic here
-                            print('Product Name: $_productName');
-                            print('Description: $_description');
-                            print('Category: $_selectedCategory');
-                            print('Price: $_price');
-                            print('Quantity: $_quantity');
-                          },
+                          onPressed:
+                              _addProductToFirebase, // Call the method to add product to Firebase
                           child: const Text('Add Product'),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
