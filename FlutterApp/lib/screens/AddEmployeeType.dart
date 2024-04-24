@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
 
-class AddProductCategory extends StatefulWidget {
-  const AddProductCategory({Key? key}) : super(key: key);
+class EmployeeType extends StatefulWidget {
+  const EmployeeType({Key? key}) : super(key: key);
 
   @override
-  State<AddProductCategory> createState() => _AddProductCategoryState();
+  State<EmployeeType> createState() => _EmployeeTypeState();
 }
 
-class _AddProductCategoryState extends State<AddProductCategory> {
+class _EmployeeTypeState extends State<EmployeeType> {
   String _productCategoryName = '';
 
   @override
@@ -37,7 +37,7 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                   children: [
                     const Center(
                       child: Text(
-                        'Add new Product Category',
+                        'Add new Employee Type',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -47,7 +47,7 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                     ),
                   const SizedBox(height: 30),
                     _buildTextField(
-                      labelText: 'Product Category',
+                      labelText: 'Employee Type',
                       onChanged: (value) {
                         setState(() {
                           _productCategoryName = value;
