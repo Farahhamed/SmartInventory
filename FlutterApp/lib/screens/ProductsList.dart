@@ -114,14 +114,14 @@ class _ProductsListState extends State<ProductsList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
           horizontal: 16.0, vertical: 16.0), // Add padding around the page
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Products List'), // Removed unnecessary space
+          title: const Text('Products List'), // Removed unnecessary space
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.menu_sharp,
               color: Colors.black,
             ),
@@ -131,12 +131,12 @@ class _ProductsListState extends State<ProductsList> {
           ),
           actions: [
             Ink(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFFBB8493),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.add,
                   color: Colors.white,
                   size: 30,
@@ -144,7 +144,7 @@ class _ProductsListState extends State<ProductsList> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddProduct()),
+                    MaterialPageRoute(builder: (context) => const AddProduct()),
                   );
                 },
                 tooltip: 'Add Product',
@@ -161,7 +161,7 @@ class _ProductsListState extends State<ProductsList> {
                 cursorHeight: 35,
                 decoration: InputDecoration(
                   hintText: 'Search for a product',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(60.0),
                   ),
@@ -183,7 +183,7 @@ class _ProductsListState extends State<ProductsList> {
                         height: 250.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             fit: BoxFit.cover,
                             image: AssetImage('assets/images/hair.png'),
                           ),
@@ -202,14 +202,14 @@ class _ProductsListState extends State<ProductsList> {
                                   children: [
                                     Text(
                                       records[index]['name'],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,
                                       ),
                                     ),
                                     Text(
                                       'List Price: ${records[index]['list_price']}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 14.0,
                                       ),
                                     ),
@@ -222,7 +222,7 @@ class _ProductsListState extends State<ProductsList> {
                                 top: 0,
                                 right: 0,
                                 child: IconButton(
-                                  icon: Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit),
                                   onPressed: () =>
                                       editProduct(records[index]['id']),
                                 ),
@@ -232,7 +232,7 @@ class _ProductsListState extends State<ProductsList> {
                                 top: 0,
                                 left: 0,
                                 child: IconButton(
-                                  icon: Icon(Icons.delete),
+                                  icon: const Icon(Icons.delete),
                                   onPressed: () =>
                                       performDelete(records[index]['id']),
                                 ),
@@ -250,7 +250,7 @@ class _ProductsListState extends State<ProductsList> {
         floatingActionButton: _userType == UserType.Manager
             ? FloatingActionButton(
                 onPressed: navigateToAddProductForm,
-                child: Icon(Icons.add),
+                child: const Icon(Icons.add),
               )
             : null,
       ),

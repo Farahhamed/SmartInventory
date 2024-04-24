@@ -102,33 +102,34 @@ class ProductService {
   }
 
 final CollectionReference _productsCollection =
-    FirebaseFirestore.instance.collection('products');
+    FirebaseFirestore.instance.collection('Products');
 
-Future<void> addProduct(Product product) async {
-  // Check if the product already exists
-  QuerySnapshot querySnapshot = await _productsCollection
-      .where('productId', isEqualTo: product.id)
-      .limit(1)
-      .get();
+  Future<bool> addProduct(Product product) async {
+    // Check if the product already exists
+    QuerySnapshot querySnapshot = await _productsCollection
+        .where('name', isEqualTo: product.name)
+        .limit(1)
+        .get();
 
-  if (querySnapshot.docs.isNotEmpty) {
-    print('Product with ID ${product.id} already exists');
-    return; 
+    if (querySnapshot.docs.isNotEmpty) {
+      print('Product with name ${product.name} already exists');
+      return false; // Product already exists
+    }
+
+    // Product doesn't exist, so add it
+    await _productsCollection.add(product.toMap());
+    return true; // Product added successfully
   }
-
-  // Product doesn't exist, so add it
-  await _productsCollection.add(product.toMap());
-}
 
 Future<void> editProduct(Product product) async {
   // Check if the product already exists
   QuerySnapshot querySnapshot = await _productsCollection
-      .where('productId', isEqualTo: product.id)
+      .where('name', isEqualTo: product.name)
       .limit(1)
       .get();
 
   if (querySnapshot.docs.isEmpty) {
-    print('Product with ID ${product.id} does not exist');
+    print('Product with  ${product.name} does not exist');
     return; 
   }
 

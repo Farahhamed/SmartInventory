@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
+
 
 class ProductCategory {
   final String name;
@@ -19,7 +19,7 @@ class ProductCategory {
 
     return ProductCategory(
       name: data['name'],
-      id: data["id"],
+      id: snapshot.id,
     );
   }
 }
