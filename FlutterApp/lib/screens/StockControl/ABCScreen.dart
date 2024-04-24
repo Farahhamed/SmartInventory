@@ -38,7 +38,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   }
 
   Future<void> fetchData() async {
-    products = await odooMethodsHelper.fetchData();
+    products = await odooMethodsHelper.fetchDataOdoo();
     calculateThresholds();
     productDistribution = categorizeProducts(products);
     setState(() {});
