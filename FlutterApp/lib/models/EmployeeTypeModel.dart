@@ -13,8 +13,8 @@ class EmployeeType{
   factory EmployeeType.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return EmployeeType(
-      id: doc.id,
-      name: data['Name'],
+      id: data["id"],
+      name: data['name'],
     );
   }
 }

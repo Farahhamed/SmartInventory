@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:smartinventory/firebase_options.dart';
 import 'package:smartinventory/providers/provider.dart';
+import 'package:smartinventory/screens/AddBranch.dart';
+import 'package:smartinventory/screens/AddEmployeeType.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
 
