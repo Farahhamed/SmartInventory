@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:smartinventory/models/Product_categoryModel.dart';
-import 'package:smartinventory/services/CategoriesServices.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
 
-
-class AddProductCategory extends StatefulWidget {
-  const AddProductCategory({Key? key}) : super(key: key);
+class AddEmployeeType extends StatefulWidget {
+  const AddEmployeeType({Key? key}) : super(key: key);
 
   @override
-  State<AddProductCategory> createState() => _AddProductCategoryState();
+  State<AddEmployeeType> createState() => _AddEmployeeTypeState();
 }
 
-class _AddProductCategoryState extends State<AddProductCategory> {
-  String _productCategoryName = '';
-  final CategoryService _categoryService = CategoryService(); // Instantiate your category service
+class _AddEmployeeTypeState extends State<AddEmployeeType> {
+  String _employeeTypeName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +38,7 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                   children: [
                     const Center(
                       child: Text(
-                        'Add new Product Category',
+                        'Add new Employee Type',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -49,12 +46,12 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     _buildTextField(
-                      labelText: 'Product Category',
+                      labelText: 'Employee Type',
                       onChanged: (value) {
                         setState(() {
-                          _productCategoryName = value;
+                          _employeeTypeName = value;
                         });
                       },
                     ),
@@ -65,11 +62,7 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: _addProductCategory, // Call _addProductCategory function
-                          child: const Text('Add Product Category'),
-                          onPressed: () {
-                            
-                          },
+                          onPressed: _addEmployeeType,
                           child: const Text('Add'),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
@@ -87,25 +80,6 @@ class _AddProductCategoryState extends State<AddProductCategory> {
         ],
       ),
     );
-  }
-
-  void _addProductCategory() async {
-    if (_productCategoryName.isNotEmpty) {
-      // Create a ProductCategory object
-      ProductCategory category = ProductCategory(
-        name: _productCategoryName,
-        id: '', // This will be generated automatically when added to Firebase
-      );
-
-      // Add the product category using the service
-      bool added = await _categoryService.addCategory(category);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(added ? 'Category added successfully' : 'Category already exists'),
-      ),
-    );
-    }
   }
 
   Widget _buildTextField({
@@ -139,5 +113,48 @@ class _AddProductCategoryState extends State<AddProductCategory> {
       keyboardType: keyboardType,
       onChanged: onChanged,
     );
+  }
+
+  void _addEmployeeType() async {
+    if (_employeeTypeName.isNotEmpty) {
+      try {
+        // Add the employee type to Firestore
+        DocumentReference documentReference =
+            await FirebaseFirestore.instance.collection('employee_type').add({
+          'name': _employeeTypeName,
+          // 'id' : documentReference.id,
+        });
+
+        // Get the auto-generated ID of the document and assign it to the id attribute
+       
+
+        // Show a success message or navigate to another page
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Employee type added successfully'),
+          ),
+        );
+
+        // Clear the text field after submitting
+        setState(() {
+          _employeeTypeName = '';
+        });
+      } catch (error) {
+        // Handle errors
+        print('Error adding employee type: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to add employee type'),
+          ),
+        );
+      }
+    } else {
+      // Show an error message if the employee type name is empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter an employee type name'),
+        ),
+      );
+    }
   }
 }
