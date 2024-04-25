@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/models/EmployeeTypeModel.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
 
 class AddEmployeeType extends StatefulWidget {
@@ -11,6 +14,7 @@ class AddEmployeeType extends StatefulWidget {
 
 class _AddEmployeeTypeState extends State<AddEmployeeType> {
   String _employeeTypeName = '';
+  TextEditingController _employeeTypeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +92,7 @@ class _AddEmployeeTypeState extends State<AddEmployeeType> {
     ValueChanged<String>? onChanged,
   }) {
     return TextFormField(
+      controller: _employeeTypeController  ,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: 'Enter $labelText',
@@ -116,45 +121,50 @@ class _AddEmployeeTypeState extends State<AddEmployeeType> {
   }
 
   void _addEmployeeType() async {
-    if (_employeeTypeName.isNotEmpty) {
-      try {
-        // Add the employee type to Firestore
-        DocumentReference documentReference =
-            await FirebaseFirestore.instance.collection('employee_type').add({
-          'name': _employeeTypeName,
-          // 'id' : documentReference.id,
-        });
+    var uuid= Uuid().v4();
+  if (_employeeTypeName.isNotEmpty) {
+    try {
+      // Create a new EmployeeType instance
+      EmployeeType newEmployeeType = EmployeeType(
+        id: uuid,
+        name: _employeeTypeName,
+      );
 
-        // Get the auto-generated ID of the document and assign it to the id attribute
-       
+      // // Convert EmployeeType instance to a map
+      // Map<String, dynamic> employeeTypeData = {
+      //   'name': newEmployeeType.name,
+      // };
 
-        // Show a success message or navigate to another page
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Employee type added successfully'),
-          ),
-        );
+      // Add the employee type data to Firestore
+      await FirebaseFirestore.instance
+          .collection('employee_type').doc(uuid)
+          .set(newEmployeeType.toJson());
 
-        // Clear the text field after submitting
-        setState(() {
-          _employeeTypeName = '';
-        });
-      } catch (error) {
-        // Handle errors
-        print('Error adding employee type: $error');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to add employee type'),
-          ),
-        );
-      }
-    } else {
-      // Show an error message if the employee type name is empty
+
+
+      // Show a success message or navigate to another page
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter an employee type name'),
+          content: Text('Employee type added successfully'),
+        ),
+      );
+      _employeeTypeController.clear();
+    } catch (error) {
+      // Handle errors
+      print('Error adding employee type: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to add employee type'),
         ),
       );
     }
+  } else {
+    // Show an error message if the employee type name is empty
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enter an employee type name'),
+      ),
+    );
   }
+}
 }

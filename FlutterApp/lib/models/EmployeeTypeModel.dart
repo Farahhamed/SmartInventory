@@ -10,6 +10,10 @@ class EmployeeType{
     required this.name,
   });
 
+   Map<String, dynamic> toJson() => {
+        "name": name,
+        "id": id,
+      };
   factory EmployeeType.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return EmployeeType(
