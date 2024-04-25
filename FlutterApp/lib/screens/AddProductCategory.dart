@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/models/Product_categoryModel.dart';
+import 'package:smartinventory/services/CategoriesServices.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
+
 
 class AddProductCategory extends StatefulWidget {
   const AddProductCategory({Key? key}) : super(key: key);
@@ -10,6 +13,7 @@ class AddProductCategory extends StatefulWidget {
 
 class _AddProductCategoryState extends State<AddProductCategory> {
   String _productCategoryName = '';
+  final CategoryService _categoryService = CategoryService(); // Instantiate your category service
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,8 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
+                          onPressed: _addProductCategory, // Call _addProductCategory function
+                          child: const Text('Add Product Category'),
                           onPressed: () {
                             
                           },
@@ -81,6 +87,25 @@ class _AddProductCategoryState extends State<AddProductCategory> {
         ],
       ),
     );
+  }
+
+  void _addProductCategory() async {
+    if (_productCategoryName.isNotEmpty) {
+      // Create a ProductCategory object
+      ProductCategory category = ProductCategory(
+        name: _productCategoryName,
+        id: '', // This will be generated automatically when added to Firebase
+      );
+
+      // Add the product category using the service
+      bool added = await _categoryService.addCategory(category);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(added ? 'Category added successfully' : 'Category already exists'),
+      ),
+    );
+    }
   }
 
   Widget _buildTextField({
@@ -116,5 +141,3 @@ class _AddProductCategoryState extends State<AddProductCategory> {
     );
   }
 }
-
-

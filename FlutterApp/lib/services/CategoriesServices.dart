@@ -5,21 +5,22 @@ class CategoryService{
   final CollectionReference _categoryCollection =
     FirebaseFirestore.instance.collection('Categories');
 
-Future<void> addCategory(ProductCategory category) async {
-  // Check if the product already exists
-  QuerySnapshot querySnapshot = await _categoryCollection
-      .where('name', isEqualTo: category.name)
-      .limit(1)
-      .get();
+Future<bool> addCategory(ProductCategory category) async {
+    // Check if the product already exists
+    QuerySnapshot querySnapshot = await _categoryCollection
+        .where('name', isEqualTo: category.name)
+        .limit(1)
+        .get();
 
-  if (querySnapshot.docs.isNotEmpty) {
-    print('Category with name ${category.name} already exists');
-    return; 
+    if (querySnapshot.docs.isNotEmpty) {
+      print('Product with name ${category.name} already exists');
+      return false; // Product already exists
+    }
+
+    // Product doesn't exist, so add it
+    await _categoryCollection.add(category.toMap());
+    return true; // Product added successfully
   }
-
-  // Product doesn't exist, so add it
-  await _categoryCollection.add(category.toMap());
-}
 
 Future<void> editCategory(ProductCategory category) async {
   // Check if the product already exists
