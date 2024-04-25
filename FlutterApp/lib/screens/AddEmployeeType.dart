@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
 
-class EmployeeType extends StatefulWidget {
-  const EmployeeType({Key? key}) : super(key: key);
+class AddEmployeeType extends StatefulWidget {
+  const AddEmployeeType({Key? key}) : super(key: key);
 
   @override
-  State<EmployeeType> createState() => _EmployeeTypeState();
+  State<AddEmployeeType> createState() => _AddEmployeeTypeState();
 }
 
-class _EmployeeTypeState extends State<EmployeeType> {
-  String _productCategoryName = '';
+class _AddEmployeeTypeState extends State<AddEmployeeType> {
+  String _employeeTypeName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +46,12 @@ class _EmployeeTypeState extends State<EmployeeType> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     _buildTextField(
                       labelText: 'Employee Type',
                       onChanged: (value) {
                         setState(() {
-                          _productCategoryName = value;
+                          _employeeTypeName = value;
                         });
                       },
                     ),
@@ -61,9 +62,7 @@ class _EmployeeTypeState extends State<EmployeeType> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            
-                          },
+                          onPressed: _addEmployeeType,
                           child: const Text('Add'),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
@@ -115,6 +114,47 @@ class _EmployeeTypeState extends State<EmployeeType> {
       onChanged: onChanged,
     );
   }
+
+  void _addEmployeeType() async {
+    if (_employeeTypeName.isNotEmpty) {
+      try {
+        // Add the employee type to Firestore
+        DocumentReference documentReference =
+            await FirebaseFirestore.instance.collection('employee_type').add({
+          'name': _employeeTypeName,
+          // 'id' : documentReference.id,
+        });
+
+        // Get the auto-generated ID of the document and assign it to the id attribute
+       
+
+        // Show a success message or navigate to another page
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Employee type added successfully'),
+          ),
+        );
+
+        // Clear the text field after submitting
+        setState(() {
+          _employeeTypeName = '';
+        });
+      } catch (error) {
+        // Handle errors
+        print('Error adding employee type: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to add employee type'),
+          ),
+        );
+      }
+    } else {
+      // Show an error message if the employee type name is empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter an employee type name'),
+        ),
+      );
+    }
+  }
 }
-
-
