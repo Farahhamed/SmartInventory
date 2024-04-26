@@ -4,9 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:smartinventory/firebase_options.dart';
 import 'package:smartinventory/providers/provider.dart';
-import 'package:smartinventory/screens/AddProductCategory.dart';
-import 'package:smartinventory/screens/AddBranch.dart';
 import 'package:smartinventory/screens/AddEmployeeType.dart';
+import 'package:smartinventory/screens/AddProductCategory.dart';
+import 'package:smartinventory/screens/AssignProduct.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
 
@@ -19,7 +19,7 @@ Future<void> main() async {
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
     child: const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AddProductCategory(),
+      home: AddEmployeeType(),
     ),
   ));
 }

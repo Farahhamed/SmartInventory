@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
     EmployeeList(),
     ProductsList(),
     HomePageScreen(),
-    AssignTags(),
+    ActivityLogUI(),
     ProfileScreen(uid:FirebaseAuth.instance.currentUser!.uid),
   ];
 
@@ -91,14 +91,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.tag, color: Colors.white),
+                icon: const Icon(Icons.lock, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _currentIndex = 3;
                   });
                 },
               ),
-              Text('RFID', style: TextStyle(color: Colors.white, fontSize: 9)),
+              Text('Access Log', style: TextStyle(color: Colors.white, fontSize: 9)),
             ],
           ),
           Column(
