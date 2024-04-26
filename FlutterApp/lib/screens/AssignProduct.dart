@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:smartinventory/models/ProductModel.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
@@ -18,15 +19,40 @@ class _AssignProductState extends State<AssignProduct> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _tag = 'No assigned Tag yet';
   String _type = '';
-
-  String _selectedProductType = 'Panadol';
+  List<Product> _ProductType = [];
+  String _selectedProductType = ' ';
   bool _isLoading = false;
   String taguid = 'No assigned Tag yet';
   String Payload = 'No Type';
 
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProducts();
+  }
+
+  Future<void> _fetchProducts() async {
+       List<Product> FetchedProductList = [] ;
+    final QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('Products').get();
+
+       FetchedProductList = querySnapshot.docs
+      .map((doc) => Product.fromSnapshot(doc)).cast<Product>().toList();
+      // Set default value if needed
+      if (FetchedProductList.isNotEmpty) {
+        _selectedProductType = FetchedProductList[0].name;
+      }
+       print("Product Types: $FetchedProductList");
+
+    setState(() {
+    _ProductType = FetchedProductList;
+    });
   }
 
   void _submitForm(BuildContext context) {
@@ -148,16 +174,15 @@ class _AssignProductState extends State<AssignProduct> {
                             _selectedProductType = newValue!;
                           });
                         },
-                        items: <String>['Panadol', 'Antinal', 'shampoo']
-                            .map<DropdownMenuItem<String>>((String value) {
+                        items: _ProductType.map((product) {
                           return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                            value: product.name,
+                            child: Text(product.name),
                           );
                         }).toList(),
                         decoration: InputDecoration(
-                          labelText: 'Product Type',
-                          hintText: 'Select Product Type',
+                          labelText: 'Product ',
+                          hintText: 'Select Product ',
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Colors.black12, // Default border color

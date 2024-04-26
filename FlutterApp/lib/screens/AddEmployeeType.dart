@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:smartinventory/services/EmployeeTypeService.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,7 @@ class AddEmployeeType extends StatefulWidget {
 class _AddEmployeeTypeState extends State<AddEmployeeType> {
   String _employeeTypeName = '';
   TextEditingController _employeeTypeController = TextEditingController();
+   final EmployeeTypeService _EmployeeTypeService = EmployeeTypeService();
 
   @override
   Widget build(BuildContext context) {
@@ -121,27 +123,10 @@ class _AddEmployeeTypeState extends State<AddEmployeeType> {
   }
 
   void _addEmployeeType() async {
-    var uuid= Uuid().v4();
+  
   if (_employeeTypeName.isNotEmpty) {
+     bool added = await _EmployeeTypeService.addEmployeeType( _employeeTypeName);
     try {
-      // Create a new EmployeeType instance
-      EmployeeType newEmployeeType = EmployeeType(
-        id: uuid,
-        name: _employeeTypeName,
-      );
-
-      // // Convert EmployeeType instance to a map
-      // Map<String, dynamic> employeeTypeData = {
-      //   'name': newEmployeeType.name,
-      // };
-
-      // Add the employee type data to Firestore
-      await FirebaseFirestore.instance
-          .collection('employee_type').doc(uuid)
-          .set(newEmployeeType.toJson());
-
-
-
       // Show a success message or navigate to another page
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

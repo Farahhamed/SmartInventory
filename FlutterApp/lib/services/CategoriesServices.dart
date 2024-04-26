@@ -1,24 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/models/Product_categoryModel.dart';
+import 'package:uuid/uuid.dart';
 
 class CategoryService{
+
   final CollectionReference _categoryCollection =
     FirebaseFirestore.instance.collection('Categories');
 
-Future<bool> addCategory(ProductCategory category) async {
+Future<bool> addCategory(String categoryname) async {
+     var uuid= Uuid().v4();
+
     // Check if the product already exists
     QuerySnapshot querySnapshot = await _categoryCollection
-        .where('name', isEqualTo: category.name)
+        .where('name', isEqualTo: categoryname)
         .limit(1)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      print('Product with name ${category.name} already exists');
+      print('Product with name ${categoryname} already exists');
       return false; // Product already exists
     }
-
+         ProductCategory category = ProductCategory(
+        name: categoryname,
+        id:  uuid ,
+      );
+   await  _categoryCollection.doc(uuid).set(category.toJson());
     // Product doesn't exist, so add it
-    await _categoryCollection.add(category.toMap());
     return true; // Product added successfully
   }
 
@@ -35,7 +42,7 @@ Future<void> editCategory(ProductCategory category) async {
   }
 
   // Product exists, so edit it
-  await _categoryCollection.doc(category.id).update(category.toMap());
+  await _categoryCollection.doc(category.id).update(category.toJson());
 }
 
 Future<void> deleteCategory(String categoryId) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/models/Product_categoryModel.dart';
 import 'package:smartinventory/services/CategoriesServices.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
+import 'package:uuid/uuid.dart';
 
 
 class AddProductCategory extends StatefulWidget {
@@ -13,6 +14,7 @@ class AddProductCategory extends StatefulWidget {
 
 class _AddProductCategoryState extends State<AddProductCategory> {
   String _productCategoryName = '';
+    TextEditingController _productCategoryController = TextEditingController();
   final CategoryService _categoryService = CategoryService(); // Instantiate your category service
 
   @override
@@ -66,10 +68,6 @@ class _AddProductCategoryState extends State<AddProductCategory> {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: _addProductCategory, // Call _addProductCategory function
-                          child: const Text('Add Product Category'),
-                          onPressed: () {
-                            
-                          },
                           child: const Text('Add'),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
@@ -90,16 +88,11 @@ class _AddProductCategoryState extends State<AddProductCategory> {
   }
 
   void _addProductCategory() async {
+    //  var uuid= Uuid().v4();
     if (_productCategoryName.isNotEmpty) {
-      // Create a ProductCategory object
-      ProductCategory category = ProductCategory(
-        name: _productCategoryName,
-        id: '', // This will be generated automatically when added to Firebase
-      );
-
       // Add the product category using the service
-      bool added = await _categoryService.addCategory(category);
-
+      bool added = await _categoryService.addCategory( _productCategoryName);
+      _productCategoryController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(added ? 'Category added successfully' : 'Category already exists'),
@@ -114,6 +107,7 @@ class _AddProductCategoryState extends State<AddProductCategory> {
     ValueChanged<String>? onChanged,
   }) {
     return TextFormField(
+      controller: _productCategoryController,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: 'Enter $labelText',

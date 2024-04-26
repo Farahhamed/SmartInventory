@@ -30,7 +30,7 @@ class Product {
         "uid": id,
       };
 
-  static Future<Product> fromSnapshot(DocumentSnapshot snapshot) async {
+  static Product fromSnapshot(DocumentSnapshot snapshot)  {
     var data = snapshot.data() as Map<String, dynamic>;
     return Product(
       name: data['name'],
@@ -42,4 +42,5 @@ class Product {
       categoryId: data['categoryId'], // Get the ID
     );
   }
+  
 }
