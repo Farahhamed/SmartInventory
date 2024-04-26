@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/services/BranchService.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
 
 class AddBranch extends StatefulWidget {
@@ -9,7 +10,9 @@ class AddBranch extends StatefulWidget {
 }
 
 class _AddBranchState extends State<AddBranch> {
-  String _productCategoryName = '';
+  String _BranchName = '';
+    TextEditingController _BranchController = TextEditingController();
+  final BranchService _BranchService = BranchService();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class _AddBranchState extends State<AddBranch> {
                       labelText: 'new Branch',
                       onChanged: (value) {
                         setState(() {
-                          _productCategoryName = value;
+                          _BranchName = value;
                         });
                       },
                     ),
@@ -61,9 +64,7 @@ class _AddBranchState extends State<AddBranch> {
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            
-                          },
+                          onPressed: _addBranch ,
                           child: const Text('Add'),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
@@ -82,6 +83,19 @@ class _AddBranchState extends State<AddBranch> {
       ),
     );
   }
+   void _addBranch() async {
+    //  var uuid= Uuid().v4();
+    if (_BranchName.isNotEmpty) {
+      // Add the product category using the service
+      bool added = await _BranchService.addBranch( _BranchName);
+      _BranchController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(added ? 'Branch added successfully' : 'Branch already exists'),
+      ),
+    );
+    }
+  }
 
   Widget _buildTextField({
     required String labelText,
@@ -89,6 +103,7 @@ class _AddBranchState extends State<AddBranch> {
     ValueChanged<String>? onChanged,
   }) {
     return TextFormField(
+      controller:_BranchController ,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: 'Enter $labelText',

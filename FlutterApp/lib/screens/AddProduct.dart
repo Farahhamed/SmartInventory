@@ -6,6 +6,7 @@ import 'package:smartinventory/models/Product_categoryModel.dart';
 import 'package:smartinventory/services/CategoriesServices.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 import 'package:smartinventory/widgets/FormScaffold.dart';
+import 'package:uuid/uuid.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key}) : super(key: key);
@@ -22,7 +23,12 @@ class _AddProductState extends State<AddProduct> {
   int _quantity = 0; // Initialize quantity
 
   final ProductService _productService = ProductService();
-  final CategoryService _categoryService = CategoryService();
+  final CategoryService _categoryService = CategoryService(); // Instantiate your category service
+
+  // TextEditingController _ProductNameController = TextEditingController();
+  // TextEditingController _ProductDescriptionController = TextEditingController();
+  // TextEditingController _ProductCategoryController = TextEditingController();
+  // TextEditingController _ProductPriceController = TextEditingController();
 
   List<ProductCategory> _categories = [];
 
@@ -69,7 +75,7 @@ class _AddProductState extends State<AddProduct> {
       price: _price,
       categoryId: _selectedCategory!.id,
       imageUrl: '', // You can set the image URL if needed
-      id: '', // You can set the ID if needed
+      id: ' ',// You can set the ID if needed
     );
 
     bool success = await _productService.addProduct(newProduct);
@@ -224,70 +230,70 @@ class _AddProductState extends State<AddProduct> {
                     ),
                     const SizedBox(height: 30),
                     // Quantity Input
-                    Row(
-                      children: [
-                        const Text(
-                          'Quantity',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  if (_quantity > 0) {
-                                    setState(() {
-                                      _quantity--;
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color.fromRGBO(155, 190, 200, 1),
-                                  ),
-                                  child: const Icon(Icons.remove),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                '$_quantity',
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                              const SizedBox(width: 10),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _quantity++;
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color.fromRGBO(155, 190, 200, 1),
-                                  ),
-                                  child: const Icon(Icons.add),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: _buildTextField(
-                            labelText: 'Quantity',
-                            keyboardType: TextInputType.number,
-                            onChanged: (value) {
-                              setState(() {
-                                _quantity = int.tryParse(value) ?? 0;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     const Text(
+                    //       'Quantity',
+                    //       style: TextStyle(fontSize: 18),
+                    //     ),
+                    //     Expanded(
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           InkWell(
+                    //             onTap: () {
+                    //               if (_quantity > 0) {
+                    //                 setState(() {
+                    //                   _quantity--;
+                    //                 });
+                    //               }
+                    //             },
+                    //             child: Container(
+                    //               padding: const EdgeInsets.all(8),
+                    //               decoration: const BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Color.fromRGBO(155, 190, 200, 1),
+                    //               ),
+                    //               child: const Icon(Icons.remove),
+                    //             ),
+                    //           ),
+                    //           const SizedBox(width: 10),
+                    //           Text(
+                    //             '$_quantity',
+                    //             style: const TextStyle(fontSize: 18),
+                    //           ),
+                    //           const SizedBox(width: 10),
+                    //           InkWell(
+                    //             onTap: () {
+                    //               setState(() {
+                    //                 _quantity++;
+                    //               });
+                    //             },
+                    //             child: Container(
+                    //               padding: const EdgeInsets.all(8),
+                    //               decoration: const BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Color.fromRGBO(155, 190, 200, 1),
+                    //               ),
+                    //               child: const Icon(Icons.add),
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     Expanded(
+                    //       child: _buildTextField(
+                    //         labelText: 'Quantity',
+                    //         keyboardType: TextInputType.number,
+                    //         onChanged: (value) {
+                    //           setState(() {
+                    //             _quantity = int.tryParse(value) ?? 0;
+                    //           });
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
 
                     const SizedBox(height: 30),
                     // Submit Button
