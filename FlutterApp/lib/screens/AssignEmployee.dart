@@ -36,7 +36,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   String Payload = 'No Type';
   File? _image;
   List<String>? branchLocations;
-  List<String> branchids=[];
+  List<String> branchids = [];
   String _selectedUserType = '';
   List<EmployeeType> _employeeTypes = [];
 
@@ -56,7 +56,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     super.initState();
     _getBranches();
     _fetchEmployeeTypes();
-      
   }
 
   Future<void> _fetchEmployeeTypes() async {
@@ -73,7 +72,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
       }
     });
   }
- 
+
   String _getBranchIndex(String name) {
     int index = branchLocations!.indexOf(name);
     return branchids[index];
@@ -128,7 +127,8 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     }
     return false;
   }
-   Future<bool> checkPhone() async {
+
+  Future<bool> checkPhone() async {
     // Reference to the Firestore collection
     CollectionReference check =
         FirebaseFirestore.instance.collection('Register_employees');
@@ -149,6 +149,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     }
     return false;
   }
+
   Future<bool> checkEmail() async {
     // Reference to the Firestore collection
     CollectionReference check =
@@ -170,6 +171,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     }
     return false;
   }
+
   void _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       if (_tag == 'No assigned Tag') {
@@ -178,6 +180,13 @@ class _AssignEmployeeState extends State<AssignEmployee> {
           SnackBar(content: Text('Please scan the tag')),
         );
         return; // Exit the method without submitting the form
+      }
+      if (_image == null) {
+        // Show error message if image is null
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select an image')),
+        );
+        return; // Return early if image is null
       }
       if (await checkTag()) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -226,7 +235,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
         });
         // Show snackbar indicating success
         ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text(result['res'])),
+          SnackBar(content: Text(result['res'])),
         );
       } catch (error) {
         // Handle errors here
@@ -460,7 +469,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       ),
 
                       //Employee type
-                       DropdownButtonFormField<String>(
+                      DropdownButtonFormField<String>(
                         value: _selectedUserType,
                         onChanged: (String? newValue) {
                           setState(() {
