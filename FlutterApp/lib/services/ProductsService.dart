@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartinventory/models/ProductModel.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductService {
   String localhost = "http://127.0.0.1:5000";
 
-  Future<List<Map<String, dynamic>>> fetchDataOdoo() async {
-    final response = await http.get(Uri.parse('$localhost/get_products'));
+  Future<List<Map<String, dynamic>>> fetchDataOdoo() async {final response = await http.get(Uri.parse('$localhost/get_products'));
 
     if (response.statusCode == 200) {
       return List<Map<String, dynamic>>.from(json.decode(response.body));
@@ -105,6 +105,7 @@ final CollectionReference _productsCollection =
     FirebaseFirestore.instance.collection('Products');
 
   Future<bool> addProduct(Product product) async {
+    var uuid= Uuid().v4();
     // Check if the product already exists
     QuerySnapshot querySnapshot = await _productsCollection
         .where('name', isEqualTo: product.name)
@@ -115,9 +116,9 @@ final CollectionReference _productsCollection =
       print('Product with name ${product.name} already exists');
       return false; // Product already exists
     }
-
+    product.id = uuid;
     // Product doesn't exist, so add it
-    await _productsCollection.add(product.toMap());
+    await _productsCollection.doc(uuid).set(product.toMap());
     return true; // Product added successfully
   }
 

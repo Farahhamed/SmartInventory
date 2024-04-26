@@ -14,7 +14,7 @@ class AddProductCategory extends StatefulWidget {
 
 class _AddProductCategoryState extends State<AddProductCategory> {
   String _productCategoryName = '';
-    TextEditingController _productCategoryController = TextEditingController();
+  TextEditingController _productCategoryController = TextEditingController();
   final CategoryService _categoryService = CategoryService(); // Instantiate your category service
 
   @override

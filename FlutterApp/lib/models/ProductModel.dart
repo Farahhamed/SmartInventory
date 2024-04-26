@@ -8,9 +8,9 @@ class Product {
   final double price;
   final String categoryId; // Store the ID of the category instead of the object
   final String imageUrl;
-  final String id;
+  late String id;
 
-  const Product({
+   Product({
     required this.name,
     required this.quantity,
     required this.description,
