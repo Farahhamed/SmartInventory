@@ -48,18 +48,64 @@ class _AssignProductState extends State<AssignProduct> {
       if (FetchedProductList.isNotEmpty) {
         _selectedProductType = FetchedProductList[0].name;
       }
-       print("Product Types: $FetchedProductList");
 
     setState(() {
     _ProductType = FetchedProductList;
     });
   }
+ Future<bool> checkTag() async {
+  try {
+    // Reference to the Firestore collection
+    CollectionReference registerEmployeesCollection =
+        FirebaseFirestore.instance.collection('Register_employees');
 
-  void _submitForm(BuildContext context) {
+    // Check in Register_employees collection
+    QuerySnapshot registerEmployeesSnapshot =
+        await registerEmployeesCollection.where('Tag', isEqualTo: _tag).get();
+
+    if (registerEmployeesSnapshot.docs.isNotEmpty) {
+      return true;
+    }
+
+    // Reference to the Assigned_Products collection
+    CollectionReference assignedProductsCollection =
+        FirebaseFirestore.instance.collection('Assigned_Products');
+
+    // Check in Assigned_Products collection
+    QuerySnapshot assignedProductsSnapshot =
+        await assignedProductsCollection.where('UID', isEqualTo: _tag).get();
+
+    if (assignedProductsSnapshot.docs.isNotEmpty) {
+      return true;
+    }
+  } catch (error) {
+    // Handle errors
+    print('Error checking tag: $error');
+  }
+  return false;
+}
+
+  Future<void> _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
+        if (_tag == 'No assigned Tag yet') {
+        // Show an error message if the tag has not been scanned
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please scan the tag')),
+        );
+        return; // Exit the method without submitting the form
+      }
+        if (await checkTag()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tag already exists')),
+        );
+        return;
+      }
+      String selectedProductId = _ProductType
+        .firstWhere((product) => product.name == _selectedProductType)
+        .id;
       // Save the form data to Firestore
       FirebaseFirestore.instance.collection('Assigned_Products').add({
-        'ProductType': _selectedProductType,
+        'ProductId': selectedProductId,
         'UID': _tag,
       }).then((value) {
         // Successfully added data to Firestore

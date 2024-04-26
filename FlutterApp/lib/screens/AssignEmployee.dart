@@ -107,26 +107,36 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   }
 
   Future<bool> checkTag() async {
+  try {
     // Reference to the Firestore collection
-    CollectionReference check =
+    CollectionReference registerEmployeesCollection =
         FirebaseFirestore.instance.collection('Register_employees');
 
-    try {
-      QuerySnapshot querySnapshot = await check.get();
+    // Check in Register_employees collection
+    QuerySnapshot registerEmployeesSnapshot =
+        await registerEmployeesCollection.where('Tag', isEqualTo: _tag).get();
 
-      for (QueryDocumentSnapshot document in querySnapshot.docs) {
-        final data = document.data() as Map<String, dynamic>;
-        print(data["Tag"]);
-        if (data["Tag"] == _tag) {
-          return true;
-        }
-      }
-    } catch (error) {
-      // Handle errors
-      print('Error checking tag: $error');
+    if (registerEmployeesSnapshot.docs.isNotEmpty) {
+      return true;
     }
-    return false;
+
+    // Reference to the Assigned_Products collection
+    CollectionReference assignedProductsCollection =
+        FirebaseFirestore.instance.collection('Assigned_Products');
+
+    // Check in Assigned_Products collection
+    QuerySnapshot assignedProductsSnapshot =
+        await assignedProductsCollection.where('UID', isEqualTo: _tag).get();
+
+    if (assignedProductsSnapshot.docs.isNotEmpty) {
+      return true;
+    }
+  } catch (error) {
+    // Handle errors
+    print('Error checking tag: $error');
   }
+  return false;
+}
 
   Future<bool> checkPhone() async {
     // Reference to the Firestore collection

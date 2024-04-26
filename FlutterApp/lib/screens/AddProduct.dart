@@ -25,11 +25,6 @@ class _AddProductState extends State<AddProduct> {
   final ProductService _productService = ProductService();
   final CategoryService _categoryService = CategoryService(); // Instantiate your category service
 
-  // TextEditingController _ProductNameController = TextEditingController();
-  // TextEditingController _ProductDescriptionController = TextEditingController();
-  // TextEditingController _ProductCategoryController = TextEditingController();
-  // TextEditingController _ProductPriceController = TextEditingController();
-
   List<ProductCategory> _categories = [];
 
   File? _image;
@@ -59,12 +54,13 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
- Future<void> _addProductToFirebase() async {
+Future<void> _addProductToFirebase() async {
+  try {
     if (_productName.isEmpty ||
         _description.isEmpty ||
         _selectedCategory == null ||
-        _price <= 0 ||
-        _quantity <= 0) {
+        _price <= 0 // Check if price is less than or equal to 0
+) { // Check if quantity is less than or equal to 0
       return;
     }
 
@@ -75,11 +71,9 @@ class _AddProductState extends State<AddProduct> {
       price: _price,
       categoryId: _selectedCategory!.id,
       imageUrl: '', // You can set the image URL if needed
-      id: ' ',// You can set the ID if needed
+      id: '', // You can set the ID if needed
     );
-
     bool success = await _productService.addProduct(newProduct);
-
     setState(() {
       _productName = '';
       _description = '';
@@ -94,7 +88,11 @@ class _AddProductState extends State<AddProduct> {
         content: Text(success ? 'Product added successfully' : 'Product already exists'),
       ),
     );
+  } catch (error) {
+    print('Error adding product: $error');
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
