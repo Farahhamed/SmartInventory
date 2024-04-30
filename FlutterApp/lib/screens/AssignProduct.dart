@@ -185,7 +185,7 @@ class _AssignProductState extends State<AssignProduct> {
           ),
           Expanded(
             flex: 7,
-            child: Container(
+            child: Container( 
               padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
               decoration: const BoxDecoration(
                 color: Colors.white,
