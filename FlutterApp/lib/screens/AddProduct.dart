@@ -63,7 +63,13 @@ Future<void> _addProductToFirebase() async {
 ) { // Check if quantity is less than or equal to 0
       return;
     }
-
+     if (_image == null) {
+        // Show error message if image is null
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select an image')),
+        );
+        return; // Return early if image is null
+      }
     Product newProduct = Product(
       name: _productName,
       quantity: 0,
@@ -73,7 +79,7 @@ Future<void> _addProductToFirebase() async {
       imageUrl: '', // You can set the image URL if needed
       id: '', // You can set the ID if needed
     );
-    bool success = await _productService.addProduct(newProduct);
+    bool success = await _productService.addProduct(newProduct,_image!);
     setState(() {
       _productName = '';
       _description = '';
