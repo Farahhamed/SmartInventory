@@ -66,7 +66,7 @@ Future<void> _addProductToFirebase() async {
 
     Product newProduct = Product(
       name: _productName,
-      quantity: _quantity,
+      quantity: 0,
       description: _description,
       price: _price,
       categoryId: _selectedCategory!.id,

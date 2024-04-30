@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartinventory/screens/ActivityLogScreen.dart';
+import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/Notification.dart';
 
@@ -47,7 +47,7 @@ class NavBar extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ActivityLogUI()),
+                MaterialPageRoute(builder: (context) => LogsWidgetScreen()),
               );
             },
           ),

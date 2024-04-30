@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartinventory/screens/ActivityLogScreen.dart';
+import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:smartinventory/screens/AssignTags.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/Homepage.dart';
@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
     EmployeeList(),
     ProductsList(),
     HomePageScreen(),
-    ActivityLogUI(),
+    LogsWidgetScreen(),
     ProfileScreen(uid:FirebaseAuth.instance.currentUser!.uid),
   ];
 
