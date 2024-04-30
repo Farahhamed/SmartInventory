@@ -7,7 +7,7 @@ class Product {
   final String description;
   final double price;
   final String categoryId; // Store the ID of the category instead of the object
-  final String imageUrl;
+  late String imageUrl;
   late String id;
 
    Product({
