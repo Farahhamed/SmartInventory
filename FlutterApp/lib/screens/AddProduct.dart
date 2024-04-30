@@ -80,14 +80,17 @@ Future<void> _addProductToFirebase() async {
       id: '', // You can set the ID if needed
     );
     bool success = await _productService.addProduct(newProduct,_image!);
-    setState(() {
-      _productName = '';
-      _description = '';
-      _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
-      _price = 0.0;
-      _quantity = 0;
-      _image = null;
-    });
+
+     if (success) {
+      setState(() {
+        // Reset form fields
+        _productName = '';
+        _description = '';
+        _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
+        _price = 0.0;
+        _image = null;
+      });
+     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -96,6 +99,11 @@ Future<void> _addProductToFirebase() async {
     );
   } catch (error) {
     print('Error adding product: $error');
+     ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error adding product'),
+      ),
+    );
   }
 }
 
