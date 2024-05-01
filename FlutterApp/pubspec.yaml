@@ -33,6 +33,7 @@ dependencies:
   curved_navigation_bar: any
   firebase_auth: any
   firebase_core: ^2.24.2
+  firebase_database: ^10.5.4
   firebase_storage: ^11.6.9
   fl_chart: any
   flutter:
