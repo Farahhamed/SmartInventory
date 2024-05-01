@@ -39,6 +39,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
   List<String> branchids = [];
   String _selectedUserType = '';
   List<EmployeeType> _employeeTypes = [];
+  bool isWriten = false;
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
@@ -106,37 +107,37 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     _phoneController.dispose();
   }
 
-  Future<bool> checkTag() async {
-  try {
-    // Reference to the Firestore collection
-    CollectionReference registerEmployeesCollection =
-        FirebaseFirestore.instance.collection('Register_employees');
+   Future<bool> checkTag() async {
+    try {
+      // Reference to the Firestore collection
+      CollectionReference registerEmployeesCollection =
+          FirebaseFirestore.instance.collection('Register_employees');
 
-    // Check in Register_employees collection
-    QuerySnapshot registerEmployeesSnapshot =
-        await registerEmployeesCollection.where('Tag', isEqualTo: _tag).get();
+      // Check in Register_employees collection
+      QuerySnapshot registerEmployeesSnapshot =
+          await registerEmployeesCollection.where('Tag', isEqualTo: _tag).get();
 
-    if (registerEmployeesSnapshot.docs.isNotEmpty) {
-      return true;
+      if (registerEmployeesSnapshot.docs.isNotEmpty) {
+        return true;
+      }
+
+      // Reference to the Assigned_Products collection
+      CollectionReference assignedProductsCollection =
+          FirebaseFirestore.instance.collection('Assigned_Products');
+
+      // Check in Assigned_Products collection
+      QuerySnapshot assignedProductsSnapshot =
+          await assignedProductsCollection.where('UID', isEqualTo: _tag).get();
+
+      if (assignedProductsSnapshot.docs.isNotEmpty) {
+        return true;
+      }
+    } catch (error) {
+      // Handle errors
+      print('Error checking tag: $error');
     }
-
-    // Reference to the Assigned_Products collection
-    CollectionReference assignedProductsCollection =
-        FirebaseFirestore.instance.collection('Assigned_Products');
-
-    // Check in Assigned_Products collection
-    QuerySnapshot assignedProductsSnapshot =
-        await assignedProductsCollection.where('UID', isEqualTo: _tag).get();
-
-    if (assignedProductsSnapshot.docs.isNotEmpty) {
-      return true;
-    }
-  } catch (error) {
-    // Handle errors
-    print('Error checking tag: $error');
+    return false;
   }
-  return false;
-}
 
   Future<bool> checkPhone() async {
     // Reference to the Firestore collection
@@ -203,6 +204,16 @@ class _AssignEmployeeState extends State<AssignEmployee> {
           SnackBar(content: Text('Tag already exists')),
         );
         return;
+      }
+      if (!isWriten) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Scan again to write Product in the card')),
+        );
+        return;
+      } else {
+        setState(() {
+          isWriten = false;
+        });
       }
       if (await checkPhone()) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -277,7 +288,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     return FinalResult;
   }
 
-  void _assignTag() async {
+ void _assignTag() async {
     try {
       bool isAvailable = await NfcManager.instance.isAvailable();
       // String taguid = 'No tag is detected';
@@ -289,10 +300,28 @@ class _AssignEmployeeState extends State<AssignEmployee> {
           onDiscovered: (NfcTag tag) async {
             // Process NFC tag, When an NFC tag is discovered, print its data to the console.
             debugPrint('NFC Tag Detected: $tag');
+
+            taguid = _convertToHexString(tag.data['ndef']['identifier']);
+            debugPrint('new id: $taguid');
+
+            setState(() {
+              _tag = RemoveZerosFromStart(taguid);
+              isWriten = false;
+              // _type = Payload;
+            });
+            if (await checkTag()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Tag is already assigned')),
+              );
+              return;
+            }
             NdefMessage message =
                 NdefMessage([NdefRecord.createText('Employee')]);
             await Ndef.from(tag)?.write(message);
             debugPrint('Data emitted successfully');
+            setState(() {
+              isWriten = true;
+            });
             List<int> payload =
                 tag.data['ndef']['cachedMessage']['records'][0]['payload'];
 
@@ -301,9 +330,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
             Payload = payloadString;
             debugPrint('NFC Payload: $payloadString');
             debugPrint('all entries: ${tag.data['ndef']['identifier']}');
-
-            taguid = _convertToHexString(tag.data['ndef']['identifier']);
-            debugPrint('new id: $taguid');
           },
         );
       } else {
@@ -315,7 +341,8 @@ class _AssignEmployeeState extends State<AssignEmployee> {
 
     setState(() {
       _tag = RemoveZerosFromStart(taguid);
-      _type = Payload;
+      // _type = Payload;
+      // isWriten = true;
     });
   }
 

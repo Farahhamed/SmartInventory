@@ -51,6 +51,7 @@ class DefaultFirebaseOptions {
     authDomain: 'smartinventory-51751.firebaseapp.com',
     storageBucket: 'smartinventory-51751.appspot.com',
     measurementId: 'G-XJHW0Y1CL2',
+    databaseURL: 'https://smartinventory-51751-default-rtdb.firebaseio.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -59,6 +60,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '714626395898',
     projectId: 'smartinventory-51751',
     storageBucket: 'smartinventory-51751.appspot.com',
+    databaseURL: 'https://smartinventory-51751-default-rtdb.firebaseio.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
@@ -82,7 +82,7 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                         child: Column(
                           children: [
                             Text(
-                              '${DateTime.parse(LogsData[index].value['datetime']).day}',
+                              '${DateTime.parse(LogsData[index].value['datetime'] == "" ? "" : LogsData[index].value['datetime']).day}',
                               // 'Date is here',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
@@ -142,7 +142,10 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                                   const SizedBox(width: 5.0),
                                   Text(
                                     DateFormat.Hms().format(DateTime.parse(
-                                        LogsData[index].value['datetime'])),
+                                        LogsData[index].value['datetime'] == ""
+                                            ? ""
+                                            : LogsData[index]
+                                                .value['datetime'])),
                                     style: const TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
@@ -214,14 +217,26 @@ Future<List<MapEntry<String, dynamic>>> fetchRealtimeDatabaseData() async {
       'Content-Type': 'application/json',
     },
   );
+  // Map<String, dynamic> data = jsonDecode(response.body);
+
   Map<String, dynamic> data = jsonDecode(response.body);
 
-  List<MapEntry<String, dynamic>> TagsReadings = data.entries.toList();
-  TagsReadings.sort((a, b) {
-    DateTime dateTimeA = DateTime.parse(a.value['datetime']);
-    DateTime dateTimeB = DateTime.parse(b.value['datetime']);
-    return dateTimeA.compareTo(dateTimeB);
-  });
+  List<MapEntry<String, dynamic>> TagsReadings = data.entries.map((entry) {
+    return MapEntry(entry.key, jsonDecode(entry.value['Data'].toString()));
+  }).toList();
+
+  print("yarab: ${TagsReadings[0].value['taguid']}");
+
+  // print("shakl awel data 5ales $data");
+  // List<MapEntry<String, dynamic>> TagsReadings = data.entries.toList();
+  // print("shakl el data: $TagsReadings");
+  // print("shakl item wa7ed: ${TagsReadings[0].value}");
+  // TagsReadings.sort((a, b) {
+  //   DateTime dateTimeA = DateTime.parse(a.value['datetime'] as String);
+  //   DateTime dateTimeB = DateTime.parse(b.value['datetime'] as String);
+  //   return dateTimeA.compareTo(dateTimeB);
+  // });
+  // print("hellz");
   return TagsReadings;
   // }
 }
@@ -269,9 +284,24 @@ Future<String> getEmployeeName(String TagUid, String collectionName) async {
   return "";
 }
 
+String RemoveZerosFromStart(String taguid) {
+  String FinalResult = "";
+
+  for (int i = 0; i < taguid.length; i++) {
+    if (i % 3 == 0) {
+      if (taguid[i] == '0') {
+        continue;
+      }
+    }
+    FinalResult += taguid[i];
+  }
+  return FinalResult;
+}
+
 Future<List<MapEntry<String, dynamic>>> masterFunction() async {
   List<MapEntry<String, dynamic>> TagsReadings =
       await fetchRealtimeDatabaseData();
+  print("new fetched data: $TagsReadings");
 
   for (var i = 0; i < TagsReadings.length; i++) {
     // TagsReadings[i].value['Entry/Exit'] = "NA";
@@ -282,7 +312,7 @@ Future<List<MapEntry<String, dynamic>>> masterFunction() async {
     // TagsReadings[i].value['E/P:Name']
 
     String fetchedName = await getEmployeeName(
-        TagsReadings[i].value['taguid'],
+        RemoveZerosFromStart(TagsReadings[i].value['taguid']),
         TagsReadings[i].value['Type'] == "Employee"
             ? 'Register_employees'
             : 'Assigned_Products');
@@ -295,12 +325,74 @@ Future<List<MapEntry<String, dynamic>>> masterFunction() async {
     if (EmployeesList.contains(TagsReadings[i].value['taguid'])) {
       EmployeesList.remove(TagsReadings[i].value['taguid']);
       TagsReadings[i].value['Entry/Exit'] = "Exit";
-      // print("exit ${selectedUser['name']}   $dateTime");
     } else {
       EmployeesList.add((TagsReadings[i].value['taguid']));
       TagsReadings[i].value['Entry/Exit'] = "Entry";
-      // print("enter ${selectedUser['name']}");
+    }
+
+    if (TagsReadings[i].value['IsChecked'] == false &&
+        TagsReadings[i].value['Type'] != "Employee") {
+      await ChangeQuantity(TagsReadings[i]);
     }
   }
   return TagsReadings;
+}
+
+Future<void> ChangeQuantity(MapEntry<String, dynamic> Product) async {
+  QuerySnapshot<Map<String, dynamic>> snapshot1 = await FirebaseFirestore
+      .instance
+      .collection("Assigned_Products")
+      .where('UID', isEqualTo: RemoveZerosFromStart(Product.value['taguid']))
+      .get();
+
+  QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+      .instance
+      .collection('Products')
+      .where('uid', isEqualTo: snapshot1.docs[0]['ProductId'])
+      .get();
+
+  if (snapshot.docs.isNotEmpty) {
+    // print("EmployeeName is: ${snapshot.docs[0]['name']}");
+    // print("product price is  ${snapshot.docs[0]['price']}");
+    int currentquantity = snapshot.docs[0]['quantity'];
+    if (Product.value['Entry/Exit'] == "Entry") {
+      currentquantity = currentquantity + 1;
+    } else {
+      currentquantity = currentquantity - 1;
+    }
+
+    await FirebaseFirestore.instance
+        .collection('Products')
+        .doc(snapshot.docs[0]['uid']).update({'quantity':currentquantity});
+
+    await UpdateRealTimeDB(Product);
+  }
+}
+
+Future<void> UpdateRealTimeDB(MapEntry<String, dynamic> product) async {
+  String jsonPayloadBefore = "{";
+  jsonPayloadBefore += "\"datetime\":\"" + product.value['datetime'] + "\",";
+  jsonPayloadBefore += "\"taguid\":\"" + product.value['taguid'] + "\",";
+  jsonPayloadBefore += "\"Type\":\"" + product.value['Type'] + "\",";
+  jsonPayloadBefore += "\"IsChecked\":false,";
+  jsonPayloadBefore += "\"uniqueID\":\"" + product.value['uniqueID'] + "\"";
+  jsonPayloadBefore += "}";
+
+  String jsonPayloadAfter = "{";
+  jsonPayloadAfter += "\"datetime\":\"" + product.value['datetime'] + "\",";
+  jsonPayloadAfter += "\"taguid\":\"" + product.value['taguid'] + "\",";
+  jsonPayloadAfter += "\"Type\":\"" + product.value['Type'] + "\",";
+  jsonPayloadAfter += "\"IsChecked\":true,";
+  jsonPayloadAfter += "\"uniqueID\":\"" + product.value['uniqueID'] + "\"";
+  jsonPayloadAfter += "}";
+
+  DatabaseReference refUpdate = FirebaseDatabase.instance
+      .ref("InventoryAccess/${product.value['uniqueID']}/Data");
+
+  await refUpdate.set(jsonPayloadAfter);
+
+  // DatabaseReference refAdd =
+  //     FirebaseDatabase.instance.ref("InventoryAccess/${jsonPayloadAfter}");
+
+  // await refAdd.remove();
 }
