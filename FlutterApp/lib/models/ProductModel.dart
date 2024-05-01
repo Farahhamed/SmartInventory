@@ -5,7 +5,7 @@ class Product {
   final String name;
   final int quantity;
   final String description;
-  final double price;
+  final String price;
   final String categoryId; // Store the ID of the category instead of the object
   late String imageUrl;
   late String id;

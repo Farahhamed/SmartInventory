@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/screens/AddProduct.dart';
 import 'package:smartinventory/screens/AssignProduct.dart';
+import 'package:smartinventory/screens/AssignTagToProduct.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/AddProductScreen.dart';
@@ -151,7 +152,7 @@ class _ProductsListState extends State<ProductsList> {
                 tooltip: 'Add Product',
               ),
             ),
-            const SizedBox(width: 30),
+            const SizedBox(width: 20),
             Ink(
               decoration: const BoxDecoration(
                 color: Color(0xFFBB8493),
@@ -159,14 +160,14 @@ class _ProductsListState extends State<ProductsList> {
               ),
               child: IconButton(
                 icon: const Icon(
-                  Icons.sticky_note_2_outlined,
+                  Icons.add_card,
                   color: Colors.white,
                   size: 30,
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AssignProduct()),
+                    MaterialPageRoute(builder: (context) => const AssignTagToProduct()),
                   );
                 },
                 tooltip: 'Assign Tag',

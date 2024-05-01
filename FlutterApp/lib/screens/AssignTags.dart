@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:smartinventory/screens/AssignEmployee.dart';
 import 'package:smartinventory/screens/AssignProduct.dart';
+import 'package:smartinventory/screens/AssignTagToProduct.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 
@@ -106,7 +107,7 @@ class _AssignTagsState extends State<AssignTags> {
                           onTap: ()  {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => AssignProduct()),
+                              MaterialPageRoute(builder: (context) => AssignTagToProduct()),
                             );
                           },
                           child: Container(

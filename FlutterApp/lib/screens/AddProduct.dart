@@ -74,7 +74,7 @@ Future<void> _addProductToFirebase() async {
       name: _productName,
       quantity: 0,
       description: _description,
-      price: _price,
+      price: _price.toString(),
       categoryId: _selectedCategory!.id,
       imageUrl: '', // You can set the image URL if needed
       id: '', // You can set the ID if needed

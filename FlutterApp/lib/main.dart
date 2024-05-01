@@ -7,6 +7,7 @@ import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/screens/AddProductCategory.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
+import 'package:smartinventory/screens/AssignTagToProduct.dart';
 
 
 Future<void> main() async {
@@ -32,5 +33,6 @@ class AuthenticationWrapper extends StatelessWidget {
     // Check if the user is authenticated
     final currentUser = FirebaseAuth.instance.currentUser;
     return currentUser != null ? MyHomePage() : WelcomeScreen();
+   
   }
 }

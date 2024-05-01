@@ -58,7 +58,8 @@ class _EmployeeListState extends State<EmployeeList> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AssignEmployee()),
+                    MaterialPageRoute(
+                        builder: (context) => const AssignEmployee()),
                   );
                 },
                 tooltip: 'Add Employee',
@@ -155,7 +156,8 @@ class _EmployeeListState extends State<EmployeeList> {
                             ),
                             child: ListTile(
                               leading: CircleAvatar(
-                                child: Icon(Icons.person),
+                                radius: 60,
+                                backgroundImage: NetworkImage(document['pic']),
                               ),
                               title: Text(
                                 document['name'] ?? '',
@@ -166,9 +168,8 @@ class _EmployeeListState extends State<EmployeeList> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Tag: ${document['Tag'] ?? ''}'),
-                                  Text(
-                                      'Employee Type: ${document['employeeType'] ?? ''}'),
+                                  Text(' ${document['Tag'] ?? ''}'),
+                                  Text('${document['employeeType'] ?? ''}'),
                                 ],
                               ),
                               trailing: Row(
