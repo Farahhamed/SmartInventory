@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ProductsList(),
     HomePageScreen(),
     LogsWidgetScreen(),
-    ProfileScreen(uid:FirebaseAuth.instance.currentUser!.uid),
+    ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
   ];
 
   @override
@@ -53,8 +53,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              const Text('Employees',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text('Employees',
+                    style: TextStyle(color: Colors.white, fontSize: 7)),
+              )
             ],
           ),
           Column(
@@ -68,8 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              const Text('Products',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text('Products',
+                    style: TextStyle(color: Colors.white, fontSize: 7)),
+              )
             ],
           ),
           Column(
@@ -83,8 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              const Text('Home',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text('Home',
+                    style: TextStyle(color: Colors.white, fontSize: 7)),
+              )
             ],
           ),
           Column(
@@ -98,7 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              Text('Access Log', style: TextStyle(color: Colors.white, fontSize: 9)),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text('Access Log',
+                    style: TextStyle(color: Colors.white, fontSize: 7)),
+              )
             ],
           ),
           Column(
@@ -112,8 +125,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-              const Text('Profile',
-                  style: TextStyle(color: Colors.white, fontSize: 9)),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text('Profile',
+                    style: TextStyle(color: Colors.white, fontSize: 7)),
+              )
             ],
           ),
         ],
