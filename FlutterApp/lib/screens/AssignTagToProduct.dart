@@ -24,8 +24,8 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
   bool _isLoading = false;
   String taguid = 'No assigned Tag yet';
   String Payload = 'No Type';
-
   Product? _selectedProduct;
+  bool isWritten = false;
 
   @override
   void dispose() {
@@ -55,6 +55,20 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
     setState(() {
       _ProductType = FetchedProductList;
     });
+  }
+
+  String RemoveZerosFromStart(String taguid) {
+    String FinalResult = "";
+
+    for (int i = 0; i < taguid.length; i++) {
+      if (i % 3 == 0) {
+        if (taguid[i] == '0') {
+          continue;
+        }
+      }
+      FinalResult += taguid[i];
+    }
+    return FinalResult;
   }
 
   Future<bool> checkTag() async {
@@ -98,17 +112,21 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
         );
         return; // Exit the method without submitting the form
       }
-      if (_selectedProduct == '') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select a product')),
-        );
-        return; // Exit the method without submitting the form
-      }
       if (await checkTag()) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tag already exists')),
+          SnackBar(content: Text('Tag i already assigned')),
         );
         return;
+      }
+      if (!isWritten) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Scan again to write Product in the card')),
+        );
+        return;
+      } else {
+        setState(() {
+          isWritten = false;
+        });
       }
       String selectedProductId = _ProductType.firstWhere(
           (product) => product.name == _selectedProductType).id;
@@ -151,10 +169,28 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
           onDiscovered: (NfcTag tag) async {
             // Process NFC tag, When an NFC tag is discovered, print its data to the console.
             debugPrint('NFC Tag Detected: $tag');
+
+            taguid = _convertToHexString(tag.data['ndef']['identifier']);
+            debugPrint('new id: $taguid');
+
+            setState(() {
+              _tag = RemoveZerosFromStart(taguid);
+              isWritten = false;
+              // _type = Payload;
+            });
+            if (await checkTag()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Tag is already assigned')),
+              );
+              return;
+            }
             NdefMessage message =
                 NdefMessage([NdefRecord.createText('Product')]);
             await Ndef.from(tag)?.write(message);
             debugPrint('Data emitted successfully');
+            setState(() {
+              isWritten = true;
+            });
             List<int> payload =
                 tag.data['ndef']['cachedMessage']['records'][0]['payload'];
 
@@ -163,9 +199,6 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
             Payload = payloadString;
             debugPrint('NFC Payload: $payloadString');
             debugPrint('all entries: ${tag.data['ndef']['identifier']}');
-
-            taguid = _convertToHexString(tag.data['ndef']['identifier']);
-            debugPrint('new id: $taguid');
           },
         );
       } else {
@@ -176,8 +209,9 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
     }
 
     setState(() {
-      _tag = taguid;
-      _type = Payload;
+      _tag = RemoveZerosFromStart(taguid);
+      // _type = Payload;
+      // isWritten = true;
     });
   }
 
