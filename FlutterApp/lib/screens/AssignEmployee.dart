@@ -865,65 +865,54 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // Stack(
+                      // Row(
                       //   children: [
-                      //     _image != null
-                      //         ? CircleAvatar(
-                      //             radius: 64,
-                      //             backgroundImage:
-                      //                 FileImage(File(_image!.path)),
-                      //           )
-                      //         : const CircleAvatar(
-                      //             radius: 64,
-                      //             backgroundImage: NetworkImage(
-                      //               'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLorGAuZfVX3ZCV_Pz0QZlcOvXzPHKELhVPA&usqp=CAU',
-                      //             ),
+                      //     Text('$_tag'),
+
+                      //     const SizedBox(width: 50),
+                      //     Row(
+                      //       mainAxisAlignment: MainAxisAlignment.end,
+                      //       children: [
+                      //         ElevatedButton(
+                      //           onPressed: () => _assignTag(),
+                      //           child: const Text(
+                      //             'Read UID',
+                      //             style: TextStyle(color: Colors.white),
                       //           ),
-                      //     Positioned(
-                      //       bottom: -10,
-                      //       left: 80,
-                      //       child: IconButton(
-                      //         onPressed: _getImage,
-                      //         icon: const Icon(Icons.add_a_photo),
-                      //       ),
-                      //     )
+                      //           style: ElevatedButton.styleFrom(
+                      //             shape: RoundedRectangleBorder(
+                      //               borderRadius: BorderRadius.circular(50),
+                      //             ),
+                      //             backgroundColor:
+                      //                 Color.fromARGB(255, 174, 203, 227),
+                      //             padding: EdgeInsets.symmetric(
+                      //                 horizontal: 16, vertical: 8),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+
+                      //     // const SizedBox(width: 20),
+                      //     // Text('$_type')
                       //   ],
                       // ),
-
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      Row(
-                        children: [
-                          Text('$_tag'),
-
-                          const SizedBox(width: 50),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () => _assignTag(),
-                                child: const Text(
-                                  'Read UID',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 174, 203, 227),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                ),
-                              ),
-                            ],
+                       Row(
+                      children: [
+                        Text('$_tag'),
+                        const SizedBox(width: 40),
+                        ElevatedButton(
+                          onPressed: () => _assignTag(),
+                          child: const Text('Read UID'),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                const Color.fromRGBO(112, 66, 100, 1),
                           ),
-
-                          // const SizedBox(width: 20),
-                          // Text('$_type')
-                        ],
-                      ),
+                        ),
+                        // const SizedBox(width: 20),
+                        // Text('$_type')
+                      ],
+                    ),
                       const SizedBox(
                         height: 25.0,
                       ),

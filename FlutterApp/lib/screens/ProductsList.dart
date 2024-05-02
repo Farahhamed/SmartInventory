@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/screens/AddProduct.dart';
-import 'package:smartinventory/screens/AssignProduct.dart';
 import 'package:smartinventory/screens/AssignTagToProduct.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:smartinventory/screens/AddProductScreen.dart';
 import 'package:smartinventory/screens/EditProductScreen.dart';
 
 enum UserType { Manager, Employee }
@@ -83,10 +81,7 @@ class _ProductsListState extends State<ProductsList> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddProductScreen(
-          productNameController: productNameController,
-          listPriceController: listPriceController,
-          addProduct: addProduct,
+        builder: (context) => AddProduct(
         ),
       ),
     );
