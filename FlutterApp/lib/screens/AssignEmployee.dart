@@ -11,6 +11,7 @@ import 'package:smartinventory/services/BranchService.dart';
 import 'package:smartinventory/themes/theme.dart';
 import 'package:smartinventory/widgets/CustomScaffold.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smartinventory/widgets/FormScaffold.dart';
 
 class AssignEmployee extends StatefulWidget {
   const AssignEmployee({super.key});
@@ -107,7 +108,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     _phoneController.dispose();
   }
 
-   Future<bool> checkTag() async {
+  Future<bool> checkTag() async {
     try {
       // Reference to the Firestore collection
       CollectionReference registerEmployeesCollection =
@@ -288,7 +289,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     return FinalResult;
   }
 
- void _assignTag() async {
+  void _assignTag() async {
     try {
       bool isAvailable = await NfcManager.instance.isAvailable();
       // String taguid = 'No tag is detected';
@@ -348,7 +349,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
+    return FormScaffold(
       child: Column(
         children: [
           const Expanded(
@@ -358,7 +359,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
             ),
           ),
           Expanded(
-            flex: 7,
+            flex: 6,
             child: Container(
               padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
               decoration: const BoxDecoration(
@@ -376,311 +377,18 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // get started text
-                      Text(
+                      const Text(
                         'Add a new employee',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
-                          color: lightColorScheme.primary,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(
                         height: 40.0,
                       ),
-                      // full name
-                      TextFormField(
-                        controller: _usernameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Full name';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Full Name'),
-                          hintText: 'Enter Full Name',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // Age
-                      TextFormField(
-                        controller: _ageController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(2),
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                        ],
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Your Age';
-                          }
-                          // Check if the entered value is a valid two-digit number
-                          int age = int.tryParse(value)!;
-                          if (age < 10 || age > 99) {
-                            return 'Please enter a valid  age';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Age'),
-                          hintText: 'Enter Your Age',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // phone number
-                      TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(11),
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                        ],
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Phone Number';
-                          }
-                          // Check if the entered value is a valid phone number format
-                          if (!RegExp(r'^(010|011|012|015)\d{8}$')
-                              .hasMatch(value)) {
-                            return 'Please enter a valid phone number';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Phone Number'),
-                          hintText: 'Enter Phone Number',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-
-                      //Employee type
-                      DropdownButtonFormField<String>(
-                        value: _selectedUserType,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedUserType = newValue!;
-                          });
-                        },
-                        items: _employeeTypes.map((type) {
-                          return DropdownMenuItem<String>(
-                            value: type.name,
-                            child: Text(type.name),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          labelText: 'User Type',
-                          hintText: 'Select User Type',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-
-                      // branch
-                      DropdownButtonFormField<String>(
-                        value: null,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedBranchName = newValue!;
-                          });
-                        },
-                        items: branchLocations
-                            ?.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          labelText: 'Branch',
-                          hintText: 'Select Branch',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-
-                      //address
-                      TextFormField(
-                        controller: _addressController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Address';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: Text('Address'),
-                          hintText: 'Enter Address',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // email
-                      TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Email';
-                          }
-                          // Use a regular expression to validate email format
-                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                              .hasMatch(value)) {
-                            return 'Please enter a valid email address';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Email'),
-                          hintText: 'Enter Email',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // password
-                      TextFormField(
-                        controller: _passController,
-                        obscureText: true,
-                        obscuringCharacter: '*',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Password';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Password'),
-                          hintText: 'Enter Password',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
+                      //Image upload
                       Stack(
                         children: [
                           _image != null
@@ -705,6 +413,482 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                           )
                         ],
                       ),
+                      const SizedBox(
+                        height: 40.0,
+                      ),
+                      // full name
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        TextFormField(
+                          controller: _usernameController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Full name';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            label: const Text('Full Name'),
+                            hintText: 'Enter Full Name',
+                            hintStyle: const TextStyle(
+                              color: Colors.black26,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // Age
+                      Stack(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 32, right: 12),
+                          ),
+                          TextFormField(
+                            controller: _ageController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(2),
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Your Age';
+                              }
+                              // Check if the entered value is a valid two-digit number
+                              int age = int.tryParse(value)!;
+                              if (age < 10 || age > 99) {
+                                return 'Please enter a valid  age';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              label: const Text('Age'),
+                              hintText: 'Enter Your Age',
+                              hintStyle: const TextStyle(
+                                color: Colors.black26,
+                              ),
+                              contentPadding:
+                                  const EdgeInsets.only(left: 55, right: 12),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFBB8493),
+                                ),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFBB8493),
+                                ),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 8,
+                            top: 5,
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.grey[200],
+                              child: const Icon(
+                                Icons.calendar_month_outlined,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // phone number
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        TextFormField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(11),
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          ],
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Phone Number';
+                            }
+                            // Check if the entered value is a valid phone number format
+                            if (!RegExp(r'^(010|011|012|015)\d{8}$')
+                                .hasMatch(value)) {
+                              return 'Please enter a valid phone number';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            label: const Text('Phone Number'),
+                            hintText: 'Enter a Phone Number',
+                            hintStyle: const TextStyle(
+                              color: Colors.black26,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.phone,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+
+                      //Employee type
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        DropdownButtonFormField<String>(
+                          value: _selectedUserType,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedUserType = newValue!;
+                            });
+                          },
+                          items: _employeeTypes.map((type) {
+                            return DropdownMenuItem<String>(
+                              value: type.name,
+                              child: Text(type.name),
+                            );
+                          }).toList(),
+                          decoration: InputDecoration(
+                            label: const Text('Employee Type'),
+                            hintText: 'Choose a type',
+                            hintStyle: const TextStyle(
+                              color: Colors.black26,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.people,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // branch
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        DropdownButtonFormField<String>(
+                          value: null,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedBranchName = newValue!;
+                            });
+                          },
+                          items: branchLocations
+                              ?.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          decoration: InputDecoration(
+                            labelText: 'Branch',
+                            hintText: 'Select Branch',
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.store,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+
+                      //address
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        TextFormField(
+                          controller: _addressController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Address';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            label: const Text('Address'),
+                            hintText: 'Enter Address',
+                            hintStyle: const TextStyle(
+                              color: Colors.black26,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.location_city,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // email
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Email';
+                            }
+                            // Use a regular expression to validate email format
+                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                .hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            label: const Text('Email'),
+                            hintText: 'Enter Email',
+                            hintStyle: const TextStyle(
+                              color: Colors.black26,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.email,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // password
+                      Stack(children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 32, right: 12),
+                        ),
+                        TextFormField(
+                          controller: _passController,
+                          obscureText: true,
+                          obscuringCharacter: '*',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Password';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            label: const Text('Password'),
+                            hintText: 'Enter Password',
+                            hintStyle: const TextStyle(
+                              color: Colors.black26,
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 55, right: 12),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xFFBB8493),
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 8,
+                          top: 5,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey[200],
+                            child: const Icon(
+                              Icons.password_outlined,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      // Stack(
+                      //   children: [
+                      //     _image != null
+                      //         ? CircleAvatar(
+                      //             radius: 64,
+                      //             backgroundImage:
+                      //                 FileImage(File(_image!.path)),
+                      //           )
+                      //         : const CircleAvatar(
+                      //             radius: 64,
+                      //             backgroundImage: NetworkImage(
+                      //               'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLorGAuZfVX3ZCV_Pz0QZlcOvXzPHKELhVPA&usqp=CAU',
+                      //             ),
+                      //           ),
+                      //     Positioned(
+                      //       bottom: -10,
+                      //       left: 80,
+                      //       child: IconButton(
+                      //         onPressed: _getImage,
+                      //         icon: const Icon(Icons.add_a_photo),
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
 
                       const SizedBox(
                         height: 25.0,
@@ -712,22 +896,25 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       Row(
                         children: [
                           Text('$_tag'),
+
                           const SizedBox(width: 50),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               ElevatedButton(
                                 onPressed: () => _assignTag(),
-                                child: const Text('Read UID'),
+                                child: const Text(
+                                  'Read UID',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
-                                  backgroundColor: Color.fromARGB(
-                                      255, 174, 203, 227), // Adjust the color
+                                  backgroundColor:
+                                      Color.fromARGB(255, 174, 203, 227),
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8), // Adjust the padding
+                                      horizontal: 16, vertical: 8),
                                 ),
                               ),
                             ],
@@ -746,17 +933,15 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                         child: InkWell(
                           onTap: () => _submitForm(context),
                           child: Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
+                            width: 200,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             decoration: const ShapeDecoration(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(12),
+                                  Radius.circular(50),
                                 ),
                               ),
-                              color: Color.fromARGB(
-                                  255, 174, 203, 227), // Adjust the color
+                              color: Color.fromRGBO(112, 66, 100, 1),
                             ),
                             child: _isLoading
                                 ? const Center(
@@ -764,10 +949,16 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                                       color: Colors.blueGrey,
                                     ),
                                   )
-                                : const Text('Add Employee'),
+                                : Center(
+                                    child: const Text(
+                                      'Add Employee',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
+
                       const SizedBox(
                         height: 30.0,
                       ),
