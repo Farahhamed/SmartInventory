@@ -70,6 +70,9 @@ Future<void> _addProductToFirebase() async {
         );
         return; // Return early if image is null
       }
+
+    DateTime creationTime = DateTime.now(); // Capture the current time
+
     Product newProduct = Product(
       name: _productName,
       quantity: 0,
@@ -78,10 +81,12 @@ Future<void> _addProductToFirebase() async {
       categoryId: _selectedCategory!.id,
       imageUrl: '', // You can set the image URL if needed
       id: '', // You can set the ID if needed
+      orderDateTime: creationTime, // Assign the creation time to orderDateTime
     );
+
     bool success = await _productService.addProduct(newProduct,_image!);
 
-     if (success) {
+    if (success) {
       setState(() {
         // Reset form fields
         _productName = '';
@@ -90,7 +95,7 @@ Future<void> _addProductToFirebase() async {
         _price = 0.0;
         _image = null;
       });
-     }
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

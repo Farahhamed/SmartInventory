@@ -162,4 +162,17 @@ class ProductService {
       return products;
     });
   }
+  Stream<List<Product>> getProductsOrder({String? sortOrder}) {
+    return _productsCollection.orderBy(
+    'orderDateTime', 
+    descending: sortOrder == 'LIFO'
+  ).snapshots().asyncMap((snapshot) async {
+    List<Product> products = [];
+    for (DocumentSnapshot doc in snapshot.docs) {
+      Product product = await Product.fromSnapshot(doc);
+      products.add(product);
+    }
+    return products;
+  });
+  }
 }
