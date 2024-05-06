@@ -22,11 +22,13 @@ class _ProductsListState extends State<ProductsList> {
   final ProductService productService = ProductService();
   List<Product> products = [];
   UserType _userType = UserType.Employee;
+  late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
     _getUserType();
+    _searchController = TextEditingController();
     _fetchProducts();
   }
 
@@ -115,6 +117,7 @@ class _ProductsListState extends State<ProductsList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         key: scaffoldKey,
         drawer: NavBar(),
         appBar: AppBar(
@@ -152,12 +155,6 @@ class _ProductsListState extends State<ProductsList> {
                   tooltip: 'Add Product',
                 ),
               ),
-            // if (_userType == UserType.Manager)
-            // IconButton(
-            //   icon: const Icon(Icons.add),
-            //   onPressed: navigateToAddProductForm,
-            //   tooltip: 'Add Product',
-            // ),
           ],
         ),
         body: Column(
@@ -166,6 +163,10 @@ class _ProductsListState extends State<ProductsList> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {}); // Trigger rebuild on text change
+                },
                 cursorHeight: 35,
                 decoration: InputDecoration(
                   hintText: 'Search for a product',
@@ -181,6 +182,18 @@ class _ProductsListState extends State<ProductsList> {
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   Product product = products[index];
+
+                  // Check if the product name contains the search query
+                  bool matchesSearch = product.name
+                      .toLowerCase()
+                      .contains(_searchController.text.toLowerCase());
+
+                  // If the search query is not empty and the product name doesn't match, return an empty container
+                  if (_searchController.text.isNotEmpty && !matchesSearch) {
+                    return Container();
+                  }
+
+                  // Otherwise, display the product
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
