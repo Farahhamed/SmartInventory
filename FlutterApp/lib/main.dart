@@ -10,7 +10,6 @@ import 'package:smartinventory/screens/StockControl/FifoLifoScreen.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
 import 'package:smartinventory/screens/AssignTagToProduct.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -18,22 +17,19 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-    child: MaterialApp(
+    child: const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: FifoLifoScreen(),
+      home: AuthenticationWrapper(),
     ),
   ));
 }
-
 
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({super.key});
   @override
   Widget build(BuildContext context) {
-
     // Check if the user is authenticated
     final currentUser = FirebaseAuth.instance.currentUser;
     return currentUser != null ? MyHomePage() : WelcomeScreen();
-   
   }
 }

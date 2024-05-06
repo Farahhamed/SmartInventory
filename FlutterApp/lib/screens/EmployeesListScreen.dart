@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/AssignEmployee.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
+import 'package:smartinventory/screens/SideBar.dart';
 import 'package:smartinventory/services/UserService.dart'; // Import your UserService
 
 class EmployeeList extends StatefulWidget {
