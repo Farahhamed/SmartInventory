@@ -335,6 +335,8 @@
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/SideBar.dart';
 
+GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -346,6 +348,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       drawer: NavBar(),
       body: Stack(
         children: [
@@ -368,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                       child: IconButton(
                         icon: const Icon(Icons.menu, color: Colors.white),
                         onPressed: () {
-                          Scaffold.of(context).openDrawer();
+                          scaffoldKey.currentState?.openDrawer();
                         },
                       ),
                     ),

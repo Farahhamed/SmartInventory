@@ -23,12 +23,15 @@ class _EmployeeListState extends State<EmployeeList> {
     _searchController = TextEditingController();
   }
 
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: 16.0, vertical: 16.0), // Add padding horizontally
       child: Scaffold(
+        key: scaffoldKey,
+        drawer: NavBar(),
         appBar: AppBar(
           title: Row(
             children: [
@@ -42,7 +45,9 @@ class _EmployeeListState extends State<EmployeeList> {
               Icons.menu_sharp,
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
           ),
           actions: [
             Ink(
