@@ -117,7 +117,7 @@ class _ProductsListState extends State<ProductsList> {
         key: scaffoldKey,
         drawer: NavBar(),
         appBar: AppBar(
-          title: const Text('Products List'), // Removed unnecessary space
+          title: const Text('Products List   '), // Removed unnecessary space
           centerTitle: true,
           leading: IconButton(
               icon: const Icon(

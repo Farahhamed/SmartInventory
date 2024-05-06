@@ -35,8 +35,8 @@ class _EmployeeListState extends State<EmployeeList> {
         appBar: AppBar(
           title: Row(
             children: [
-              Center(child: Text('     Employees List')),
-              Spacer(), // Add spacer to push the button to the right
+              Center(child: Text('            Employees List      ')),
+              Spacer(),
             ],
           ),
           centerTitle: true,
