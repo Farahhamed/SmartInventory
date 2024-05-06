@@ -116,16 +116,48 @@ class _ProductsListState extends State<ProductsList> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
         key: scaffoldKey,
+        drawer: NavBar(),
         appBar: AppBar(
           title: const Text('Products List'),
           centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.menu_sharp,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+          ),
           actions: [
             if (_userType == UserType.Manager)
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: navigateToAddProductForm,
-                tooltip: 'Add Product',
+              Ink(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFBB8493),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddProduct()),
+                    );
+                  },
+                  tooltip: 'Add Product',
+                ),
               ),
+            // if (_userType == UserType.Manager)
+            // IconButton(
+            //   icon: const Icon(Icons.add),
+            //   onPressed: navigateToAddProductForm,
+            //   tooltip: 'Add Product',
+            // ),
           ],
         ),
         body: Column(
