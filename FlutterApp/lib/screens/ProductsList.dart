@@ -9,7 +9,7 @@ import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProductScreen.dart';
 
-enum UserType { Manager, Employee }
+enum UserType { Supervisor, Employee }
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -45,9 +45,9 @@ class _ProductsListState extends State<ProductsList> {
         dynamic userData = userSnapshot.data();
         String? userType = userData?['employeeType'] as String?;
 
-        if (userType == 'Manager') {
+        if (userType == 'Supervisor') {
           setState(() {
-            _userType = UserType.Manager;
+            _userType = UserType.Supervisor;
           });
         } else {
           setState(() {
@@ -133,7 +133,7 @@ class _ProductsListState extends State<ProductsList> {
             },
           ),
           actions: [
-            if (_userType == UserType.Manager)
+            if (_userType == UserType.Supervisor)
               Ink(
                 decoration: const BoxDecoration(
                   color: Color(0xFFBB8493),
@@ -257,7 +257,7 @@ class _ProductsListState extends State<ProductsList> {
                                   ),
                                 ),
                               ),
-                              if (_userType == UserType.Manager)
+                              if (_userType == UserType.Supervisor)
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
@@ -267,7 +267,7 @@ class _ProductsListState extends State<ProductsList> {
                                         navigateToEditProductForm(product),
                                   ),
                                 ),
-                              if (_userType == UserType.Manager)
+                              if (_userType == UserType.Supervisor)
                                 Positioned(
                                   bottom: 0,
                                   right: 0,
