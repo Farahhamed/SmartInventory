@@ -1,27 +1,81 @@
-import 'package:smartinventory/screens/AccessMonitoring.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
+import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
+import 'package:smartinventory/utilites/utils.dart';
 
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
+  @override
+  _NavBarState createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  late User? currentUser;
+  late Map<String, dynamic> userData = {};
+  bool isLoading = false;
+  String accountName = 'NohaElmasry';
+  String accountEmail = 'noha@gmail.com';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('Register_employees')
+            .doc(currentUser!.uid)
+            .get();
+
+        if (userSnapshot.exists) {
+          Map<String, dynamic> fetchedUser =
+              userSnapshot.data() as Map<String, dynamic>;
+          DocumentSnapshot branchSnapshot = await FirebaseFirestore.instance
+              .collection('branches')
+              .doc(fetchedUser['branchId'])
+              .get();
+          Map<String, dynamic> fetchedBranch =
+              branchSnapshot.data() as Map<String, dynamic>;
+          setState(() {
+            userData = fetchedUser;
+          });
+        }
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString()); // show error in a snack bar
+    }
+    setState(() {
+      isLoading = false; // after data is retrieved, no more loading
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text('NohaElmasry'),
-            accountEmail: Text('noha@gmail.com'),
+            accountName: Text(userData['name'] ?? ""),
+            accountEmail: Text(userData['email'] ?? ""),
             currentAccountPicture: CircleAvatar(
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/kitty.png',
-                  fit: BoxFit.cover,
-                  width: 90,
-                  height: 90,
-                ),
-              ),
+              radius: 30,
+              backgroundColor: Colors.white,
+              backgroundImage: userData.containsKey('pic')
+                  ? NetworkImage(userData['pic'])
+                  : AssetImage('assets/images/default_profile_pic.png')
+                      as ImageProvider,
             ),
             decoration: BoxDecoration(
               color: Colors.blue,
@@ -88,7 +142,11 @@ class NavBar extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             onTap: () {
               // Perform user logout
-              // You can integrate Firebase authentication to handle user logout
+              FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
             },
           ),
         ],
