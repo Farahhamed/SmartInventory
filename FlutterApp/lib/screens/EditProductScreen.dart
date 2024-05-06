@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/models/ProductModel.dart';
 
 class EditProductScreen extends StatelessWidget {
-  final int productId;
-  final Function(int, String, double) updateProduct;
+  final Product product; // Pass the entire Product object
+  final Function(Product) updateProduct; // Modify the function signature
 
-  EditProductScreen({super.key, 
-    required this.productId,
+  EditProductScreen({
+    Key? key,
+    required this.product, // Update the constructor
     required this.updateProduct,
-  });
+  }) : super(key: key);
 
-  final TextEditingController newNameController = TextEditingController();
-  final TextEditingController newListPriceController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    nameController.text = product.name; // Pre-fill the text fields with existing data
+    quantityController.text = product.quantity.toString();
+    descriptionController.text = product.description;
+    priceController.text = product.price;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Product'),
@@ -24,22 +33,43 @@ class EditProductScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: newNameController,
-              decoration: const InputDecoration(labelText: 'New Product Name'),
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Product Name'),
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: newListPriceController,
-              decoration: const InputDecoration(labelText: 'New List Price'),
+              controller: quantityController,
+              decoration: const InputDecoration(labelText: 'Quantity'),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: descriptionController,
+              decoration: const InputDecoration(labelText: 'Description'),
+              maxLines: null,
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: priceController,
+              decoration: const InputDecoration(labelText: 'Price'),
+              keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                updateProduct(
-                  productId,
-                  newNameController.text,
-                  double.parse(newListPriceController.text),
+                // Create a new Product object with updated data but keep the original orderDateTime
+                Product updatedProduct = Product(
+                  name: nameController.text,
+                  quantity: int.parse(quantityController.text),
+                  description: descriptionController.text,
+                  price: priceController.text,
+                  categoryId: product.categoryId,
+                  imageUrl: product.imageUrl,
+                  id: product.id,
+                  orderDateTime: product.orderDateTime,
                 );
+                // Pass the updated Product to the updateProduct method
+                updateProduct(updatedProduct);
                 Navigator.pop(context); // Close the Edit Product form after updating
               },
               child: const Text('Update Product'),
@@ -50,3 +80,4 @@ class EditProductScreen extends StatelessWidget {
     );
   }
 }
+

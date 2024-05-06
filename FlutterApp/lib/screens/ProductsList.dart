@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartinventory/models/ProductModel.dart';
 import 'package:smartinventory/screens/AddProduct.dart';
 import 'package:smartinventory/screens/AssignTagToProduct.dart';
+import 'package:smartinventory/screens/OneProduct.dart';
 import 'package:smartinventory/screens/SideBar.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,24 +12,22 @@ import 'package:smartinventory/screens/EditProductScreen.dart';
 enum UserType { Manager, Employee }
 
 class ProductsList extends StatefulWidget {
-  const ProductsList({super.key});
+  const ProductsList({Key? key}) : super(key: key);
 
   @override
   State<ProductsList> createState() => _ProductsListState();
 }
 
 class _ProductsListState extends State<ProductsList> {
-  List<Map<String, dynamic>> records = [];
-  final ProductService odooMethodsHelper = ProductService();
-  final TextEditingController productNameController = TextEditingController();
-  final TextEditingController listPriceController = TextEditingController();
+  final ProductService productService = ProductService();
+  List<Product> products = [];
   UserType _userType = UserType.Employee;
 
   @override
   void initState() {
     super.initState();
     _getUserType();
-    fetchData();
+    _fetchProducts();
   }
 
   Future<void> _getUserType() async {
@@ -35,13 +35,13 @@ class _ProductsListState extends State<ProductsList> {
 
     if (currentUser != null) {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('Register_employees')
           .doc(currentUser.uid)
           .get();
 
       if (userSnapshot.exists && userSnapshot.data() != null) {
         dynamic userData = userSnapshot.data();
-        String? userType = userData?['userType'] as String?;
+        String? userType = userData?['employeeType'] as String?;
 
         if (userType == 'Manager') {
           setState(() {
@@ -56,123 +56,76 @@ class _ProductsListState extends State<ProductsList> {
     }
   }
 
-  Future<void> fetchData() async {
-    final data = await odooMethodsHelper.fetchDataOdoo();
-    setState(() {
-      records = data;
+  Future<void> _fetchProducts() async {
+    productService.getProduct().listen((List<Product> productList) {
+      setState(() {
+        products = productList;
+      });
     });
-  }
-
-  Future<void> addProduct() async {
-    await odooMethodsHelper.addProductOdoo(
-      productNameController.text,
-      double.parse(listPriceController.text),
-    );
-    fetchData();
-    Navigator.pop(context);
-  }
-
-  Future<void> updateProduct(
-      int productId, String newName, double newListPrice) async {
-    await odooMethodsHelper.updateProductOdoo(productId, newName, newListPrice);
-    fetchData();
   }
 
   void navigateToAddProductForm() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddProduct(),
+        builder: (context) => const AddProduct(),
       ),
     );
   }
 
-  void editProduct(int productId) {
+  void navigateToEditProductForm(Product product) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditProductScreen(
-          productId: productId,
-          updateProduct: updateProduct,
+          product: product,
+          updateProduct: _updateProduct,
         ),
       ),
     );
   }
 
-  void performDelete(int productId) async {
+  void _updateProduct(Product updatedProduct) async {
     try {
-      await odooMethodsHelper.deleteProductOdoo(productId);
-      fetchData();
+      await productService.editProduct(updatedProduct);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Product updated successfully'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     } catch (error) {
-      print('Error deleting product: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update product: $error'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
+  Future<void> performDelete(String productId) async {
+    await productService.deleteProduct(productId);
+  }
+
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
         key: scaffoldKey,
-        drawer: NavBar(),
         appBar: AppBar(
-          title: const Text('Products List   '), // Removed unnecessary space
+          title: const Text('Products List'),
           centerTitle: true,
-          leading: IconButton(
-              icon: const Icon(
-                Icons.menu_sharp,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                scaffoldKey.currentState?.openDrawer();
-              }),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0), // Adjust as needed
-              child: Ink(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFBB8493),
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddProduct()),
-                    );
-                  },
-                  tooltip: 'Add Product',
-                ),
+            if (_userType == UserType.Manager)
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: navigateToAddProductForm,
+                tooltip: 'Add Product',
               ),
-            ),
-            Ink(
-              decoration: const BoxDecoration(
-                color: Color(0xFFBB8493),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.add_card,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AssignTagToProduct()),
-                  );
-                },
-                tooltip: 'Assign Tag',
-              ),
-            ),
           ],
         ),
         body: Column(
@@ -193,74 +146,93 @@ class _ProductsListState extends State<ProductsList> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: records.length,
+                itemCount: products.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      color: Colors.grey[100],
-                      child: Container(
-                        height: 250.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/images/hair.png'),
-                          ),
+                  Product product = products[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetails(
+                              product:
+                                  product), // Pass the selected product to ProductDetails screen
                         ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(12.0),
-                                color: Colors.white.withOpacity(0.8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      records[index]['name'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      'List Price: ${records[index]['list_price']}',
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        color: Colors.grey[100],
+                        child: Container(
+                          height: 250.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(product.imageUrl),
                             ),
-                            if (_userType == UserType.Manager)
+                          ),
+                          child: Stack(
+                            children: [
                               Positioned(
-                                top: 0,
-                                right: 0,
-                                child: IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () =>
-                                      editProduct(records[index]['id']),
-                                ),
-                              ),
-                            if (_userType == UserType.Manager)
-                              Positioned(
-                                top: 0,
+                                bottom: 0,
                                 left: 0,
-                                child: IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () =>
-                                      performDelete(records[index]['id']),
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(12.0),
+                                  color: Colors.white.withOpacity(0.8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        product.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Price: ${product.price}',
+                                        style: const TextStyle(
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Quantity: ${product.quantity}',
+                                        style: const TextStyle(
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                          ],
+                              if (_userType == UserType.Manager)
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () =>
+                                        navigateToEditProductForm(product),
+                                  ),
+                                ),
+                              if (_userType == UserType.Manager)
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () => performDelete(product.id),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -270,12 +242,6 @@ class _ProductsListState extends State<ProductsList> {
             ),
           ],
         ),
-        floatingActionButton: _userType == UserType.Manager
-            ? FloatingActionButton(
-                onPressed: navigateToAddProductForm,
-                child: const Icon(Icons.add),
-              )
-            : null,
       ),
     );
   }
