@@ -20,7 +20,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     EmployeeList(),
     ProductsList(),
-    HomePageScreen(),
+    HomePage(),
     LogsWidgetScreen(),
     ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
   ];

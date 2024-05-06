@@ -53,7 +53,7 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePageScreen()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   ); // Navigate back to the previous screen
                 },
               ),
@@ -363,7 +363,8 @@ Future<void> ChangeQuantity(MapEntry<String, dynamic> Product) async {
 
     await FirebaseFirestore.instance
         .collection('Products')
-        .doc(snapshot.docs[0]['uid']).update({'quantity':currentquantity});
+        .doc(snapshot.docs[0]['uid'])
+        .update({'quantity': currentquantity});
 
     await UpdateRealTimeDB(Product);
   }
