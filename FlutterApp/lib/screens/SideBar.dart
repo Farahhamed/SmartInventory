@@ -1,6 +1,7 @@
 import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
+import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/Notification.dart';
 
 class NavBar extends StatelessWidget {
@@ -8,7 +9,6 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
             accountName: Text('NohaElmasry'),
@@ -37,7 +37,7 @@ class NavBar extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => NavbarDashboard()),
               );
             },
           ),

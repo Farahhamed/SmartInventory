@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartinventory/screens/AddProduct.dart';
 import 'package:smartinventory/screens/AssignTagToProduct.dart';
+import 'package:smartinventory/screens/SideBar.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProductScreen.dart';
@@ -81,8 +82,7 @@ class _ProductsListState extends State<ProductsList> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddProduct(
-        ),
+        builder: (context) => AddProduct(),
       ),
     );
   }
@@ -108,46 +108,50 @@ class _ProductsListState extends State<ProductsList> {
     }
   }
 
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16.0, vertical: 16.0), // Add padding around the page
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
+        key: scaffoldKey,
+        drawer: NavBar(),
         appBar: AppBar(
           title: const Text('Products List'), // Removed unnecessary space
           centerTitle: true,
           leading: IconButton(
-            icon: const Icon(
-              Icons.menu_sharp,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+              icon: const Icon(
+                Icons.menu_sharp,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                scaffoldKey.currentState?.openDrawer();
+              }),
           actions: [
-            Ink(
-              decoration: const BoxDecoration(
-                color: Color(0xFFBB8493),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 30,
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0), // Adjust as needed
+              child: Ink(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFBB8493),
+                  shape: BoxShape.circle,
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AddProduct()),
-                  );
-                },
-                tooltip: 'Add Product',
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddProduct()),
+                    );
+                  },
+                  tooltip: 'Add Product',
+                ),
               ),
             ),
-            const SizedBox(width: 20),
             Ink(
               decoration: const BoxDecoration(
                 color: Color(0xFFBB8493),
@@ -162,14 +166,15 @@ class _ProductsListState extends State<ProductsList> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AssignTagToProduct()),
+                    MaterialPageRoute(
+                        builder: (context) => const AssignTagToProduct()),
                   );
                 },
                 tooltip: 'Assign Tag',
               ),
             ),
-  ],
-),
+          ],
+        ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

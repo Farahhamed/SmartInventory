@@ -333,6 +333,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/SideBar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -345,6 +346,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavBar(),
       body: Stack(
         children: [
           // Background image and content
@@ -365,7 +367,9 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(8.0),
                       child: IconButton(
                         icon: const Icon(Icons.menu, color: Colors.white),
-                        onPressed: () {},
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
                       ),
                     ),
                     Expanded(child: Container()),
