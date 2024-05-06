@@ -1,4 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/models/ProductModel.dart';
+import 'package:smartinventory/services/ProductsService.dart';
+
+class DiscountCalculator {
+  // Function to calculate the discount rate
+  static double calculateDiscountRate(
+      double originalPrice, double discountedPrice) {
+    // Calculate the discount rate using the formula: (originalPrice - discountedPrice) / originalPrice * 100
+    return ((originalPrice - discountedPrice) / originalPrice) * 100;
+  }
+}
 
 class AddDiscountPage extends StatefulWidget {
   @override
@@ -6,42 +17,44 @@ class AddDiscountPage extends StatefulWidget {
 }
 
 class _AddDiscountPageState extends State<AddDiscountPage> {
+  late ProductService productService;
+
+  @override
+  void initState() {
+    super.initState();
+    productService = ProductService();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          title: const Text('Add Discount'),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
+      appBar: AppBar(
+        title: Text('Add Discount'),
+        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView(
-          children: const [
-            SizedBox(height: 10),
-            DiscountCard(
-              productName: 'Product A',
-              productImage: 'assets/product_a.jpg',
-            ),
-            SizedBox(height: 10),
-            DiscountCard(
-              productName: 'Product B',
-              productImage: 'assets/product_b.jpg',
-            ),
-            SizedBox(height: 10),
-            DiscountCard(
-              productName: 'Product C',
-              productImage: 'assets/product_c.jpg',
-            ),
-          ],
+        padding: const EdgeInsets.all(20),
+        child: StreamBuilder<List<Product>>(
+          stream: productService.getProduct(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<Product> products = snapshot.data!;
+              return ListView.builder(
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  return DiscountCard(product: products[index]);
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       ),
     );
@@ -49,14 +62,9 @@ class _AddDiscountPageState extends State<AddDiscountPage> {
 }
 
 class DiscountCard extends StatefulWidget {
-  final String productName;
-  final String productImage;
+  final Product product;
 
-  const DiscountCard({
-    Key? key,
-    required this.productName,
-    required this.productImage,
-  }) : super(key: key);
+  const DiscountCard({required this.product, Key? key}) : super(key: key);
 
   @override
   _DiscountCardState createState() => _DiscountCardState();
@@ -65,11 +73,13 @@ class DiscountCard extends StatefulWidget {
 class _DiscountCardState extends State<DiscountCard> {
   late TextEditingController _discountController;
   String? _discountErrorText;
+  late double originalPrice;
 
   @override
   void initState() {
     super.initState();
     _discountController = TextEditingController();
+    originalPrice = double.parse(widget.product.price);
   }
 
   @override
@@ -82,90 +92,147 @@ class _DiscountCardState extends State<DiscountCard> {
     setState(() {
       if (value.isEmpty) {
         _discountErrorText = 'Please enter a discount rate';
-      } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-        _discountErrorText = 'Please enter only numeric values';
+      } else if (!RegExp(r'^[1-9][0-9]?$|^100$').hasMatch(value)) {
+        _discountErrorText = 'Please enter a value between 1 and 100';
       } else {
         _discountErrorText = null;
       }
     });
   }
 
+  void _showDiscountedPrice(double discountRate) {
+    final double discountedPrice =
+        originalPrice - (originalPrice * (discountRate / 100));
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Discounted Price'),
+          content: Text(
+              'The discounted price is \$${discountedPrice.toStringAsFixed(2)}'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Apply discount action here
+                _applyDiscount();
+                Navigator.of(context).pop();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red[200]),
+              ),
+              child: Text(
+                'Apply',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _applyDiscount() {
+    final double discountRate = double.tryParse(_discountController.text) ?? 0;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('The discount is applied successfully'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.purple.shade100,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 150, // Adjust height as needed
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(widget.productImage),
-                    fit: BoxFit.cover,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        color: Color.fromRGBO(246, 245, 242, 1),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 140,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black26, width: 3),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Image.network(
+                      widget.product.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      widget.productName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: TextField(
-                      controller: _discountController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Discount Rate (%)',
-                        errorText: _discountErrorText,
-                      ),
-                      onChanged: _validateDiscount,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_discountErrorText == null) {
-                        // Discount functionality here
-                        print('Discount added: ${_discountController.text}%');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero, // No padding
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 40,
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Text(
-                        'Put on discount',
-                        style: TextStyle(fontSize: 16),
+                        widget.product.name,
+                        style: const TextStyle(
+                          color: Color.fromRGBO(112, 66, 100, 1),
+                          fontSize: 18.0,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: TextField(
+                        controller: _discountController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Discount Rate (%)',
+                          errorText: _discountErrorText,
+                        ),
+                        onChanged: _validateDiscount,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_discountErrorText == null) {
+                          final double discountRate =
+                              double.parse(_discountController.text);
+                          _showDiscountedPrice(discountRate);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Color.fromRGBO(112, 66, 100, 1),
+                        onSurface: Colors.red.shade200,
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        height: 40,
+                        child: Text(
+                          'Add a discount',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
