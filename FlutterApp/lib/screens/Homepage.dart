@@ -333,6 +333,10 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/Notification.dart';
+import 'package:smartinventory/screens/SideBar.dart';
+
+GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -345,6 +349,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
+      drawer: NavBar(),
       body: Stack(
         children: [
           // Background image and content
@@ -362,35 +368,41 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: IconButton(
                         icon: const Icon(Icons.menu, color: Colors.white),
-                        onPressed: () {},
+                        onPressed: () {
+                          scaffoldKey.currentState?.openDrawer();
+                        },
                       ),
                     ),
                     Expanded(child: Container()),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: IconButton(
                         icon: const Icon(Icons.notifications,
                             color: Colors.white),
                         onPressed: () {
-                          //
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const NotificationPage()),
+                          );
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: IconButton(
-                        icon: const Icon(Icons.more_vert, color: Colors.white),
-                        onPressed: () {
-                          //
-                        },
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: IconButton(
+                    //     icon: const Icon(Icons.more_vert, color: Colors.white),
+                    //     onPressed: () {
+                    //       //
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
-                const SizedBox(height: 10.0),
+                const SizedBox(height: 7.0),
                 const Center(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,

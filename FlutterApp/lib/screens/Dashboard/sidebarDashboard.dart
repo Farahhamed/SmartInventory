@@ -2,9 +2,10 @@ import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
+import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
 
-class NavBar extends StatelessWidget {
+class NavBarDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -32,12 +33,12 @@ class NavBar extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.dashboard),
-            title: Text('Dashboard'),
+            leading: Icon(Icons.app_shortcut_outlined),
+            title: Text('Application'),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NavbarDashboard()),
+                MaterialPageRoute(builder: (context) => MyHomePage()),
               );
             },
           ),
