@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:smartinventory/screens/Dashboard/sidebarDashboard.dart';
+import 'package:smartinventory/screens/StockControl/ABCScreen.dart';
+import 'package:smartinventory/screens/StockControl/CustomeDiscountScreen.dart';
+import 'package:smartinventory/screens/StockControl/FifoLifoScreen.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
+void main() {
+  runApp(MyApp());
+}
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: StockControlPage(),
-//     );
-//   }
-// }
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: StockControlPage(),
+    );
+  }
+}
+
+GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 class StockControlPage extends StatelessWidget {
   const StockControlPage({Key? key});
@@ -20,11 +26,13 @@ class StockControlPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
+      drawer: NavBarDashboard(),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
         child: Container(
           child: AppBar(
-            backgroundColor: Color.fromRGBO(66, 125, 157, 0.2),
+            // backgroundColor: Color.fromRGBO(66, 125, 157, 0.2),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(5.0),
@@ -42,7 +50,7 @@ class StockControlPage extends StatelessWidget {
               child: IconButton(
                 icon: const Icon(Icons.menu),
                 onPressed: () {
-                  // Handle menu icon press
+                  scaffoldKey.currentState?.openDrawer();
                 },
               ),
             ),
@@ -65,8 +73,12 @@ class StockControlPage extends StatelessWidget {
           mainAxisSpacing: 32.0,
           children: [
             GestureDetector(
+              //Discounts
               onTap: () {
-                // Handle onTap for Discounts
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddDiscountPage()),
+                );
               },
               child: Container(
                 height: 100.0,
@@ -142,7 +154,11 @@ class StockControlPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                // Handle onTap for Valuation Methods
+                // Handle onTap for Valuation MethodsonTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FifoLifoScreen()),
+                );
               },
               child: Container(
                 height: 120.0,
@@ -219,6 +235,11 @@ class StockControlPage extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Handle onTap for ABC Method
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductDistributionPage()),
+                );
               },
               child: Container(
                 height: 120.0,
