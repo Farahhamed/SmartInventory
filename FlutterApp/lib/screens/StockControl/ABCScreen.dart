@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:smartinventory/services/ProductsService.dart';
-
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: ProductDistributionPage(),
-//     );
-//   }
-// }
+import 'package:smartinventory/services/OdooService.dart';
 
 class ProductDistributionPage extends StatefulWidget {
   const ProductDistributionPage({Key? key}) : super(key: key);
@@ -27,7 +13,7 @@ class ProductDistributionPage extends StatefulWidget {
 class _ProductDistributionPageState extends State<ProductDistributionPage> {
   late Map<String, int> productDistribution;
   late List<Map<String, dynamic>> products;
-  final ProductService odooMethodsHelper = ProductService();
+  final OdooService odooMethodsHelper = OdooService();
   late double thresholdA;
   late double thresholdB;
 

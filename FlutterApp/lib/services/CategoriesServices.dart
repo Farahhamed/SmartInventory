@@ -70,4 +70,15 @@ Future<ProductCategory> getCategoryByName(String name) async {
       return ProductCategory(name: "", id: "");
     }
   }
+
+  Future<String> getCategoryNameById(String categoryId) async {
+    DocumentSnapshot categorySnapshot =
+        await _categoryCollection.doc(categoryId).get();
+
+    if (categorySnapshot.exists) {
+      return categorySnapshot.get('name');
+    } else {
+      return '';
+    }
+  }
 }
