@@ -74,8 +74,7 @@ class _NavBarState extends State<NavBar> {
               backgroundColor: Colors.white,
               backgroundImage: userData.containsKey('pic')
                   ? NetworkImage(userData['pic'])
-                  : AssetImage('assets/images/default_profile_pic.png')
-                      as ImageProvider,
+                  : AssetImage('assets/images/kitten.png') as ImageProvider,
             ),
             decoration: BoxDecoration(
               color: Colors.blue,
