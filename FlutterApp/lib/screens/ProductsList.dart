@@ -261,19 +261,29 @@ class _ProductsListState extends State<ProductsList> {
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () =>
-                                        navigateToEditProductForm(product),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () =>
+                                          navigateToEditProductForm(product),
+                                    ),
                                   ),
                                 ),
                               if (_userType == UserType.Supervisor)
                                 Positioned(
                                   bottom: 0,
                                   right: 0,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () => performDelete(product.id),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () =>
+                                          performDelete(product.id),
+                                    ),
                                   ),
                                 ),
                             ],
