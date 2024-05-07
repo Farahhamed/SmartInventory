@@ -7,6 +7,7 @@ import 'package:smartinventory/providers/provider.dart';
 import 'package:smartinventory/screens/AddProductCategory.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
 import 'package:smartinventory/screens/StockControl/FifoLifoScreen.dart';
+import 'package:smartinventory/screens/StockControl/FifoList.dart';
 import 'package:smartinventory/screens/WelcomeScreen.dart';
 import 'package:smartinventory/screens/AssignTagToProduct.dart';
 
@@ -17,9 +18,9 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-    child: const MaterialApp(
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthenticationWrapper(),
+      home: ProductSelectionPage(),
     ),
   ));
 }
