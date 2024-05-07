@@ -32,12 +32,26 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
       });
     } catch (e) {
       print("Error fetching product list: $e");
-      // Display an error message to the user
+      // Handle error
+    }
+  }
+
+void fetchAndDisplayFifoList(String uid) async {
+  try {
+    // Fetch the UID from Firestore based on the productId
+    if (uid.isNotEmpty) {
+      // Fetch the FIFO list using the UID from the real-time database
+      List<Map<String, dynamic>> list = await _fifoService.fetchRealtimeDatabaseDataForProduct(uid);
+      setState(() {
+        fifoList = list;
+      });
+    } else {
+      // Handle case where UID is not found
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Error'),
-          content: Text('Failed to fetch product list. Please try again later.'),
+          content: Text('UID not found for the selected product.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -49,54 +63,30 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
         ),
       );
     }
+  } catch (e) {
+    print("Error fetching FIFO list: $e");
+    // Handle error
   }
+}
 
-  void fetchAndDisplayFifoList(String tagUid) async {
-    try {
-      // Fetch the productId from Firestore based on the tagUid
-      String productId = await getProductId(tagUid);
-      if (productId.isNotEmpty) {
-        // Fetch the FIFO list using the productId from the realtime database
-        List<Map<String, dynamic>> list = await _fifoService.getFIFOListForProduct(productId);
-        setState(() {
-          fifoList = list;
-        });
-      } else {
-        // Handle case where productId is not found
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Product not found for the given tag.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      print("Error fetching FIFO list: $e");
-      // Handle error
-    }
-  }
 
-  Future<String> getProductId(String tagUid) async {
+
+  Future<String> getProductId(String productId) async {
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-          .collection('Assign_product')
-          .where('tagUid', isEqualTo: tagUid)
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('Assigned_Products')
+          .where('ProductId', isEqualTo: productId)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs[0]['productId'];
+        print("Snapshot data: ${snapshot.docs[0].data()}");
+        return snapshot.docs[0]['UID'];
+      } else {
+        print("No documents found in the snapshot for product ID: $productId");
       }
     } catch (e) {
-      print("Error fetching productId: $e");
+      print("Error fetching UID: $e");
     }
     return '';
   }
@@ -112,13 +102,36 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
           DropdownButton<String>(
             value: selectedProduct,
             items: productList.map((product) {
-              return DropdownMenuItem(child: Text(product.name), value: product.id);
+              return DropdownMenuItem(
+                  child: Text(product.name), value: product.id);
             }).toList(),
-            onChanged: (value) {
+            onChanged: (value) async {
               setState(() {
                 selectedProduct = value;
-                fetchAndDisplayFifoList(value!);
               });
+              // Fetch UID based on selected product ID
+              String uid = await getProductId(value!);
+              if (uid.isNotEmpty) {
+                // Fetch and display FIFO list using UID
+                fetchAndDisplayFifoList(uid);
+              } else {
+                // Handle case where UID is not found
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Error'),
+                    content: Text('UID n.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+              }
             },
           ),
           if (fifoList != null) ...[
@@ -130,8 +143,8 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
                 itemBuilder: (context, index) {
                   // Customize how each FIFO list entry is displayed based on your data structure
                   return ListTile(
-                    title: Text('Entry Date: ${fifoList![index]['entryDate']}'),
-                    subtitle: Text('Employee Name: ${fifoList![index]['employeeName']}'),
+                    title: Text('Entry Date: ${fifoList![index]['datetime']}'),
+                    subtitle: Text('Other details here...'),
                   );
                 },
               ),
