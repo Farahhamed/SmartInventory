@@ -7,8 +7,6 @@ import 'package:smartinventory/models/ProductModel.dart';
 import 'package:uuid/uuid.dart';
 
 class ProductService {
-  
-
   final CollectionReference _productsCollection =
       FirebaseFirestore.instance.collection('Products');
 
@@ -31,7 +29,7 @@ class ProductService {
         FirebaseStorage.instance.ref().child('ProductPictures/$uuid/pic');
     await ref.putFile(file!);
     pic = await ref.getDownloadURL();
-    product.imageUrl = pic ;
+    product.imageUrl = pic;
     await _productsCollection.doc(uuid).set(product.toMap());
 
     return true; // Product added successfully
@@ -67,18 +65,17 @@ class ProductService {
       return products;
     });
   }
-  
   Stream<List<Product>> getProductsOrder({String? sortOrder}) {
-    return _productsCollection.orderBy(
-    'orderDateTime', 
-    descending: sortOrder == 'LIFO'
-  ).snapshots().asyncMap((snapshot) async {
-    List<Product> products = [];
-    for (DocumentSnapshot doc in snapshot.docs) {
-      Product product = await Product.fromSnapshot(doc);
-      products.add(product);
-    }
-    return products;
-  });
+    return _productsCollection
+        .orderBy('orderDateTime', descending: sortOrder == 'LIFO')
+        .snapshots()
+        .asyncMap((snapshot) async {
+      List<Product> products = [];
+      for (DocumentSnapshot doc in snapshot.docs) {
+        Product product = await Product.fromSnapshot(doc);
+        products.add(product);
+      }
+      return products;
+    });
   }
 }

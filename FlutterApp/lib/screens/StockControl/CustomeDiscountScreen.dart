@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/models/ProductModel.dart';
 import 'package:smartinventory/services/ProductsService.dart';
@@ -17,13 +18,7 @@ class AddDiscountPage extends StatefulWidget {
 }
 
 class _AddDiscountPageState extends State<AddDiscountPage> {
-  late ProductService productService;
-
-  @override
-  void initState() {
-    super.initState();
-    productService = ProductService();
-  }
+  late ProductService productService = ProductService();
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +34,12 @@ class _AddDiscountPageState extends State<AddDiscountPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               List<Product> products = snapshot.data!;
+
+              // Filter out products that have already been discounted
+              products = products
+                  .where((product) => !product.discountApplied)
+                  .toList();
+
               return ListView.builder(
                 itemCount: products.length,
                 itemBuilder: (context, index) {
@@ -120,7 +121,7 @@ class _DiscountCardState extends State<DiscountCard> {
             TextButton(
               onPressed: () {
                 // Apply discount action here
-                _applyDiscount();
+                _applyDiscount(discountRate, discountedPrice);
                 Navigator.of(context).pop();
               },
               style: ButtonStyle(
@@ -137,13 +138,40 @@ class _DiscountCardState extends State<DiscountCard> {
     );
   }
 
-  void _applyDiscount() {
-    final double discountRate = double.tryParse(_discountController.text) ?? 0;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('The discount is applied successfully'),
-      ),
-    );
+  Future<void> _applyDiscount(
+      double discountRate, double discountedPrice) async {
+    try {
+      final collectionRef = FirebaseFirestore.instance.collection('Discounts');
+
+      // Save the discount data to Firestore
+      await collectionRef.add({
+        'name': widget.product.name,
+        'price': widget.product.price,
+        'afterprice': discountedPrice.toString(),
+        'percentage': discountRate.toString(),
+        'imageUrl': widget.product.imageUrl,
+        'orderDateTime': DateTime.now(),
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('The discount is applied successfully'),
+        ),
+      );
+
+      // Notify the parent widget to remove the product from the list
+      // For simplicity, you can directly remove the product here if you have access to the list
+      setState(() {
+        widget.product.discountApplied = true;
+      });
+    } catch (e) {
+      print('Error saving discount: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to apply discount'),
+        ),
+      );
+    }
   }
 
   @override
@@ -240,6 +268,7 @@ class _DiscountCardState extends State<DiscountCard> {
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: AddDiscountPage(),
   ));
 }
