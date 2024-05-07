@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,12 +47,21 @@ class AuthMethods {
           password.isNotEmpty &&
           phoneNumber.isNotEmpty &&
           userType.isNotEmpty) {
-        UserCredential cred = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        
-         if (cred.user != null) {
+
+        FirebaseApp tempApp = await Firebase.initializeApp(
+            name: 'Some_Random_String_for_app_name',
+            options: Firebase.app().options);
+        UserCredential cred =
+            await FirebaseAuth.instanceFor(app: tempApp)
+                .createUserWithEmailAndPassword(email: email, password: password);
+
+
+        // UserCredential cred = await _auth.createUserWithEmailAndPassword(
+        //   email: email,
+        //   password: password,
+        // );
+
+        if (cred.user != null) {
           print('User created successfully!');
           // You can also access user information like uid
           print('User ID: ${cred.user?.uid}');
@@ -80,7 +90,7 @@ class AuthMethods {
               TagUid: TagUid,
               address: address,
               pic: pic,
-              branchId : branchId,
+              branchId: branchId,
               DateOfEmployment: DateTime.now(),
               IsDeleted: false,
             );
@@ -88,13 +98,12 @@ class AuthMethods {
             await _firestore.collection('Register_employees').doc(uid).set(
                   user.toJson(),
                 );
-        result["res"] = "success";
-        result["user"] = user;
+            result["res"] = "success";
+            result["user"] = user;
           } catch (e) {
             print('error occured');
           }
         }
-
       } else {
         result["res"] = "User registration failed";
       }
