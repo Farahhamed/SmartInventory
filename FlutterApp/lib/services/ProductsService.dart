@@ -126,34 +126,37 @@ class ProductService {
     }
   }
 
-// Future<List<Product>> getProductsFromAssignedProducts() async {
-//   List<Product> products = [];
+  Future<List<Product>> getProductsFromAssignedProducts() async {
+    List<Product> products = [];
 
-//   QuerySnapshot<Map<String, dynamic>> assignedProductsSnapshot =
-//       await _assignedProductsCollection.get() as QuerySnapshot<Map<String, dynamic>>;
+    QuerySnapshot<Map<String, dynamic>> assignedProductsSnapshot =
+        await _assignedProductsCollection.get()
+            as QuerySnapshot<Map<String, dynamic>>;
 
-//   for (QueryDocumentSnapshot<Map<String, dynamic>> assignedProductDoc
-//       in assignedProductsSnapshot.docs) {
-//     String productId = assignedProductDoc['ProductId'];
-//     DocumentSnapshot<Map<String, dynamic>> productSnapshot =
-//         await _productsCollection.doc(productId).get() as DocumentSnapshot<Map<String, dynamic>>;
+    for (QueryDocumentSnapshot<Map<String, dynamic>> assignedProductDoc
+        in assignedProductsSnapshot.docs) {
+      String productId = assignedProductDoc['ProductId'];
+      DocumentSnapshot<Map<String, dynamic>> productSnapshot =
+          await _productsCollection.doc(productId).get()
+              as DocumentSnapshot<Map<String, dynamic>>;
 
-//     if (productSnapshot.exists) {
-//       Product product = Product(
-//         name: productSnapshot['name'],
-//         quantity: productSnapshot['quantity'],
-//         description: productSnapshot['description'],
-//         price: productSnapshot['price'],
-//         categoryId: productSnapshot['categoryId'],
-//         imageUrl: productSnapshot['imageUrl'],
-//         id: productSnapshot.id,
-//         orderDateTime: DateTime.parse(
-//             productSnapshot['orderDateTime'].toString()), // Assuming orderDateTime is stored as a String
-//       );
-//       products.add(product);
-//     }
-//   }
+      if (productSnapshot.exists) {
+        Product product = Product(
+          name: productSnapshot['name'],
+          quantity: productSnapshot['quantity'],
+          description: productSnapshot['description'],
+          price: productSnapshot['price'],
+          categoryId: productSnapshot['categoryId'],
+          imageUrl: productSnapshot['imageUrl'],
+          id: productSnapshot.id,
+          orderDateTime: DateTime.parse(productSnapshot['orderDateTime']
+              .toString()), // Assuming orderDateTime is stored as a String
+          discountApplied: false,
+        );
+        products.add(product);
+      }
+    }
 
-//   return products;
-// }
+    return products;
+  }
 }
