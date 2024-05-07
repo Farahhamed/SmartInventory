@@ -9,7 +9,7 @@ import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProductScreen.dart';
 
-enum UserType { Manager, Employee }
+enum UserType { Supervisor, Employee, Manager }
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -21,12 +21,14 @@ class ProductsList extends StatefulWidget {
 class _ProductsListState extends State<ProductsList> {
   final ProductService productService = ProductService();
   List<Product> products = [];
-  UserType _userType = UserType.Employee;
+  UserType _userType = UserType.Employee; // Default to Employee
+  late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
     _getUserType();
+    _searchController = TextEditingController();
     _fetchProducts();
   }
 
@@ -43,7 +45,11 @@ class _ProductsListState extends State<ProductsList> {
         dynamic userData = userSnapshot.data();
         String? userType = userData?['employeeType'] as String?;
 
-        if (userType == 'Manager') {
+        if (userType == 'Supervisor') {
+          setState(() {
+            _userType = UserType.Supervisor;
+          });
+        } else if (userType == 'Manager') {
           setState(() {
             _userType = UserType.Manager;
           });
@@ -55,6 +61,7 @@ class _ProductsListState extends State<ProductsList> {
       }
     }
   }
+
 
   Future<void> _fetchProducts() async {
     productService.getProduct().listen((List<Product> productList) {
@@ -115,16 +122,66 @@ class _ProductsListState extends State<ProductsList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         key: scaffoldKey,
+        drawer: NavBar(),
         appBar: AppBar(
           title: const Text('Products List'),
           centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.menu_sharp,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+          ),
           actions: [
-            if (_userType == UserType.Manager)
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: navigateToAddProductForm,
-                tooltip: 'Add Product',
+            if (_userType == UserType.Supervisor)
+              Ink(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFBB8493),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddProduct()),
+                    );
+                  },
+                  tooltip: 'Add Product',
+                ),
+              ),
+            const SizedBox(width: 20),
+            if (_userType == UserType.Employee)
+              Ink(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFBB8493),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add_card,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AssignTagToProduct()),
+                    );
+                  },
+                  tooltip: 'Assign Tag',
+                ),
               ),
           ],
         ),
@@ -134,6 +191,10 @@ class _ProductsListState extends State<ProductsList> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {}); // Trigger rebuild on text change
+                },
                 cursorHeight: 35,
                 decoration: InputDecoration(
                   hintText: 'Search for a product',
@@ -149,6 +210,18 @@ class _ProductsListState extends State<ProductsList> {
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   Product product = products[index];
+
+                  // Check if the product name contains the search query
+                  bool matchesSearch = product.name
+                      .toLowerCase()
+                      .contains(_searchController.text.toLowerCase());
+
+                  // If the search query is not empty and the product name doesn't match, return an empty container
+                  if (_searchController.text.isNotEmpty && !matchesSearch) {
+                    return Container();
+                  }
+
+                  // Otherwise, display the product
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -212,23 +285,33 @@ class _ProductsListState extends State<ProductsList> {
                                   ),
                                 ),
                               ),
-                              if (_userType == UserType.Manager)
+                              if (_userType == UserType.Supervisor)
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.edit),
-                                    onPressed: () =>
-                                        navigateToEditProductForm(product),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () =>
+                                          navigateToEditProductForm(product),
+                                    ),
                                   ),
                                 ),
-                              if (_userType == UserType.Manager)
+                              if (_userType == UserType.Supervisor)
                                 Positioned(
                                   bottom: 0,
                                   right: 0,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () => performDelete(product.id),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () =>
+                                          performDelete(product.id),
+                                    ),
                                   ),
                                 ),
                             ],

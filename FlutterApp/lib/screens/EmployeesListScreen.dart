@@ -6,6 +6,8 @@ import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/screens/SideBar.dart';
 import 'package:smartinventory/services/UserService.dart'; // Import your UserService
 
+enum UserType { Manager, Employee }
+
 class EmployeeList extends StatefulWidget {
   const EmployeeList({Key? key}) : super(key: key);
 
@@ -16,11 +18,39 @@ class EmployeeList extends StatefulWidget {
 class _EmployeeListState extends State<EmployeeList> {
   late TextEditingController _searchController;
   final UserService _userService = UserService(); // Initialize UserService
+  UserType _userType = UserType.Employee;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _getUserType();
+  }
+
+  Future<void> _getUserType() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Register_employees')
+          .doc(currentUser.uid)
+          .get();
+
+      if (userSnapshot.exists && userSnapshot.data() != null) {
+        dynamic userData = userSnapshot.data();
+        String? userType = userData?['employeeType'] as String?;
+
+        if (userType == 'Manager') {
+          setState(() {
+            _userType = UserType.Manager;
+          });
+        } else {
+          setState(() {
+            _userType = UserType.Employee;
+          });
+        }
+      }
+    }
   }
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -50,6 +80,7 @@ class _EmployeeListState extends State<EmployeeList> {
             },
           ),
           actions: [
+            if (_userType == UserType.Manager)
             Ink(
               decoration: const BoxDecoration(
                 color: Color(0xFFBB8493),
@@ -187,6 +218,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                   //     // Implement edit functionality
                                   //   },
                                   // ),
+                                  if (_userType == UserType.Manager)
                                   IconButton(
                                     icon: Icon(Icons.delete),
                                     color: Colors.red,

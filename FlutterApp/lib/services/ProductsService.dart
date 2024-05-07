@@ -65,7 +65,6 @@ class ProductService {
       return products;
     });
   }
-
   Stream<List<Product>> getProductsOrder({String? sortOrder}) {
     return _productsCollection
         .orderBy('orderDateTime', descending: sortOrder == 'LIFO')

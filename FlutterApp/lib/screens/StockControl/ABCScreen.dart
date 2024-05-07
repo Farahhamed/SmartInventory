@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:smartinventory/services/OdooService.dart';
+import 'package:smartinventory/models/ProductModel.dart';
+import 'package:smartinventory/services/ProductsService.dart';
 
 class ProductDistributionPage extends StatefulWidget {
   const ProductDistributionPage({Key? key}) : super(key: key);
@@ -12,8 +13,8 @@ class ProductDistributionPage extends StatefulWidget {
 
 class _ProductDistributionPageState extends State<ProductDistributionPage> {
   late Map<String, int> productDistribution;
-  late List<Map<String, dynamic>> products;
-  final OdooService odooMethodsHelper = OdooService();
+  late List<Product> products; // Updated type
+  final ProductService productService = ProductService(); // Updated service
   late double thresholdA;
   late double thresholdB;
 
@@ -24,32 +25,40 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   }
 
   Future<void> fetchData() async {
-    products = await odooMethodsHelper.fetchDataOdoo();
+    products = await productService
+        .getProduct()
+        .first; // Updated to use getProduct method
     calculateThresholds();
     productDistribution = categorizeProducts(products);
     setState(() {});
   }
 
   void calculateThresholds() {
-    double totalListPrice = products.fold(
-        0, (previousValue, element) => previousValue + element['list_price']);
+    double totalPrice = products.fold(
+        0,
+        (previousValue, element) =>
+            previousValue +
+            double.parse(element.price)); // Updated to use price
 
-    thresholdA = totalListPrice * 0.2;
-    thresholdB = totalListPrice * 0.4;
+    thresholdA = totalPrice * 0.2;
+    thresholdB = totalPrice * 0.4;
   }
 
-  Map<String, int> categorizeProducts(List<Map<String, dynamic>> products) {
-    products.sort((a, b) => b['list_price'].compareTo(a['list_price']));
+  Map<String, int> categorizeProducts(List<Product> products) {
+    products.sort((a, b) => double.parse(b.price)
+        .compareTo(double.parse(a.price))); // Updated to use price
 
     int countA = 0;
     int countB = 0;
     int countC = 0;
 
     for (var product in products) {
-      if (product['list_price'] >= thresholdA) {
+      if (double.parse(product.price) >= thresholdA) {
+        // Updated to use price
         countA++;
-      } else if (product['list_price'] >= thresholdB &&
-          product['list_price'] < thresholdA) {
+      } else if (double.parse(product.price) >= thresholdB &&
+          double.parse(product.price) < thresholdA) {
+        // Updated to use price
         countB++;
       } else {
         countC++;
@@ -67,7 +76,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Distribution'),
+        title: Center(child: const Text('Product Distribution')),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -177,7 +186,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   }
 
   void _showDetailsDialog(
-      Map<String, int> distribution, List<Map<String, dynamic>> products) {
+      Map<String, int> distribution, List<Product> products) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -219,27 +228,27 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   }
 
   List<Widget> _getProductsForCategory(
-      String category, List<Map<String, dynamic>> products) {
+      String category, List<Product> products) {
     List<Widget> productWidgets = [];
 
     // Filter products based on category
-    List<Map<String, dynamic>> categoryProducts = [];
+    List<Product> categoryProducts = [];
     switch (category) {
       case 'Category A':
         categoryProducts = products.where((product) {
-          return product['list_price'] >= thresholdA;
+          return double.parse(product.price) >= thresholdA;
         }).toList();
         break;
       case 'Category B':
         categoryProducts = products.where((product) {
-          return product['list_price'] >= thresholdB &&
-              product['list_price'] < thresholdA;
+          return double.parse(product.price) >= thresholdB &&
+              double.parse(product.price) < thresholdA;
         }).toList();
         break;
       case 'Category C':
         categoryProducts = products.where((product) {
-          return product['list_price'] < thresholdB &&
-              product['list_price'] < thresholdA;
+          return double.parse(product.price) < thresholdB &&
+              double.parse(product.price) < thresholdA;
         }).toList();
         break;
     }
@@ -248,8 +257,8 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
     categoryProducts.forEach((product) {
       productWidgets.add(
         ListTile(
-          title: Text(product['name']),
-          subtitle: Text('List Price: \$${product['list_price']}'),
+          title: Text(product.name),
+          subtitle: Text('Price: \$${product.price}'),
         ),
       );
     });
