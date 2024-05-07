@@ -10,6 +10,7 @@ class Product {
   late String imageUrl;
   late String id;
   final DateTime orderDateTime;
+  bool discountApplied;
 
   Product({
     required this.name,
@@ -20,6 +21,7 @@ class Product {
     required this.imageUrl,
     required this.id,
     required this.orderDateTime, // Initialize this field
+    this.discountApplied = false,
   });
 
   Map<String, dynamic> toMap() => {
@@ -31,6 +33,7 @@ class Product {
         "imageUrl": imageUrl,
         "uid": id,
         "orderDateTime": orderDateTime, // Add the orderDateTime to the map
+        "discountApplied": discountApplied
       };
 
   static Product fromSnapshot(DocumentSnapshot snapshot) {
@@ -44,8 +47,11 @@ class Product {
       id: snapshot.id,
       categoryId: data['categoryId'], // Get the ID
       orderDateTime: data['orderDateTime'] != null
-          ? (data['orderDateTime'] as Timestamp).toDate() // Convert Timestamp to DateTime
-          : DateTime.now(), // Default to current time if orderDateTime is missing
+          ? (data['orderDateTime'] as Timestamp)
+              .toDate() // Convert Timestamp to DateTime
+          : DateTime
+              .now(), // Default to current time if orderDateTime is missing
+      discountApplied: data['discountApplied'],
     );
-}
+  }
 }
