@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,10 @@ import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
 
 late List<String> EmployeesList = [];
+late Map<String, Queue<MapEntry<String, dynamic>>> productQueues;
 
 class LogsWidgetScreen extends StatefulWidget {
-  const LogsWidgetScreen({super.key});
+  const LogsWidgetScreen({Key? key});
 
   @override
   State<LogsWidgetScreen> createState() => _LogsWidgetScreenState();
@@ -19,18 +21,19 @@ class LogsWidgetScreen extends StatefulWidget {
 class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
   late List<MapEntry<String, dynamic>> LogsData;
   bool isLoaded = false;
+
   @override
   void initState() {
     super.initState();
     isLoaded = false;
     loadData();
+    productQueues = {}; // Initialize product queues
   }
 
   void loadData() async {
     List<MapEntry<String, dynamic>> data = await masterFunction();
     setState(() {
       LogsData = data;
-      // print("lolo $LogsData");
       LogsData = LogsData.reversed.toList();
       isLoaded = true;
     });
@@ -39,53 +42,43 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
   @override
   Widget build(BuildContext context) {
     return !isLoaded
-        ? const Center(
-            child:
-                CircularProgressIndicator(), // if isLoading is true, show loading in ui
+        ? Center(
+            child: CircularProgressIndicator(),
           )
         : Scaffold(
             appBar: AppBar(
               title: Text('Access Log'),
-              backgroundColor: Colors
-                  .grey[200], // Set background color to a light grey shade
+              backgroundColor: Colors.grey[200],
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
-                  ); // Navigate back to the previous screen
+                  );
                 },
               ),
             ),
             body: ListView.builder(
-              // reverse: true,
-              // return ListView.builder(
               shrinkWrap: true,
               itemCount: LogsData.length,
               itemBuilder: (context, index) {
                 Color dotColor = LogsData[index].value['Entry/Exit'] == 'Entry'
                     ? Colors.orange
                     : Colors.red;
-                // EmployeeOrProductName = selectedUser['name'];
-                // RFIDTagUid = selectedUser['Tag'];
 
-                // print('snapchot is: ${EmployeesList}  $dateTime');
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Timeline on the left
                       SizedBox(
                         width: 50.0,
                         child: Column(
                           children: [
                             Text(
                               '${DateTime.parse(LogsData[index].value['datetime'] == "" ? "" : LogsData[index].value['datetime']).day}',
-                              // 'Date is here',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Text(DateFormat.MMM().format(DateTime.parse(
                                 LogsData[index].value['datetime']))),
@@ -102,14 +95,12 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                         ),
                       ),
                       const SizedBox(width: 10.0),
-                      // Vertical line
                       Container(
                         width: 2.0,
-                        height: 50.0, // Adjust height according to your UI
+                        height: 50.0,
                         color: Colors.black,
                       ),
                       const SizedBox(width: 10.0),
-                      // Card-like shape on the right
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
@@ -120,7 +111,6 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Activity type
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 5.0, horizontal: 10.0),
@@ -129,13 +119,11 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 child: Text(
-                                  // 'activity type is here',
                                   LogsData[index].value['Entry/Exit'],
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                               const SizedBox(height: 10.0),
-                              // Time
                               Row(
                                 children: [
                                   const Icon(Icons.access_time),
@@ -145,7 +133,7 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                                         LogsData[index].value['datetime'] == ""
                                             ? ""
                                             : LogsData[index]
-                                                .value['datetime'])),
+                                            .value['datetime'])),
                                     style: const TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
@@ -153,7 +141,6 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                                 ],
                               ),
                               const SizedBox(height: 10.0),
-                              // Category and RFID details
                               Row(
                                 children: [
                                   const Icon(Icons.category),
@@ -172,11 +159,10 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                                 ],
                               ),
                               const SizedBox(height: 10.0),
-                              // Employee details
                               Row(
                                 children: [
                                   Icon(LogsData[index].value['Type'] ==
-                                          "Employee"
+                                      "Employee"
                                       ? Icons.person
                                       : Icons.category),
                                   const SizedBox(width: 5.0),
@@ -204,7 +190,8 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                   ),
                 );
               },
-            ));
+            ),
+          );
   }
 }
 
@@ -298,19 +285,25 @@ String RemoveZerosFromStart(String taguid) {
   return FinalResult;
 }
 
+void enqueueEntry(String productId, MapEntry<String, dynamic> entry) {
+  if (!productQueues.containsKey(productId)) {
+    productQueues[productId] = Queue<MapEntry<String, dynamic>>();
+  }
+  productQueues[productId]!.add(entry);
+}
+
+MapEntry<String, dynamic>? dequeueEntry(String productId) {
+  if (!productQueues.containsKey(productId)) return null;
+  return productQueues[productId]!.isNotEmpty
+      ? productQueues[productId]!.removeFirst()
+      : null;
+}
+
 Future<List<MapEntry<String, dynamic>>> masterFunction() async {
   List<MapEntry<String, dynamic>> TagsReadings =
       await fetchRealtimeDatabaseData();
-  print("new fetched data: $TagsReadings");
 
   for (var i = 0; i < TagsReadings.length; i++) {
-    // TagsReadings[i].value['Entry/Exit'] = "NA";
-    // print(TagsReadings[i].value['datetime']);
-    // print(TagsReadings[i].value['taguid']);
-    // print(TagsReadings[i].value['Type']);
-    // print(TagsReadings[i].value['Entry/Exit']);
-    // TagsReadings[i].value['E/P:Name']
-
     String fetchedName = await getEmployeeName(
         RemoveZerosFromStart(TagsReadings[i].value['taguid']),
         TagsReadings[i].value['Type'] == "Employee"
@@ -333,6 +326,9 @@ Future<List<MapEntry<String, dynamic>>> masterFunction() async {
     if (TagsReadings[i].value['IsChecked'] == false &&
         TagsReadings[i].value['Type'] != "Employee") {
       await ChangeQuantity(TagsReadings[i]);
+      enqueueEntry(TagsReadings[i].value['ProductId'], TagsReadings[i]);
+    } else {
+      dequeueEntry(TagsReadings[i].value['ProductId']);
     }
   }
   return TagsReadings;
