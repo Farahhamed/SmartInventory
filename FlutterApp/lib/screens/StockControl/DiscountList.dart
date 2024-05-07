@@ -408,7 +408,7 @@ class CouponShape extends StatelessWidget {
                                   color: Colors.transparent, width: 1),
                             ),
                             child: Image.asset(
-                              'assets/images/vitaminE.png',
+                              'assets/images/vitimanE.png',
                               fit: BoxFit.cover,
                             ),
                           ),
