@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/AccessMonitoring.dart';
+import 'package:smartinventory/screens/Dashboard/HomePageNew.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
@@ -20,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     EmployeeList(),
     ProductsList(),
-    HomePage(),
+    DashboardHomePage(),
     LogsWidgetScreen(),
     ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
   ];
