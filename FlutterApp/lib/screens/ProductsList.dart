@@ -138,7 +138,7 @@ class _ProductsListState extends State<ProductsList> {
             },
           ),
           actions: [
-            if (_userType == UserType.Supervisor)
+            if (_userType == UserType.Supervisor || _userType == UserType.Manager)
               Ink(
                 decoration: const BoxDecoration(
                   color: Color(0xFFBB8493),
@@ -161,7 +161,7 @@ class _ProductsListState extends State<ProductsList> {
                 ),
               ),
             const SizedBox(width: 20),
-            if (_userType == UserType.Employee)
+            if (_userType == UserType.Employee  || _userType == UserType.Manager)
               Ink(
                 decoration: const BoxDecoration(
                   color: Color(0xFFBB8493),
@@ -285,7 +285,7 @@ class _ProductsListState extends State<ProductsList> {
                                   ),
                                 ),
                               ),
-                              if (_userType == UserType.Supervisor)
+                              if (_userType == UserType.Supervisor || _userType == UserType.Manager)
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
@@ -298,7 +298,7 @@ class _ProductsListState extends State<ProductsList> {
                                     ),
                                   ),
                                 ),
-                              if (_userType == UserType.Supervisor)
+                              if (_userType == UserType.Supervisor || _userType == UserType.Manager)
                                 Positioned(
                                   bottom: 0,
                                   right: 0,

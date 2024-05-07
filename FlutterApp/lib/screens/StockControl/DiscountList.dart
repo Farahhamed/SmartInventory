@@ -322,35 +322,36 @@ class CouponShape extends StatelessWidget {
         title: Text('Discounts Available'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          buildCouponContainer(),
-          SizedBox(height: 20),
-          buildCouponContainer(),
-          SizedBox(height: 20),
-          buildCouponContainer(),
-          SizedBox(height: 20),
-          // Add the button here
-          Center(
-            child: SizedBox(
-              width: 150,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to another page
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => AddDiscountPage()));
-                },
-                child: const Text('Add Product'),
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(112, 66, 100, 1),
-                  onPrimary: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            buildCouponContainer(),
+            SizedBox(height: 20),
+            buildCouponContainer(),
+            SizedBox(height: 20),
+            buildCouponContainer(),
+            SizedBox(height: 20),
+            // Add the button here
+            Center(
+              child: SizedBox(
+                width: 150,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to another page
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AddDiscountPage()));
+                  },
+                  child: const Text('Add Product'),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Color.fromRGBO(112, 66, 100, 1),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
