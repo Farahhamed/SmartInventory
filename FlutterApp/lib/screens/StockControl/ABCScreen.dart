@@ -17,6 +17,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   final ProductService productService = ProductService(); // Updated service
   late double thresholdA;
   late double thresholdB;
+  bool isLoading = true; // Flag to track loading state
 
   @override
   void initState() {
@@ -25,12 +26,12 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   }
 
   Future<void> fetchData() async {
-    products = await productService
-        .getProduct()
-        .first; // Updated to use getProduct method
+    products = await productService.getProduct().first;
     calculateThresholds();
     productDistribution = categorizeProducts(products);
-    setState(() {});
+    setState(() {
+      isLoading = false; // Set loading flag to false after data is fetched
+    });
   }
 
   void calculateThresholds() {
@@ -78,62 +79,66 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
       appBar: AppBar(
         title: Center(child: const Text('Product Distribution')),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          color: const Color(0xFFF3E5F5),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const ListTile(
-                  title: Text(
-                    'Product Distribution',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    'The importance of the current products based on ABC method',
-                    style: TextStyle(color: Colors.purple),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    height: 300,
-                    child: PieChart(
-                      PieChartData(
-                        sections: _getSections(productDistribution),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator()) // Show indicator when loading
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                color: const Color(0xFFF3E5F5),
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildLegend('A', Colors.redAccent),
-                          _buildLegend('B', Colors.amberAccent),
-                          _buildLegend('C', Colors.lightBlueAccent),
-                        ],
+                      const ListTile(
+                        title: Text(
+                          'Product Distribution',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          'The importance of the current products based on ABC method',
+                          style: TextStyle(color: Colors.purple),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SizedBox(
+                          height: 300,
+                          child: PieChart(
+                            PieChartData(
+                              sections: _getSections(productDistribution),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildLegend('A', Colors.redAccent),
+                                _buildLegend('B', Colors.amberAccent),
+                                _buildLegend('C', Colors.lightBlueAccent),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () {
+                                _showDetailsDialog(
+                                    productDistribution, products);
+                              },
+                              child: const Text('See Details'),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          _showDetailsDialog(productDistribution, products);
-                        },
-                        child: const Text('See Details'),
-                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
