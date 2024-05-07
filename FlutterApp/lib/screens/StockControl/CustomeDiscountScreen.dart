@@ -242,8 +242,7 @@ class _DiscountCardState extends State<DiscountCard> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
-                        backgroundColor: Color.fromRGBO(112, 66, 100, 1),
-                        onSurface: Colors.red.shade200,
+                        backgroundColor: Color.fromRGBO(112, 66, 100, 1), disabledForegroundColor: Colors.red.shade200.withOpacity(0.38), disabledBackgroundColor: Colors.red.shade200.withOpacity(0.12),
                       ),
                       child: Container(
                         alignment: Alignment.center,
