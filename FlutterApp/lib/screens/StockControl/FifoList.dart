@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/models/ProductModel.dart';
 import 'package:smartinventory/services/FifoService.dart';
 import 'package:smartinventory/services/ProductsService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductSelectionPage extends StatefulWidget {
   @override
@@ -12,7 +13,9 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
   String? selectedProduct;
   List<Product> productList = [];
   final ProductService _productService = ProductService();
-  final FifoService _fifoService = FifoService(); // Create an instance of FifoService
+  final FifoService _fifoService = FifoService();
+
+  List<Map<String, dynamic>>? fifoList;
 
   @override
   void initState() {
@@ -20,64 +23,21 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
     fetchProductList();
   }
 
- void fetchProductList() async {
-  try {
-    _productService.getProduct().listen((List<Product> products) {
-      setState(() {
-        productList = products;
+  void fetchProductList() async {
+    try {
+      _productService.getProduct().listen((List<Product> products) {
+        setState(() {
+          productList = products;
+        });
       });
-    });
-  } catch (e) {
-    print("Error fetching product list: $e");
-    // Display an error message to the user
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text('Failed to fetch product list. Please try again later.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close the dialog
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-  void showFifoList() async {
-    if (selectedProduct != null) {
-      List<Map<String, dynamic>> fifoList = await _fifoService.getFIFOListForProduct(selectedProduct!);
-      List<String> fifoStringList = fifoList.map((entry) => entry.toString()).toList(); // Modify this line to extract the strings you need
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('FIFO List for $selectedProduct'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: fifoStringList.map((entry) => Text(entry)).toList(), // Use the modified list here
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: Text('Close'),
-            ),
-          ],
-        ),
-      );
-    } else {
+    } catch (e) {
+      print("Error fetching product list: $e");
+      // Display an error message to the user
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Error'),
-          content: Text('Please select a product first.'),
+          content: Text('Failed to fetch product list. Please try again later.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -91,6 +51,56 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
     }
   }
 
+  void fetchAndDisplayFifoList(String tagUid) async {
+    try {
+      // Fetch the productId from Firestore based on the tagUid
+      String productId = await getProductId(tagUid);
+      if (productId.isNotEmpty) {
+        // Fetch the FIFO list using the productId from the realtime database
+        List<Map<String, dynamic>> list = await _fifoService.getFIFOListForProduct(productId);
+        setState(() {
+          fifoList = list;
+        });
+      } else {
+        // Handle case where productId is not found
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Product not found for the given tag.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error fetching FIFO list: $e");
+      // Handle error
+    }
+  }
+
+  Future<String> getProductId(String tagUid) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+          .collection('Assign_product')
+          .where('tagUid', isEqualTo: tagUid)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs[0]['productId'];
+      }
+    } catch (e) {
+      print("Error fetching productId: $e");
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,47 +109,34 @@ class _ProductSelectionPageState extends State<ProductSelectionPage> {
       ),
       body: Column(
         children: [
-          FutureBuilder<List<String>>(
-  future: _productService.getAssignedProductIds(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return CircularProgressIndicator();
-    } else if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    } else {
-      List<String> assignedProductIds = snapshot.data ?? [];
-      List<Future<Product>> assignedProductFutures = assignedProductIds.map((productId) => _productService.getProductById(productId)).toList();
-
-      return FutureBuilder<List<Product>>(
-        future: Future.wait(assignedProductFutures),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            List<Product> assignedProducts = snapshot.data ?? [];
-            return DropdownButton<String>(
-              value: selectedProduct,
-              items: assignedProducts.map((product) {
-                return DropdownMenuItem(child: Text(product.name), value: product.id);
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedProduct = value;
-                });
-              },
-            );
-          }
-        },
-      );
-    }
-  },
-),
-          ElevatedButton(
-            onPressed: showFifoList,
-            child: Text('Show FIFO List'),
+          DropdownButton<String>(
+            value: selectedProduct,
+            items: productList.map((product) {
+              return DropdownMenuItem(child: Text(product.name), value: product.id);
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedProduct = value;
+                fetchAndDisplayFifoList(value!);
+              });
+            },
           ),
+          if (fifoList != null) ...[
+            SizedBox(height: 20),
+            Text('FIFO List for $selectedProduct'),
+            Expanded(
+              child: ListView.builder(
+                itemCount: fifoList!.length,
+                itemBuilder: (context, index) {
+                  // Customize how each FIFO list entry is displayed based on your data structure
+                  return ListTile(
+                    title: Text('Entry Date: ${fifoList![index]['entryDate']}'),
+                    subtitle: Text('Employee Name: ${fifoList![index]['employeeName']}'),
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

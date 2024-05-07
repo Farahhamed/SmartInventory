@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/NavigationBarScreen.dart';
-import 'package:smartinventory/services/FifoService.dart';
 
 late List<String> EmployeesList = [];
 
@@ -303,9 +302,15 @@ Future<List<MapEntry<String, dynamic>>> masterFunction() async {
   List<MapEntry<String, dynamic>> TagsReadings =
       await fetchRealtimeDatabaseData();
   print("new fetched data: $TagsReadings");
-  FifoService fifoService = FifoService();
 
   for (var i = 0; i < TagsReadings.length; i++) {
+    // TagsReadings[i].value['Entry/Exit'] = "NA";
+    // print(TagsReadings[i].value['datetime']);
+    // print(TagsReadings[i].value['taguid']);
+    // print(TagsReadings[i].value['Type']);
+    // print(TagsReadings[i].value['Entry/Exit']);
+    // TagsReadings[i].value['E/P:Name']
+
     String fetchedName = await getEmployeeName(
         RemoveZerosFromStart(TagsReadings[i].value['taguid']),
         TagsReadings[i].value['Type'] == "Employee"
@@ -329,17 +334,7 @@ Future<List<MapEntry<String, dynamic>>> masterFunction() async {
         TagsReadings[i].value['Type'] != "Employee") {
       await ChangeQuantity(TagsReadings[i]);
     }
-
-    // Assuming `TagsReadings[i].value['taguid']` is the product ID
-    // and `TagsReadings[i].value['datetime']` is the entry date
-    String productId = TagsReadings[i].value['taguid'];
-    String entryDate = TagsReadings[i].value['datetime'];
-    String employeeName = TagsReadings[i].value['E/P:Name'];
-
-    // Call the updateFIFOList function
-    await fifoService.updateFIFOList(productId, entryDate, employeeName);
   }
-
   return TagsReadings;
 }
 
