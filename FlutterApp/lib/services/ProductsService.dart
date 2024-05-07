@@ -9,6 +9,8 @@ import 'package:uuid/uuid.dart';
 class ProductService {
   final CollectionReference _productsCollection =
       FirebaseFirestore.instance.collection('Products');
+  final CollectionReference _assignedProductsCollection =
+      FirebaseFirestore.instance.collection('Assigned_Products');
 
   Future<bool> addProduct(Product product, File file) async {
     var uuid = Uuid().v4();
@@ -65,6 +67,7 @@ class ProductService {
       return products;
     });
   }
+
   Stream<List<Product>> getProductsOrder({String? sortOrder}) {
     return _productsCollection
         .orderBy('orderDateTime', descending: sortOrder == 'LIFO')
@@ -78,4 +81,79 @@ class ProductService {
       return products;
     });
   }
+
+  Future<List<String>> getAssignedProductIds() async {
+    List<String> assignedProductIds = [];
+
+    try {
+      // Fetch all assigned product IDs from Assigned_Products collection
+      QuerySnapshot assignedProductsSnapshot = await FirebaseFirestore.instance
+          .collection('Assigned_Products')
+          .get();
+
+      // Extract product IDs
+      assignedProductsSnapshot.docs.forEach((doc) {
+        assignedProductIds.add(doc['ProductId']);
+      });
+
+      return assignedProductIds;
+    } catch (e) {
+      print("Error getting assigned product IDs: $e");
+      return assignedProductIds;
+    }
+  }
+
+  Future<Product> getProductById(String productId) async {
+    try {
+      // Fetch product with the given ID from Products collection
+      DocumentSnapshot productSnapshot = await FirebaseFirestore.instance
+          .collection('Products')
+          .doc(productId)
+          .get();
+
+      // Check if product exists
+      if (productSnapshot.exists) {
+        // Convert snapshot data to Product object
+        Product product = Product.fromSnapshot(productSnapshot);
+        return product;
+      } else {
+        // Throw an error if product doesn't exist
+        throw Exception("Product with ID $productId does not exist");
+      }
+    } catch (e) {
+      // Throw an error if any other error occurs
+      throw Exception("Error getting product by ID: $e");
+    }
+  }
+
+// Future<List<Product>> getProductsFromAssignedProducts() async {
+//   List<Product> products = [];
+
+//   QuerySnapshot<Map<String, dynamic>> assignedProductsSnapshot =
+//       await _assignedProductsCollection.get() as QuerySnapshot<Map<String, dynamic>>;
+
+//   for (QueryDocumentSnapshot<Map<String, dynamic>> assignedProductDoc
+//       in assignedProductsSnapshot.docs) {
+//     String productId = assignedProductDoc['ProductId'];
+//     DocumentSnapshot<Map<String, dynamic>> productSnapshot =
+//         await _productsCollection.doc(productId).get() as DocumentSnapshot<Map<String, dynamic>>;
+
+//     if (productSnapshot.exists) {
+//       Product product = Product(
+//         name: productSnapshot['name'],
+//         quantity: productSnapshot['quantity'],
+//         description: productSnapshot['description'],
+//         price: productSnapshot['price'],
+//         categoryId: productSnapshot['categoryId'],
+//         imageUrl: productSnapshot['imageUrl'],
+//         id: productSnapshot.id,
+//         orderDateTime: DateTime.parse(
+//             productSnapshot['orderDateTime'].toString()), // Assuming orderDateTime is stored as a String
+//       );
+//       products.add(product);
+//     }
+//   }
+
+//   return products;
+// }
 }

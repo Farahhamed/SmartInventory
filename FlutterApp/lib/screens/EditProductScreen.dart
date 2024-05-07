@@ -18,7 +18,8 @@ class EditProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    nameController.text = product.name; // Pre-fill the text fields with existing data
+    nameController.text =
+        product.name; // Pre-fill the text fields with existing data
     quantityController.text = product.quantity.toString();
     descriptionController.text = product.description;
     priceController.text = product.price;
@@ -67,10 +68,12 @@ class EditProductScreen extends StatelessWidget {
                   imageUrl: product.imageUrl,
                   id: product.id,
                   orderDateTime: product.orderDateTime,
+                  discountApplied: false,
                 );
                 // Pass the updated Product to the updateProduct method
                 updateProduct(updatedProduct);
-                Navigator.pop(context); // Close the Edit Product form after updating
+                Navigator.pop(
+                    context); // Close the Edit Product form after updating
               },
               child: const Text('Update Product'),
             ),
@@ -80,4 +83,3 @@ class EditProductScreen extends StatelessWidget {
     );
   }
 }
-

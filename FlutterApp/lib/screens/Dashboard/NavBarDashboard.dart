@@ -3,6 +3,7 @@ import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/StockControl/ABCScreen.dart';
 import 'package:smartinventory/screens/StockControl/FifoLifoScreen.dart';
+import 'package:smartinventory/screens/StockControl/FifoScreenFrontend.dart';
 import 'package:smartinventory/screens/StockControl/StockControlScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
@@ -20,7 +21,7 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
     ForecastingScreen(),
     StockControlPage(),
     ProductDistributionPage(),
-    FifoLifoScreen(),
+    FIFOInventoryPage(),
   ];
 
   @override
