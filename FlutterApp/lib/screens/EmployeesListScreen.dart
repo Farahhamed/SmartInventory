@@ -65,7 +65,7 @@ class _EmployeeListState extends State<EmployeeList> {
         appBar: AppBar(
           title: Row(
             children: [
-              Center(child: Text('            Employees List      ')),
+              Center(child: Text('  Employees List  ')),
               Spacer(),
             ],
           ),

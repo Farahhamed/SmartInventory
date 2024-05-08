@@ -122,7 +122,7 @@ class _ProductsListState extends State<ProductsList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         key: scaffoldKey,
         drawer: NavBar(),
         appBar: AppBar(
