@@ -51,7 +51,7 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.pie_chart, color: Colors.white),
-              Text('Stock Control',
+              Text('Discount',
                   style: TextStyle(color: Colors.white, fontSize: 7)),
             ],
           ),
