@@ -29,7 +29,7 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         color: const Color.fromRGBO(66, 125, 157, 1),
         animationDuration: const Duration(milliseconds: 300),
         index: _currentIndex,
