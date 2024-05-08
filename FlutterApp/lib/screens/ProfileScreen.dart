@@ -17,7 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late User? currentUser;
   late Map<String, dynamic> userData;
   bool isLoading = false;
-  late String branchName ;
+  late String branchName;
 
   @override
   void initState() {
@@ -39,18 +39,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .get();
 
         if (userSnapshot.exists && userSnapshot.data() != null) {
-          Map<String, dynamic> fetchedUser = userSnapshot.data()! as Map<String, dynamic>;
-           DocumentSnapshot branchSnapshot = await FirebaseFirestore.instance
-            .collection('branches')
-            .doc(fetchedUser['branchId'])
-            .get();
-            Map<String, dynamic> fetchedBranch = branchSnapshot.data()! as Map<String, dynamic>;
+          Map<String, dynamic> fetchedUser =
+              userSnapshot.data()! as Map<String, dynamic>;
+          DocumentSnapshot branchSnapshot = await FirebaseFirestore.instance
+              .collection('branches')
+              .doc(fetchedUser['branchId'])
+              .get();
+          Map<String, dynamic> fetchedBranch =
+              branchSnapshot.data()! as Map<String, dynamic>;
           setState(() {
             branchName = fetchedBranch['location'];
             userData = fetchedUser;
           });
         }
-        
       }
     } catch (e) {
       showSnackBar(context, e.toString()); // show error in a snack bar
@@ -124,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Bio Section
                     const SizedBox(height: 16),
                     const Text(
-                      'A member of the GoodGuardian family',
+                      'A member of the SmartInvenory family',
                     ),
                     const SizedBox(height: 16),
                     // Center(
@@ -291,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: Color.fromARGB(255, 64, 58, 58))),
                             ],
                           ),
-                           Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text('Branch:',
@@ -322,7 +323,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: Color.fromARGB(255, 64, 58, 58))),
                             ],
                           ),
-                          
                         ],
                       ),
                     ),
