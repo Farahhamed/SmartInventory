@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/Dashboard/sidebarDashboard.dart';
 import 'package:smartinventory/screens/StockControl/ABCScreen.dart';
 import 'package:smartinventory/screens/StockControl/CustomeDiscountScreen.dart';
+import 'package:smartinventory/screens/StockControl/DiscountList.dart';
 import 'package:smartinventory/screens/StockControl/FifoLifoScreen.dart';
 
 void main() {
@@ -77,7 +78,7 @@ class StockControlPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddDiscountPage()),
+                  MaterialPageRoute(builder: (context) => CouponShape()),
                 );
               },
               child: Container(

@@ -231,11 +231,11 @@ Future<List<MapEntry<String, dynamic>>> fetchRealtimeDatabaseData() async {
   // List<MapEntry<String, dynamic>> TagsReadings = data.entries.toList();
   // print("shakl el data: $TagsReadings");
   // print("shakl item wa7ed: ${TagsReadings[0].value}");
-  // TagsReadings.sort((a, b) {
-  //   DateTime dateTimeA = DateTime.parse(a.value['datetime'] as String);
-  //   DateTime dateTimeB = DateTime.parse(b.value['datetime'] as String);
-  //   return dateTimeA.compareTo(dateTimeB);
-  // });
+  TagsReadings.sort((a, b) {
+    DateTime dateTimeA = DateTime.parse(a.value['datetime'] as String);
+    DateTime dateTimeB = DateTime.parse(b.value['datetime'] as String);
+    return dateTimeA.compareTo(dateTimeB);
+  });
   // print("hellz");
   return TagsReadings;
   // }

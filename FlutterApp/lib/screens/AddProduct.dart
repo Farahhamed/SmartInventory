@@ -23,7 +23,8 @@ class _AddProductState extends State<AddProduct> {
   int _quantity = 0; // Initialize quantity
 
   final ProductService _productService = ProductService();
-  final CategoryService _categoryService = CategoryService(); // Instantiate your category service
+  final CategoryService _categoryService =
+      CategoryService(); // Instantiate your category service
 
   List<ProductCategory> _categories = [];
 
@@ -54,16 +55,17 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
-Future<void> _addProductToFirebase() async {
-  try {
-    if (_productName.isEmpty ||
-        _description.isEmpty ||
-        _selectedCategory == null ||
-        _price <= 0 // Check if price is less than or equal to 0
-) { // Check if quantity is less than or equal to 0
-      return;
-    }
-     if (_image == null) {
+  Future<void> _addProductToFirebase() async {
+    try {
+      if (_productName.isEmpty ||
+              _description.isEmpty ||
+              _selectedCategory == null ||
+              _price <= 0 // Check if price is less than or equal to 0
+          ) {
+        // Check if quantity is less than or equal to 0
+        return;
+      }
+      if (_image == null) {
         // Show error message if image is null
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please select an image')),
@@ -71,47 +73,50 @@ Future<void> _addProductToFirebase() async {
         return; // Return early if image is null
       }
 
-    DateTime creationTime = DateTime.now(); // Capture the current time
+      DateTime creationTime = DateTime.now(); // Capture the current time
 
-    Product newProduct = Product(
-      name: _productName,
-      quantity: 0,
-      description: _description,
-      price: _price.toString(),
-      categoryId: _selectedCategory!.id,
-      imageUrl: '', // You can set the image URL if needed
-      id: '', // You can set the ID if needed
-      orderDateTime: creationTime, // Assign the creation time to orderDateTime
-    );
+      Product newProduct = Product(
+        name: _productName,
+        quantity: 0,
+        description: _description,
+        price: _price.toString(),
+        categoryId: _selectedCategory!.id,
+        imageUrl: '', // You can set the image URL if needed
+        id: '', // You can set the ID if needed
+        orderDateTime:
+            creationTime, // Assign the creation time to orderDateTime
+        discountApplied: false,
+      );
 
-    bool success = await _productService.addProduct(newProduct,_image!);
+      bool success = await _productService.addProduct(newProduct, _image!);
 
-    if (success) {
-      setState(() {
-        // Reset form fields
-        _productName = '';
-        _description = '';
-        _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
-        _price = 0.0;
-        _image = null;
-      });
+      if (success) {
+        setState(() {
+          // Reset form fields
+          _productName = '';
+          _description = '';
+          _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
+          _price = 0.0;
+          _image = null;
+        });
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success
+              ? 'Product added successfully'
+              : 'Product already exists'),
+        ),
+      );
+    } catch (error) {
+      print('Error adding product: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error adding product'),
+        ),
+      );
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(success ? 'Product added successfully' : 'Product already exists'),
-      ),
-    );
-  } catch (error) {
-    print('Error adding product: $error');
-     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error adding product'),
-      ),
-    );
   }
-}
-
 
   @override
   Widget build(BuildContext context) {

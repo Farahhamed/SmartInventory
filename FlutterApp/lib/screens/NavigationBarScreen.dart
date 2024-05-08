@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/AccessMonitoring.dart';
+import 'package:smartinventory/screens/Dashboard/HomePageNew.dart';
 import 'package:smartinventory/screens/EmployeesListScreen.dart';
 import 'package:smartinventory/screens/Homepage.dart';
 import 'package:smartinventory/screens/ProductsList.dart';
@@ -20,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     EmployeeList(),
     ProductsList(),
-    HomePage(),
+    DashboardHomePage(),
     LogsWidgetScreen(),
     ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
   ];
@@ -28,10 +29,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: _pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         color: const Color.fromRGBO(66, 125, 157, 1),
         animationDuration: const Duration(milliseconds: 300),
         index: _currentIndex,

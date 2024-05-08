@@ -104,7 +104,7 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
+    // if (_formKey.currentState!.validate()) {
       if (_tag == 'No assigned Tag yet') {
         // Show an error message if the tag has not been scanned
         ScaffoldMessenger.of(context).showSnackBar(
@@ -148,7 +148,7 @@ class _AssignTagToProductState extends State<AssignTagToProduct> {
           SnackBar(content: Text('Failed to add Product: $error')),
         );
       });
-    }
+    // }
   }
 
   String _convertToHexString(List<int> bytes) {

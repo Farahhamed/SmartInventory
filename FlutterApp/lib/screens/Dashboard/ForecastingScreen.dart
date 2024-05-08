@@ -18,7 +18,13 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
     SalesData(DateTime(2014), 40)
   ];
 
-  List<SalesData> forecastingResults = [];
+  List<SalesData> forecastingResults = [
+    SalesData(DateTime(2010), 34),
+    SalesData(DateTime(2011), 30),
+    SalesData(DateTime(2012), 35),
+    SalesData(DateTime(2013), 32),
+    SalesData(DateTime(2014), 40)
+  ];
 
   final int _currentIndex = 0;
 
@@ -232,7 +238,8 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
             shape: BoxShape.circle,
           ),
         ),
-        const SizedBox(width: 4), // Adding space between the indicator and the label
+        const SizedBox(
+            width: 4), // Adding space between the indicator and the label
         Text(
           label,
           style: const TextStyle(fontSize: 14),

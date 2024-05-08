@@ -65,7 +65,7 @@ class _EmployeeListState extends State<EmployeeList> {
         appBar: AppBar(
           title: Row(
             children: [
-              Center(child: Text('            Employees List      ')),
+              Center(child: Text('  Employees List  ')),
               Spacer(),
             ],
           ),
@@ -192,9 +192,13 @@ class _EmployeeListState extends State<EmployeeList> {
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                             child: ListTile(
-                              leading: CircleAvatar(
+                              leading:CircleAvatar(
                                 radius: 60,
-                                backgroundImage: NetworkImage(document['pic']),
+                                child: ClipOval(
+                                  child: Image.network(document['pic'],fit: BoxFit.fill,),
+                                ),
+                                // backgroundImage: NetworkImage(document['pic']),
+                                
                               ),
                               title: Text(
                                 document['name'] ?? '',

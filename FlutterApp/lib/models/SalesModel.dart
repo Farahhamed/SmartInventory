@@ -1,37 +1,47 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:smartinventory/models/ProductModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartinventory/models/ProductModel.dart'; // Import the Product model
 
-// class Sales {
-//   final String date;
-//   final Product productId;
-//   final String quantity;
-//   final String uuid; // Add UUID property
+class Discount {
+  final String name;
+  final String price;
+  final String afterprice;
+  final String percentage;
+  late String imageUrl;
+  late String id;
+  final DateTime discountExpire;
 
-//   const Sales({
-//     required this.date,
-//     required this.productId,
-//     required this.quantity,
-//     required this.uuid,
-//   });
+  Discount({
+    required this.name,
+    required this.price,
+    required this.afterprice,
+    required this.percentage,
+    required this.imageUrl,
+    required this.id,
+    required this.discountExpire,
+  });
 
-//   // Function to convert Sales object to a Map for Firestore
-//   Map<String, dynamic> toMap() => {
-//         "date": date,
-//         "productId":
-//             productId.toMap(), // Convert Product to a map for Firestore
-//         "quantity": quantity,
-//         "uuid": uuid,
-//       };
+  Map<String, dynamic> toMap() => {
+        "name": name,
+        "price": price,
+        "afterprice": afterprice,
+        "percentage": percentage,
+        "imageUrl": imageUrl,
+        "uid": id,
+        "discountExpire": discountExpire,
+      };
 
-//   // Function to create a Sales object from a Firestore document
-//   static Sales fromSnapshot(DocumentSnapshot snapshot) {
-//     var data = snapshot.data() as Map<String, dynamic>;
-
-//     return Sales(
-//       date: data['date'],
-//       productId: Product.fromSnapshot(data['productId']),
-//       quantity: data['quantity'],
-//       uuid: data['uuid'],
-//     );
-//   }
-// }
+  static Discount fromSnapshot(DocumentSnapshot snapshot, Product product) {
+    // Use product properties to initialize Discount fields
+    return Discount(
+      name: product.name,
+      price: product.price,
+      afterprice: snapshot['afterprice'],
+      percentage: snapshot['percentage'],
+      imageUrl: product.imageUrl,
+      id: snapshot.id,
+      discountExpire: snapshot['discountExpire'] != null
+          ? (snapshot['discountExpire'] as Timestamp).toDate()
+          : DateTime.now(),
+    );
+  }
+}
