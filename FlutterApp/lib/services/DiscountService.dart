@@ -8,6 +8,8 @@ import 'package:uuid/uuid.dart';
 class DiscountService {
   final CollectionReference _discountsCollection =
       FirebaseFirestore.instance.collection('Discounts');
+  final CollectionReference _productsCollection =
+      FirebaseFirestore.instance.collection('Products');
 
   Future<bool> applyDiscount(Product product, double discountRate) async {
     try {
@@ -17,6 +19,14 @@ class DiscountService {
       double discountedPrice =
           originalPrice - (originalPrice * (discountRate / 100));
 
+      // QuerySnapshot querySnapshot = await _productsCollection
+      //     .where('name', isEqualTo: product.name)
+      //     .limit(1)
+      //     .get();
+      // if (querySnapshot.docs.isNotEmpty) {
+      //   print('Discount with name ${product.name} already exists');
+      //   return false; // Discount already exists
+      // }
       // Create Discount object
       Discount discount = Discount(
         name: product.name,
@@ -59,4 +69,15 @@ class DiscountService {
       throw e; // Rethrow the error
     }
   }
+
+  // Stream<List<Discount>> getDiscount() async* {
+  //   await for (QuerySnapshot snapshot in _discountsCollection.snapshots()) {
+  //     List<Discount> discounts = [];
+  //     for (DocumentSnapshot doc in snapshot.docs) {
+  //       Discount discount = Discount.fromSnapshot(doc);
+  //       discounts.add(discount); // Add each discount to the list
+  //     }
+  //     yield discounts;
+  //   }
+  // }
 }
