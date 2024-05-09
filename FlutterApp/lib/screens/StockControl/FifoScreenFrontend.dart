@@ -34,7 +34,6 @@ class FIFOInventoryPage extends StatefulWidget {
 }
 
 class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
-
   String? selectedProduct;
   List<Product> productList = [];
   final ProductService _productService = ProductService();
@@ -67,28 +66,80 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
   }
 
   void fetchAndDisplayFifoList(List<String> uids) async {
-  try {
-    if (uids.isNotEmpty) {
-      List<Map<String, dynamic>> list =
-          await _fifoService.fetchRealtimeDatabaseDataForProduct(uids);
-      setState(() {
-        fifoList = list;
+    try {
+      if (uids.isNotEmpty) {
+        List<Map<String, dynamic>> list =
+            await _fifoService.fetchRealtimeDatabaseDataForProduct(uids);
+        setState(() {
+          fifoList = list;
 
-        // Update product name based on the selected product from the dropdown list
-        final _selectedProduct = productList.firstWhere((product) => product.id == selectedProduct);
-        _productName = _selectedProduct.name;
+          // Update product name based on the selected product from the dropdown list
+          final _selectedProduct = productList
+              .firstWhere((product) => product.id == selectedProduct);
+          _productName = _selectedProduct.name;
 
-        // Leave other fields as static for now
-        _productTagNumber = fifoList![0]['taguid'];
-            _dateOfEntry = fifoList![0]['datetime'];
-        _dateOfExit = '';
-      });
-    } else {
+          // Leave other fields as static for now
+          _productTagNumber = fifoList![0]['taguid'];
+          _dateOfEntry = fifoList![0]['datetime'];
+          _dateOfExit = '';
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('No UID found for the selected product.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } on ProductNotFoundException catch (e) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Error'),
-          content: Text('No UID found for the selected product.'),
+          content: Text(e.message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } on NoEntryDataException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text(e.message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      print("Error fetching FIFO list: $e");
+      // Handle other exceptions
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Failed to fetch FIFO data: $e'),
           actions: [
             TextButton(
               onPressed: () {
@@ -100,58 +151,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
         ),
       );
     }
-  } on ProductNotFoundException catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(e.message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close the dialog
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  } on NoEntryDataException catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(e.message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close the dialog
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  } catch (e) {
-    print("Error fetching FIFO list: $e");
-    // Handle other exceptions
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text('Failed to fetch FIFO data: $e'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close the dialog
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
-}
 
   Future<List<String>> getProductId(String productId) async {
     try {
@@ -208,7 +208,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: 'Products',
-                  hintText: 'Choose a category',
+                  hintText: 'Choose a products',
                   hintStyle: TextStyle(
                     color: Colors.black26,
                   ),
@@ -250,8 +250,8 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Error'),
-                        content: Text('No UID found for the selected product.'),
+                        title: Text('Sorry'),
+                        content: Text('There is no stock of this product in the inventory.'),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -325,61 +325,78 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                       ],
                     ),
                     SizedBox(height: 30),
-                    Row(
+                    //date of entry list
+                    // Adjusted "Date of Entry to Inventory" section
+                    // Adjusted "Date of Entry to Inventory" section
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.calendar_today,
-                          size: 30,
-                          color: Color.fromRGBO(19, 93, 102, 1),
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
+                            Icon(
+                              Icons.calendar_today,
+                              size: 30,
+                              color: Color.fromRGBO(19, 93, 102, 1),
+                            ),
+                            SizedBox(width: 10),
                             Text(
-                              "Date of Entry to Inventory: ",
+                              "Stock Arrival Date(s)",
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(219, 175, 160, 1)),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromRGBO(219, 175, 160, 1),
+                              ),
                             ),
-                            Text(
-                              _dateOfEntry,
-                              style: TextStyle(fontSize: 16),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  // Row(
-                  //   children: [
-                  //     Icon(
-                  //       Icons.inventory_sharp,
-                  //       size: 30,
-                  //       color: Color.fromRGBO(19, 93, 102, 1),
-                  //     ),
-                  //     SizedBox(width: 10),
-                  //     Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         Text(
-                  //           "Date of Exit from Inventory: ",
-                  //           style: TextStyle(
-                  //               fontSize: 18,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: Color.fromRGBO(219, 175, 160, 1)),
-                  //         ),
-                  //         Text(
-                  //           "12/4/2024",
-                  //           style: TextStyle(fontSize: 16),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-                ],
-              ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        if (_dateOfEntry.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _dateOfEntry
+                                .split('\n')
+                                .map((date) => Padding(
+                                      padding:
+                                          EdgeInsets.only(bottom: 7, left: 37),
+                                      child: Text(
+                                        date,
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
+                      ],
+                    ),
+
+                    SizedBox(height: 30),
+                    // Row(
+                    //   children: [
+                    //     Icon(
+                    //       Icons.inventory_sharp,
+                    //       size: 30,
+                    //       color: Color.fromRGBO(19, 93, 102, 1),
+                    //     ),
+                    //     SizedBox(width: 10),
+                    //     Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           "Date of Exit from Inventory: ",
+                    //           style: TextStyle(
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //               color: Color.fromRGBO(219, 175, 160, 1)),
+                    //         ),
+                    //         Text(
+                    //           "12/4/2024",
+                    //           style: TextStyle(fontSize: 16),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
+                  ],
+                ),
               SizedBox(height: 20),
             ],
           ),
