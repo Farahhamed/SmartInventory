@@ -208,7 +208,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
       }
       if (!isWriten) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Scan again to write Product in the card')),
+          SnackBar(content: Text('Scan again to write Employee in the card')),
         );
         return;
       } else {
@@ -273,6 +273,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
     return bytes
         .map((byte) => byte.toRadixString(16).toUpperCase().padLeft(2, '0'))
         .join(' ');
+        //3shan ye2ra el tag bel hexa
   }
 
   String RemoveZerosFromStart(String taguid) {
@@ -865,37 +866,6 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // Row(
-                      //   children: [
-                      //     Text('$_tag'),
-
-                      //     const SizedBox(width: 50),
-                      //     Row(
-                      //       mainAxisAlignment: MainAxisAlignment.end,
-                      //       children: [
-                      //         ElevatedButton(
-                      //           onPressed: () => _assignTag(),
-                      //           child: const Text(
-                      //             'Read UID',
-                      //             style: TextStyle(color: Colors.white),
-                      //           ),
-                      //           style: ElevatedButton.styleFrom(
-                      //             shape: RoundedRectangleBorder(
-                      //               borderRadius: BorderRadius.circular(50),
-                      //             ),
-                      //             backgroundColor:
-                      //                 Color.fromARGB(255, 174, 203, 227),
-                      //             padding: EdgeInsets.symmetric(
-                      //                 horizontal: 16, vertical: 8),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-
-                      //     // const SizedBox(width: 20),
-                      //     // Text('$_type')
-                      //   ],
-                      // ),
                        Row(
                       children: [
                         Text('$_tag'),
@@ -909,8 +879,7 @@ class _AssignEmployeeState extends State<AssignEmployee> {
                                 const Color.fromRGBO(112, 66, 100, 1),
                           ),
                         ),
-                        // const SizedBox(width: 20),
-                        // Text('$_type')
+
                       ],
                     ),
                       const SizedBox(
