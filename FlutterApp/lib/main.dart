@@ -18,9 +18,9 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
-    child: MaterialApp(
+    child: const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ProductSelectionPage(),
+      home: AuthenticationWrapper(),
     ),
   ));
 }
