@@ -42,9 +42,9 @@ class StockControlPage extends StatelessWidget {
               ),
             ),
             title: const Padding(
-              padding: EdgeInsets.only(right: 16.0, top: 16.0),
+              padding: EdgeInsets.only(right: 13.0, top: 16.0),
               child: Center(
-                child: Text('Stock Control'),
+                child: Text('Discounts'),
               ),
             ),
             leading: Padding(
