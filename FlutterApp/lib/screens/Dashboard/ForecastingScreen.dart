@@ -57,170 +57,173 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      // bottomNavigationBar: CurvedNavigationBar(
-      //   backgroundColor: Colors.white,
-      //   color: Color.fromARGB(255, 158, 125, 249),
-      //   animationDuration: Duration(milliseconds: 300),
-      //   index: _currentIndex,
-      //   onTap: (index) {
-      //     setState(() {
-      //       _currentIndex = index;
-      //     });
-      //   },
-      //   items: [
-      //     Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Icon(Icons.home, color: Colors.white),
-      //         Text('Home', style: TextStyle(color: Colors.white, fontSize: 9)),
-      //       ],
-      //     ),
-      //     Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Icon(Icons.auto_graph, color: Colors.white),
-      //         Text('Track', style: TextStyle(color: Colors.white, fontSize: 9)),
-      //       ],
-      //     ),
-      //     Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Icon(Icons.settings, color: Colors.white),
-      //         Text('Settings',
-      //             style: TextStyle(color: Colors.white, fontSize: 9)),
-      //       ],
-      //     ),
-      //     Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Icon(Icons.person, color: Colors.white),
-      //         Text('Profile',
-      //             style: TextStyle(color: Colors.white, fontSize: 9)),
-      //       ],
-      //     ),
-      //   ],
-      // ),
-      appBar: AppBar(
+    return Padding(
+      padding: const EdgeInsets.all(16.0), // Add padding to the entire page
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        title: const Row(
-          children: [
-            Expanded(
-              child: Text(
-                'Dashboard',
-                textAlign: TextAlign.left,
-              ),
-            ),
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/user_avatar.jpg'),
-            ),
-            SizedBox(width: 16),
-          ],
+        // bottomNavigationBar: CurvedNavigationBar(
+        //   backgroundColor: Colors.white,
+        //   color: Color.fromARGB(255, 158, 125, 249),
+        //   animationDuration: Duration(milliseconds: 300),
+        //   index: _currentIndex,
+        //   onTap: (index) {
+        //     setState(() {
+        //       _currentIndex = index;
+        //     });
+        //   },
+        //   items: [
+        //     Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Icon(Icons.home, color: Colors.white),
+        //         Text('Home', style: TextStyle(color: Colors.white, fontSize: 9)),
+        //       ],
+        //     ),
+        //     Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Icon(Icons.auto_graph, color: Colors.white),
+        //         Text('Track', style: TextStyle(color: Colors.white, fontSize: 9)),
+        //       ],
+        //     ),
+        //     Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Icon(Icons.settings, color: Colors.white),
+        //         Text('Settings',
+        //             style: TextStyle(color: Colors.white, fontSize: 9)),
+        //       ],
+        //     ),
+        //     Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Icon(Icons.person, color: Colors.white),
+        //         Text('Profile',
+        //             style: TextStyle(color: Colors.white, fontSize: 9)),
+        //       ],
+        //     ),
+        //   ],
+        // ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          centerTitle: true,
+          title: Text(
+            'Dashboard',
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          // Wrap the Column with SingleChildScrollView
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Forecasting Results',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                height: 400,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!), // Border color
-                  borderRadius: BorderRadius.circular(8), // Rounded corners
+        // CircleAvatar(
+        //   backgroundImage: AssetImage('assets/user_avatar.jpg'),
+        // ),
+        // SizedBox(width: 16),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            // Wrap the Column with SingleChildScrollView
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Forecasting Results',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Line Colors:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Row(
-                            children: [
-                              _buildIndicator(
-                                  color: Colors.purple, label: 'Actual'),
-                              const SizedBox(
-                                  width: 8), // Adding space between indicators
-                              _buildIndicator(
-                                  color: Colors.blue, label: 'Forecasting'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: SfCartesianChart(
-                          primaryXAxis: const DateTimeAxis(),
-                          series: <CartesianSeries>[
-                            // Renders spline area chart for actual results
-                            SplineAreaSeries<SalesData, DateTime>(
-                              dataSource: actualResults,
-                              xValueMapper: (SalesData sales, _) => sales.year,
-                              yValueMapper: (SalesData sales, _) => sales.sales,
-                              name: 'Actual Results',
-                              color: Colors.purple
-                                  .withOpacity(0.7), // Purple color for lines
-                              borderWidth: 3, // Adjust thickness of lines
-                              borderColor:
-                                  Colors.purple, // Border color for lines
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.purple.withOpacity(
-                                      0.3), // Lighter shade for shading
-                                  Colors.transparent,
-                                ],
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                              ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 400,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: Colors.grey[300]!), // Border color
+                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Line Colors:',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                            // Renders spline area chart for forecasting results
-                            SplineAreaSeries<SalesData, DateTime>(
-                              dataSource: forecastingResults,
-                              xValueMapper: (SalesData sales, _) => sales.year,
-                              yValueMapper: (SalesData sales, _) => sales.sales,
-                              name: 'Forecasting Results',
-                              color: Colors.blue
-                                  .withOpacity(0.7), // Blue color for lines
-                              borderWidth: 3, // Adjust thickness of lines
-                              borderColor:
-                                  Colors.blue, // Border color for lines
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue.withOpacity(
-                                      0.2), // Lighter shade for shading
-                                  Colors.transparent,
-                                ],
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                              ),
-                            )
+                            Row(
+                              children: [
+                                _buildIndicator(
+                                    color: Colors.purple, label: 'Actual'),
+                                const SizedBox(
+                                    width:
+                                        8), // Adding space between indicators
+                                _buildIndicator(
+                                    color: Colors.blue, label: 'Forecasting'),
+                              ],
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SfCartesianChart(
+                            primaryXAxis: const DateTimeAxis(),
+                            series: <CartesianSeries>[
+                              // Renders spline area chart for actual results
+                              SplineAreaSeries<SalesData, DateTime>(
+                                dataSource: actualResults,
+                                xValueMapper: (SalesData sales, _) =>
+                                    sales.year,
+                                yValueMapper: (SalesData sales, _) =>
+                                    sales.sales,
+                                name: 'Actual Results',
+                                color: Colors.purple
+                                    .withOpacity(0.7), // Purple color for lines
+                                borderWidth: 3, // Adjust thickness of lines
+                                borderColor:
+                                    Colors.purple, // Border color for lines
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.purple.withOpacity(
+                                        0.3), // Lighter shade for shading
+                                    Colors.transparent,
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                              // Renders spline area chart for forecasting results
+                              SplineAreaSeries<SalesData, DateTime>(
+                                dataSource: forecastingResults,
+                                xValueMapper: (SalesData sales, _) =>
+                                    sales.year,
+                                yValueMapper: (SalesData sales, _) =>
+                                    sales.sales,
+                                name: 'Forecasting Results',
+                                color: Colors.blue
+                                    .withOpacity(0.7), // Blue color for lines
+                                borderWidth: 3, // Adjust thickness of lines
+                                borderColor:
+                                    Colors.blue, // Border color for lines
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.blue.withOpacity(
+                                        0.2), // Lighter shade for shading
+                                    Colors.transparent,
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

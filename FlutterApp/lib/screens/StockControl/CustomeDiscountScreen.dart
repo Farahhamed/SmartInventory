@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartinventory/models/ProductModel.dart';
+import 'package:smartinventory/services/DiscountService.dart';
 import 'package:smartinventory/services/ProductsService.dart';
 
 class DiscountCalculator {
@@ -75,6 +76,7 @@ class _DiscountCardState extends State<DiscountCard> {
   late TextEditingController _discountController;
   String? _discountErrorText;
   late double originalPrice;
+  DiscountService _discountservice = new DiscountService();
 
   @override
   void initState() {
@@ -141,17 +143,18 @@ class _DiscountCardState extends State<DiscountCard> {
   Future<void> _applyDiscount(
       double discountRate, double discountedPrice) async {
     try {
-      final collectionRef = FirebaseFirestore.instance.collection('Discounts');
+      await _discountservice.applyDiscount(widget.product, discountRate);
+      // final collectionRef = FirebaseFirestore.instance.collection('Discounts');
 
-      // Save the discount data to Firestore
-      await collectionRef.add({
-        'name': widget.product.name,
-        'price': widget.product.price,
-        'afterprice': discountedPrice.toString(),
-        'percentage': discountRate.toString(),
-        'imageUrl': widget.product.imageUrl,
-        'orderDateTime': DateTime.now(),
-      });
+      // // Save the discount data to Firestore
+      // await collectionRef.add({
+      //   'name': widget.product.name,
+      //   'price': widget.product.price,
+      //   'afterprice': discountedPrice.toString(),
+      //   'percentage': discountRate.toString(),
+      //   'imageUrl': widget.product.imageUrl,
+      //   'orderDateTime': DateTime.now(),
+      // });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -242,7 +245,11 @@ class _DiscountCardState extends State<DiscountCard> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
-                        backgroundColor: Color.fromRGBO(112, 66, 100, 1), disabledForegroundColor: Colors.red.shade200.withOpacity(0.38), disabledBackgroundColor: Colors.red.shade200.withOpacity(0.12),
+                        backgroundColor: Color.fromRGBO(112, 66, 100, 1),
+                        disabledForegroundColor:
+                            Colors.red.shade200.withOpacity(0.38),
+                        disabledBackgroundColor:
+                            Colors.red.shade200.withOpacity(0.12),
                       ),
                       child: Container(
                         alignment: Alignment.center,
