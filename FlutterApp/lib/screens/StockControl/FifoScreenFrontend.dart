@@ -278,6 +278,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                           color: Color.fromRGBO(19, 93, 102, 1),
                         ),
                         SizedBox(width: 10),
+                        //product name
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -297,33 +298,34 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.confirmation_number,
-                          size: 30,
-                          color: Color.fromRGBO(19, 93, 102, 1),
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Product Tag Number: ",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(219, 175, 160, 1)),
-                            ),
-                            Text(
-                              _productTagNumber,
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    //tag number
+                    // SizedBox(height: 30),
+                    // Row(
+                    //   children: [
+                    //     Icon(
+                    //       Icons.confirmation_number,
+                    //       size: 30,
+                    //       color: Color.fromRGBO(19, 93, 102, 1),
+                    //     ),
+                    //     SizedBox(width: 10),
+                    //     Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           "Product Tag Number: ",
+                    //           style: TextStyle(
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.bold,
+                    //               color: Color.fromRGBO(219, 175, 160, 1)),
+                    //         ),
+                    //         Text(
+                    //           _productTagNumber,
+                    //           style: TextStyle(fontSize: 16),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                     SizedBox(height: 30),
                     //date of entry list
                     // Adjusted "Date of Entry to Inventory" section
@@ -340,7 +342,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              "Date(s) of Entry to Inventory: ",
+                              "FIFO results for this product:  ",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -350,20 +352,56 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                           ],
                         ),
                         SizedBox(height: 5),
-                        if (_dateOfEntry.isNotEmpty)
+                        if (fifoList != null && fifoList!.isNotEmpty)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _dateOfEntry
-                                .split('\n')
-                                .map((date) => Padding(
-                                      padding:
-                                          EdgeInsets.only(bottom: 7, left: 37),
-                                      child: Text(
-                                        date,
-                                        style: TextStyle(fontSize: 16),
+                            children: fifoList!.map((entry) {
+                              return Padding(
+                                padding: EdgeInsets.only(left: 40, top: 5),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Date: ',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color.fromRGBO(
+                                                  155, 190, 200, 1),
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '${entry['datetime']}',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
                                       ),
-                                    ))
-                                .toList(),
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Tag: ',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color.fromRGBO(
+                                                  155, 190, 200, 1),
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '${entry['taguid']}',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
                           ),
                       ],
                     ),
