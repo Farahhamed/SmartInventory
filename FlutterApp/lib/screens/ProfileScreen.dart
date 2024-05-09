@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Notification.dart';
 import 'package:smartinventory/utilites/utils.dart';
+import 'package:smartinventory/screens/LoginScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -71,24 +72,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               actions: [
                 IconButton(
-                  icon: const Icon(
-                    Icons.notifications,
+                  icon: Icon(
+                    Icons.exit_to_app,
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    Navigator.push(
+                    // Perform user logout
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => NotificationPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
                     );
                   },
                 ),

@@ -106,16 +106,16 @@ class _NavBarState extends State<NavBar> {
               );
             },
           ),
-          ListTile(
-            leading: Icon(Icons.timelapse),
-            title: Text('Activity Log'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LogsWidgetScreen()),
-              );
-            },
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.timelapse),
+          //   title: Text('Activity Log'),
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => LogsWidgetScreen()),
+          //     );
+          //   },
+          // ),
           ListTile(
             leading: Icon(Icons.notifications),
             title: Row(
