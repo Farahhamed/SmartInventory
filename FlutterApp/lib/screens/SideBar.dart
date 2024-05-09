@@ -98,7 +98,7 @@ class _NavBarState extends State<NavBar> {
           ),
           ListTile(
             leading: Icon(Icons.dashboard),
-            title: Text('Stock Conrol'),
+            title: Text('Stock Control'),
             onTap: () {
               Navigator.push(
                 context,

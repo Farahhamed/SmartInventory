@@ -208,7 +208,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: 'Products',
-                  hintText: 'Choose a category',
+                  hintText: 'Choose a products',
                   hintStyle: TextStyle(
                     color: Colors.black26,
                   ),
@@ -250,8 +250,8 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Error'),
-                        content: Text('No UID found for the selected product.'),
+                        title: Text('Sorry'),
+                        content: Text('There is no stock of this product in the inventory.'),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -340,7 +340,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              "Date(s) of Entry to Inventory: ",
+                              "Stock Arrival Date(s)",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
