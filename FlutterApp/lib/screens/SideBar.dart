@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
+import 'package:smartinventory/screens/Dashboard/testAPI.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
@@ -106,16 +107,16 @@ class _NavBarState extends State<NavBar> {
               );
             },
           ),
-          // ListTile(
-          //   leading: Icon(Icons.timelapse),
-          //   title: Text('Activity Log'),
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => LogsWidgetScreen()),
-          //     );
-          //   },
-          // ),
+          ListTile(
+            leading: Icon(Icons.timelapse),
+            title: Text('FDA'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DrugChecker()),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.notifications),
             title: Row(
