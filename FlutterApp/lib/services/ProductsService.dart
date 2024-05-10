@@ -92,4 +92,27 @@ class ProductService {
       return products;
     });
   }
+  
+   Future<Product> getProductById(String productId) async {
+    try {
+      // Fetch product with the given ID from Products collection
+      DocumentSnapshot productSnapshot = await FirebaseFirestore.instance
+          .collection('Products')
+          .doc(productId)
+          .get();
+
+      // Check if product exists
+      if (productSnapshot.exists) {
+        // Convert snapshot data to Product object
+        Product product = Product.fromSnapshot(productSnapshot);
+        return product;
+      } else {
+        // Throw an error if product doesn't exist
+        throw Exception("Product with ID $productId does not exist");
+      }
+    } catch (e) {
+      // Throw an error if any other error occurs
+      throw Exception("Error getting product by ID: $e");
+    }
+  }
 }
