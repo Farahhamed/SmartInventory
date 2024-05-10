@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
-import 'package:smartinventory/screens/Dashboard/testAPI.dart';
+// import 'package:smartinventory/screens/Dashboard/testAPI.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
 import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/utilites/utils.dart';
+import 'package:smartinventory/screens/drug_checker.dart';
 
 class NavBar extends StatefulWidget {
   @override
