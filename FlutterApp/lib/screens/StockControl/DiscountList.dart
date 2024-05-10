@@ -92,10 +92,10 @@ class _CouponShapeState extends State<CouponShape> {
                                         children: [
                                           Center(
                                             child: Padding(
-                                              padding: EdgeInsets.all(25),
+                                              padding: EdgeInsets.all(20),
                                               child: ClipRRect(
                                                 borderRadius:
-                                                    BorderRadius.circular(20),
+                                                    BorderRadius.circular(25),
                                                 child: Container(
                                                   width: 100,
                                                   height: 100,
@@ -123,7 +123,9 @@ class _CouponShapeState extends State<CouponShape> {
                                       ),
                                       // Middle part: Dotted line
                                       Container(
-                                        width: 20,
+
+                                        width: 10,
+
                                         height: 150,
                                         child: CustomPaint(
                                           painter: DottedLinePainter(),
@@ -133,7 +135,7 @@ class _CouponShapeState extends State<CouponShape> {
                                       // Last part: Text
                                       Expanded(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(0),
+                                          padding: const EdgeInsets.all(8),
                                           child: Stack(
                                             children: [
                                               Column(
@@ -157,7 +159,7 @@ class _CouponShapeState extends State<CouponShape> {
                                                   const SizedBox(height: 5),
                                                   Row(
                                                     children: [
-                                                       Text(
+                                                      Text(
                                                         '\EGP${productEntry['price']}', // Placeholder for original price
                                                         style: TextStyle(
                                                             decoration:
@@ -263,7 +265,7 @@ class HalfCirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white // Change color to purple
+      ..color = Colors.white
       ..style = PaintingStyle.fill; // Change style to fill
 
     final centerX = size.width / 2;
