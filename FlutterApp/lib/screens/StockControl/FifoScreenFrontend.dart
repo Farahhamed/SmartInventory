@@ -377,7 +377,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                                           ),
                                           TextSpan(
                                             text: '${entry['datetime']}',
-                                            style: TextStyle(fontSize: 16),
+                                            style: TextStyle(fontSize: 16,color:Colors.black),
                                           ),
                                         ],
                                       ),
@@ -395,7 +395,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                                           ),
                                           TextSpan(
                                             text: '${entry['taguid']}',
-                                            style: TextStyle(fontSize: 16),
+                                            style: TextStyle(fontSize: 16,color:Colors.black),
                                           ),
                                         ],
                                       ),

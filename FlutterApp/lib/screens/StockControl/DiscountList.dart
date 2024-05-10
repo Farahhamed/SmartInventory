@@ -123,7 +123,7 @@ class _CouponShapeState extends State<CouponShape> {
                                       ),
                                       // Middle part: Dotted line
                                       Container(
-                                        width: 50,
+                                        width: 20,
                                         height: 150,
                                         child: CustomPaint(
                                           painter: DottedLinePainter(),
