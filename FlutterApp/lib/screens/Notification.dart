@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:smartinventory/firebase_options.dart';
+import 'package:smartinventory/providers/provider.dart';
+import 'package:smartinventory/services/ProductsService.dart';
 
-class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key});
+class NotificationPage extends StatelessWidget {
+  final ProductService _productService = ProductService();
+  int desiredInventoryLevel = 7;
 
-  @override
-  _NotificationPageState createState() => _NotificationPageState();
-}
-
-class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,69 +26,101 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView(
-          children: const [
-            SizedBox(height: 10),
-            NotificationCard(
-              icon: Icons.shopping_cart,
-              iconColor: Colors.blue,
-              title: 'Employee entered inventory',
-              content:
-                  'Hamza Saleh 24587SHET passed in : t547522sd at 19:50:35.',
-            ),
-            SizedBox(height: 10),
-            NotificationCard(
-              icon: Icons.exit_to_app,
-              iconColor: Colors.red,
-              title: 'Employee exited inventory',
-              content:
-                  'Hamza Saleh 24587SHET passed out : t547522sd at 19:50:35.',
-            ),
-            SizedBox(height: 10),
-            NotificationCard(
-              icon: Icons.warning,
-              iconColor: Colors.yellow,
-              title: 'Low stock warning',
-              content: 'Shampoo O\'real will be out of stock on 5/4',
-            ),
-            SizedBox(height: 10),
-            NotificationCard(
-              icon: Icons.exit_to_app,
-              iconColor: Colors.red,
-              title: 'Employee exited inventory',
-              content:
-                  'Hamza Saleh 24587SHET passed out : t547522sd at 19:50:35.',
-            ),
-            SizedBox(height: 10),
-            NotificationCard(
-              icon: Icons.exit_to_app,
-              iconColor: Colors.red,
-              title: 'Employee exited inventory',
-              content:
-                  'Hamza Saleh 24587SHET passed out : t547522sd at 19:50:35.',
-            ),
-          ],
-        ),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _productService.getProductNamesAndQuantities(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final products = snapshot.data;
+          if (products == null || products.isEmpty) {
+            return Center(child: Text('No products found.'));
+          }
+
+          // Filter products based on purchase limit and quantity
+          final filteredProducts = products.where((product) {
+            int currentInventoryLevel = product['quantity'];
+            int purchaseLimit = calculatePurchaseLimit(
+                desiredInventoryLevel, currentInventoryLevel);
+            print(
+                'Product: ${product['name']}, Quantity: $currentInventoryLevel, Purchase Limit: $purchaseLimit');
+            return currentInventoryLevel <
+                purchaseLimit; // Corrected comparison
+          }).toList();
+
+          if (filteredProducts.isEmpty) {
+            return Center(child: Text('No products below purchase limit.'));
+          }
+
+          return ListView.builder(
+            itemCount: filteredProducts.length,
+            itemBuilder: (context, index) {
+              final product = filteredProducts[index];
+              // Check if product has reached purchase limit
+              bool reachedPurchaseLimit = product['quantity'] >=
+                  calculatePurchaseLimit(
+                      desiredInventoryLevel, product['quantity']);
+              String content = reachedPurchaseLimit
+                  ? 'The product ${product['name']} reached the purchase limit. Current quantity is ${product['quantity']}. Please restock.'
+                  : 'The product ${product['name']} reached the purchase limit. Current quantity is ${product['quantity']}. Please restock.';
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: ProductCard(
+                  title: product['name'],
+                  content: content,
+                  icon: Icons.warning,
+                  iconColor: Colors.red,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
 
-class NotificationCard extends StatelessWidget {
+/*-----------------------this is the purchase limit part-------------------------*/
+int calculatePurchaseLimit(
+    int desiredInventoryLevel, int currentInventoryLevel) {
+  int purchaseLimit = desiredInventoryLevel - currentInventoryLevel;
+  return purchaseLimit < 0 ? 0 : purchaseLimit;
+}
+
+/*----------------------------------------------------------------------------------------------*/
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: NotificationPage(),
+    ),
+  ));
+}
+
+/*------------------- product card-----------------------------------------*/
+
+class ProductCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
   final String content;
 
-  const NotificationCard({
-    super.key,
+  const ProductCard({
+    Key? key,
     required this.icon,
     required this.iconColor,
     required this.title,
     required this.content,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +149,4 @@ class NotificationCard extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: NotificationPage(),
-  ));
 }
