@@ -6,6 +6,7 @@ import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/Dashboard/NavBarDashboard.dart';
 import 'package:smartinventory/screens/LoginScreen.dart';
 import 'package:smartinventory/screens/Notification.dart';
+import 'package:smartinventory/screens/ProfileScreen.dart';
 import 'package:smartinventory/utilites/utils.dart';
 
 class NavBar extends StatefulWidget {
@@ -66,27 +67,38 @@ class _NavBarState extends State<NavBar> {
     return Drawer(
       child: ListView(
         children: [
-          UserAccountsDrawerHeader(
-            accountName: Text(userData['name'] ?? ""),
-            accountEmail: Text(userData['email'] ?? ""),
-            currentAccountPicture: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.white,
-              backgroundImage: userData.containsKey('pic')
-                  ? NetworkImage(userData['pic'])
-                  : AssetImage('assets/images/kitten.png') as ImageProvider,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              image: DecorationImage(
-                fit: BoxFit.fill,
-                image: AssetImage('assets/images/blurryInventory.png'),
+          GestureDetector(
+            onTap: () {
+              // Navigate to another page here
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ProfileScreen(uid: currentUser?.uid ?? '')),
+              );
+            },
+            child: UserAccountsDrawerHeader(
+              accountName: Text(userData['name'] ?? ""),
+              accountEmail: Text(userData['email'] ?? ""),
+              currentAccountPicture: CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.white,
+                backgroundImage: userData.containsKey('pic')
+                    ? NetworkImage(userData['pic'])
+                    : AssetImage('assets/images/kitten.png') as ImageProvider,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: AssetImage('assets/images/blurryInventory.png'),
+                ),
               ),
             ),
           ),
           ListTile(
             leading: Icon(Icons.dashboard),
-            title: Text('Dashboard'),
+            title: Text('Stock Control'),
             onTap: () {
               Navigator.push(
                 context,
@@ -94,16 +106,16 @@ class _NavBarState extends State<NavBar> {
               );
             },
           ),
-          ListTile(
-            leading: Icon(Icons.timelapse),
-            title: Text('Activity Log'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LogsWidgetScreen()),
-              );
-            },
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.timelapse),
+          //   title: Text('Activity Log'),
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => LogsWidgetScreen()),
+          //     );
+          //   },
+          // ),
           ListTile(
             leading: Icon(Icons.notifications),
             title: Row(

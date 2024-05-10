@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProfile.dart';
 import 'package:smartinventory/screens/Notification.dart';
 import 'package:smartinventory/utilites/utils.dart';
+import 'package:smartinventory/screens/LoginScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -17,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late User? currentUser;
   late Map<String, dynamic> userData;
   bool isLoading = false;
-  late String branchName ;
+  late String branchName;
 
   @override
   void initState() {
@@ -39,18 +40,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .get();
 
         if (userSnapshot.exists && userSnapshot.data() != null) {
-          Map<String, dynamic> fetchedUser = userSnapshot.data()! as Map<String, dynamic>;
-           DocumentSnapshot branchSnapshot = await FirebaseFirestore.instance
-            .collection('branches')
-            .doc(fetchedUser['branchId'])
-            .get();
-            Map<String, dynamic> fetchedBranch = branchSnapshot.data()! as Map<String, dynamic>;
+          Map<String, dynamic> fetchedUser =
+              userSnapshot.data()! as Map<String, dynamic>;
+          DocumentSnapshot branchSnapshot = await FirebaseFirestore.instance
+              .collection('branches')
+              .doc(fetchedUser['branchId'])
+              .get();
+          Map<String, dynamic> fetchedBranch =
+              branchSnapshot.data()! as Map<String, dynamic>;
           setState(() {
             branchName = fetchedBranch['location'];
             userData = fetchedUser;
           });
         }
-        
       }
     } catch (e) {
       showSnackBar(context, e.toString()); // show error in a snack bar
@@ -70,28 +72,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              // actions: [
-              //   IconButton(
-              //     icon: const Icon(
-              //       Icons.notifications,
-              //       color: Colors.black,
-              //     ),
-              //     onPressed: () {
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(builder: (context) => NotificationPage()),
-              //       );
-              //     },
-              //   ),
-              // ],
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.exit_to_app,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    // Perform user logout
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
+                  },
+                ),
+              ],
             ),
             body: SingleChildScrollView(
               child: Padding(
@@ -124,35 +126,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Bio Section
                     const SizedBox(height: 16),
                     const Text(
-                      'A member of the GoodGuardian family',
+                      'A member of the SmartInvenory family',
                     ),
                     const SizedBox(height: 16),
-                    // Center(
-                    //   child: SizedBox(
-                    //     width: double.infinity,
-                    //     height: 40,
-                    //     child: ElevatedButton(
-                    //       onPressed: () {
-                    //         Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //               builder: (context) => EditProfilePage()),
-                    //         );
-                    //       },
-                    //       style: ElevatedButton.styleFrom(
-                    //         backgroundColor: const Color.fromARGB(
-                    //             255, 106, 180, 214), // Baby blue color
-                    //       ),
-                    //       child: const Text(
-                    //         'Edit Profile',
-                    //         style: TextStyle(
-                    //             fontSize: 16,
-                    //             fontFamily: AutofillHints.countryName,
-                    //             color: Color.fromARGB(255, 245, 249, 250)),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                     // Personal Information Section
                     const SizedBox(height: 16),
                     Container(
@@ -222,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Color.fromARGB(255, 64, 58, 58))),
-                              Text(userData['address'] ?? ' ay haga',
+                              Text(userData['address'] ?? ' ',
                                   style: const TextStyle(
                                       fontSize: 14,
                                       color: Color.fromARGB(255, 64, 58, 58))),
@@ -291,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: Color.fromARGB(255, 64, 58, 58))),
                             ],
                           ),
-                           Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text('Branch:',
@@ -322,7 +298,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: Color.fromARGB(255, 64, 58, 58))),
                             ],
                           ),
-                          
                         ],
                       ),
                     ),

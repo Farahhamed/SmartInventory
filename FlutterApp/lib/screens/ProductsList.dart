@@ -9,7 +9,7 @@ import 'package:smartinventory/services/ProductsService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartinventory/screens/EditProductScreen.dart';
 
-enum UserType { Supervisor, Employee }
+enum UserType { Supervisor, Employee, Manager }
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class ProductsList extends StatefulWidget {
 class _ProductsListState extends State<ProductsList> {
   final ProductService productService = ProductService();
   List<Product> products = [];
-  UserType _userType = UserType.Employee;
+  UserType _userType = UserType.Employee; // Default to Employee
   late TextEditingController _searchController;
 
   @override
@@ -49,6 +49,10 @@ class _ProductsListState extends State<ProductsList> {
           setState(() {
             _userType = UserType.Supervisor;
           });
+        } else if (userType == 'Manager') {
+          setState(() {
+            _userType = UserType.Manager;
+          });
         } else {
           setState(() {
             _userType = UserType.Employee;
@@ -57,6 +61,7 @@ class _ProductsListState extends State<ProductsList> {
       }
     }
   }
+
 
   Future<void> _fetchProducts() async {
     productService.getProduct().listen((List<Product> productList) {
@@ -117,7 +122,7 @@ class _ProductsListState extends State<ProductsList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.transparent,
         key: scaffoldKey,
         drawer: NavBar(),
         appBar: AppBar(
@@ -133,7 +138,7 @@ class _ProductsListState extends State<ProductsList> {
             },
           ),
           actions: [
-            if (_userType == UserType.Supervisor)
+            if (_userType == UserType.Supervisor || _userType == UserType.Manager)
               Ink(
                 decoration: const BoxDecoration(
                   color: Color(0xFFBB8493),
@@ -153,6 +158,29 @@ class _ProductsListState extends State<ProductsList> {
                     );
                   },
                   tooltip: 'Add Product',
+                ),
+              ),
+            const SizedBox(width: 20),
+            if (_userType == UserType.Employee  || _userType == UserType.Manager)
+              Ink(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFBB8493),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add_card,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AssignTagToProduct()),
+                    );
+                  },
+                  tooltip: 'Assign Tag',
                 ),
               ),
           ],
@@ -257,7 +285,7 @@ class _ProductsListState extends State<ProductsList> {
                                   ),
                                 ),
                               ),
-                              if (_userType == UserType.Supervisor)
+                              if (_userType == UserType.Supervisor || _userType == UserType.Manager)
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
@@ -270,7 +298,7 @@ class _ProductsListState extends State<ProductsList> {
                                     ),
                                   ),
                                 ),
-                              if (_userType == UserType.Supervisor)
+                              if (_userType == UserType.Supervisor || _userType == UserType.Manager)
                                 Positioned(
                                   bottom: 0,
                                   right: 0,

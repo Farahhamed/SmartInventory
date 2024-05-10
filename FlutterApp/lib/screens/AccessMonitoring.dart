@@ -26,6 +26,14 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
     loadData();
   }
 
+  Future<void> refreshData() async {
+    setState(() {
+      isLoaded = false;
+      EmployeesList = [];
+    });
+    loadData();
+  }
+
   void loadData() async {
     List<MapEntry<String, dynamic>> data = await masterFunction();
     setState(() {
@@ -58,152 +66,158 @@ class _LogsWidgetScreenState extends State<LogsWidgetScreen> {
                 },
               ),
             ),
-            body: ListView.builder(
-              // reverse: true,
-              // return ListView.builder(
-              shrinkWrap: true,
-              itemCount: LogsData.length,
-              itemBuilder: (context, index) {
-                Color dotColor = LogsData[index].value['Entry/Exit'] == 'Entry'
-                    ? Colors.orange
-                    : Colors.red;
-                // EmployeeOrProductName = selectedUser['name'];
-                // RFIDTagUid = selectedUser['Tag'];
+            body: RefreshIndicator(
+              onRefresh: refreshData,
+              child: ListView.builder(
+                // reverse: true,
+                // return ListView.builder(
+                shrinkWrap: true,
+                itemCount: LogsData.length,
+                itemBuilder: (context, index) {
+                  Color dotColor =
+                      LogsData[index].value['Entry/Exit'] == 'Entry'
+                          ? Colors.orange
+                          : Colors.red;
+                  // EmployeeOrProductName = selectedUser['name'];
+                  // RFIDTagUid = selectedUser['Tag'];
 
-                // print('snapchot is: ${EmployeesList}  $dateTime');
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Timeline on the left
-                      SizedBox(
-                        width: 50.0,
-                        child: Column(
-                          children: [
-                            Text(
-                              '${DateTime.parse(LogsData[index].value['datetime'] == "" ? "" : LogsData[index].value['datetime']).day}',
-                              // 'Date is here',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(DateFormat.MMM().format(DateTime.parse(
-                                LogsData[index].value['datetime']))),
-                            const SizedBox(height: 5.0),
-                            Container(
-                              width: 10.0,
-                              height: 10.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: dotColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 10.0),
-                      // Vertical line
-                      Container(
-                        width: 2.0,
-                        height: 50.0, // Adjust height according to your UI
-                        color: Colors.black,
-                      ),
-                      const SizedBox(width: 10.0),
-                      // Card-like shape on the right
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: const EdgeInsets.all(10.0),
+                  // print('snapchot is: ${EmployeesList}  $dateTime');
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Timeline on the left
+                        SizedBox(
+                          width: 50.0,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Activity type
+                              Text(
+                                '${DateTime.parse(LogsData[index].value['datetime'] == "" ? "" : LogsData[index].value['datetime']).day}',
+                                // 'Date is here',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(DateFormat.MMM().format(DateTime.parse(
+                                  LogsData[index].value['datetime']))),
+                              const SizedBox(height: 5.0),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 10.0),
+                                width: 10.0,
+                                height: 10.0,
                                 decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
                                   color: dotColor,
-                                  borderRadius: BorderRadius.circular(5.0),
                                 ),
-                                child: Text(
-                                  // 'activity type is here',
-                                  LogsData[index].value['Entry/Exit'],
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              const SizedBox(height: 10.0),
-                              // Time
-                              Row(
-                                children: [
-                                  const Icon(Icons.access_time),
-                                  const SizedBox(width: 5.0),
-                                  Text(
-                                    DateFormat.Hms().format(DateTime.parse(
-                                        LogsData[index].value['datetime'] == ""
-                                            ? ""
-                                            : LogsData[index]
-                                                .value['datetime'])),
-                                    style: const TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10.0),
-                              // Category and RFID details
-                              Row(
-                                children: [
-                                  const Icon(Icons.category),
-                                  const SizedBox(width: 5.0),
-                                  Text(
-                                    LogsData[index].value['Type'],
-                                    style: const TextStyle(fontSize: 16.0),
-                                  ),
-                                  const Spacer(),
-                                  const Icon(Icons.confirmation_number),
-                                  const SizedBox(width: 5.0),
-                                  Text(
-                                    LogsData[index].value['taguid'],
-                                    style: const TextStyle(fontSize: 16.0),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10.0),
-                              // Employee details
-                              Row(
-                                children: [
-                                  Icon(LogsData[index].value['Type'] ==
-                                          "Employee"
-                                      ? Icons.person
-                                      : Icons.category),
-                                  const SizedBox(width: 5.0),
-                                  Text(LogsData[index].value['E/P:Name']),
-                                  const Spacer(),
-                                  Container(
-                                    padding: const EdgeInsets.all(5.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      border: Border.all(color: Colors.black),
-                                    ),
-                                    child: Text(
-                                      'Tag ID',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                        const SizedBox(width: 10.0),
+                        // Vertical line
+                        Container(
+                          width: 2.0,
+                          height: 50.0, // Adjust height according to your UI
+                          color: Colors.black,
+                        ),
+                        const SizedBox(width: 10.0),
+                        // Card-like shape on the right
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Activity type
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 5.0, horizontal: 10.0),
+                                  decoration: BoxDecoration(
+                                    color: dotColor,
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Text(
+                                    // 'activity type is here',
+                                    LogsData[index].value['Entry/Exit'],
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                const SizedBox(height: 10.0),
+                                // Time
+                                Row(
+                                  children: [
+                                    const Icon(Icons.access_time),
+                                    const SizedBox(width: 5.0),
+                                    Text(
+                                      DateFormat.Hms().format(DateTime.parse(
+                                          LogsData[index].value['datetime'] ==
+                                                  ""
+                                              ? ""
+                                              : LogsData[index]
+                                                  .value['datetime'])),
+                                      style: const TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10.0),
+                                // Category and RFID details
+                                Row(
+                                  children: [
+                                    const Icon(Icons.category),
+                                    const SizedBox(width: 5.0),
+                                    Text(
+                                      LogsData[index].value['Type'],
+                                      style: const TextStyle(fontSize: 16.0),
+                                    ),
+                                    const Spacer(),
+                                    const Icon(Icons.confirmation_number),
+                                    const SizedBox(width: 5.0),
+                                    Text(
+                                      LogsData[index].value['taguid'],
+                                      style: const TextStyle(fontSize: 16.0),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10.0),
+                                // Employee details
+                                Row(
+                                  children: [
+                                    Icon(LogsData[index].value['Type'] ==
+                                            "Employee"
+                                        ? Icons.person
+                                        : Icons.category),
+                                    const SizedBox(width: 5.0),
+                                    Text(LogsData[index].value['E/P:Name']),
+                                    const Spacer(),
+                                    Container(
+                                      padding: const EdgeInsets.all(5.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        border: Border.all(color: Colors.black),
+                                      ),
+                                      child: Text(
+                                        'Tag ID',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ));
   }
 }
@@ -231,11 +245,11 @@ Future<List<MapEntry<String, dynamic>>> fetchRealtimeDatabaseData() async {
   // List<MapEntry<String, dynamic>> TagsReadings = data.entries.toList();
   // print("shakl el data: $TagsReadings");
   // print("shakl item wa7ed: ${TagsReadings[0].value}");
-  // TagsReadings.sort((a, b) {
-  //   DateTime dateTimeA = DateTime.parse(a.value['datetime'] as String);
-  //   DateTime dateTimeB = DateTime.parse(b.value['datetime'] as String);
-  //   return dateTimeA.compareTo(dateTimeB);
-  // });
+  TagsReadings.sort((a, b) {
+    DateTime dateTimeA = DateTime.parse(a.value['datetime'] as String);
+    DateTime dateTimeB = DateTime.parse(b.value['datetime'] as String);
+    return dateTimeA.compareTo(dateTimeB);
+  });
   // print("hellz");
   return TagsReadings;
   // }

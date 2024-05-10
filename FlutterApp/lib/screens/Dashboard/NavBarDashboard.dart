@@ -3,6 +3,7 @@ import 'package:smartinventory/screens/Dashboard/ForecastingScreen.dart';
 import 'package:smartinventory/screens/Dashboard/HomeDashboard.dart';
 import 'package:smartinventory/screens/StockControl/ABCScreen.dart';
 import 'package:smartinventory/screens/StockControl/FifoLifoScreen.dart';
+import 'package:smartinventory/screens/StockControl/FifoScreenFrontend.dart';
 import 'package:smartinventory/screens/StockControl/StockControlScreen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
@@ -20,16 +21,15 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
     ForecastingScreen(),
     StockControlPage(),
     ProductDistributionPage(),
-    FifoLifoScreen(),
+    FIFOInventoryPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: _pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         color: const Color.fromRGBO(66, 125, 157, 1),
         animationDuration: const Duration(milliseconds: 300),
         index: _currentIndex,
@@ -51,7 +51,7 @@ class _NavbarDashboardState extends State<NavbarDashboard> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.pie_chart, color: Colors.white),
-              Text('Stock Control',
+              Text('Discount',
                   style: TextStyle(color: Colors.white, fontSize: 7)),
             ],
           ),

@@ -63,14 +63,10 @@ class _EmployeeListState extends State<EmployeeList> {
         key: scaffoldKey,
         drawer: NavBar(),
         appBar: AppBar(
-          title: Row(
-            children: [
-              Center(child: Text('            Employees List      ')),
-              Spacer(),
-            ],
-          ),
+          title: Text('Employees List'),
           centerTitle: true,
           leading: IconButton(
+            padding: EdgeInsets.all(16),
             icon: const Icon(
               Icons.menu_sharp,
               color: Colors.black,
@@ -81,27 +77,27 @@ class _EmployeeListState extends State<EmployeeList> {
           ),
           actions: [
             if (_userType == UserType.Manager)
-            Ink(
-              decoration: const BoxDecoration(
-                color: Color(0xFFBB8493),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 30,
+              Ink(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFBB8493),
+                  shape: BoxShape.circle,
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AssignEmployee()),
-                  );
-                },
-                tooltip: 'Add Employee',
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AssignEmployee()),
+                    );
+                  },
+                  tooltip: 'Add Employee',
+                ),
               ),
-            ),
           ],
         ),
         body: Column(
@@ -194,7 +190,13 @@ class _EmployeeListState extends State<EmployeeList> {
                             child: ListTile(
                               leading: CircleAvatar(
                                 radius: 60,
-                                backgroundImage: NetworkImage(document['pic']),
+                                child: ClipOval(
+                                  child: Image.network(
+                                    document['pic'],
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                // backgroundImage: NetworkImage(document['pic']),
                               ),
                               title: Text(
                                 document['name'] ?? '',
@@ -219,42 +221,42 @@ class _EmployeeListState extends State<EmployeeList> {
                                   //   },
                                   // ),
                                   if (_userType == UserType.Manager)
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      // Show a confirmation dialog before deleting
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Delete Employee'),
-                                            content: Text(
-                                                'Are you sure you want to delete this employee?'),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-                                                },
-                                                child: Text('Cancel'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _userService.deleteEmployee(
-                                                      document[
-                                                          'UID']); // Call delete function from UserService
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-                                                },
-                                                child: Text('Delete'),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      color: Colors.red,
+                                      onPressed: () {
+                                        // Show a confirmation dialog before deleting
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Delete Employee'),
+                                              content: Text(
+                                                  'Are you sure you want to delete this employee?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    _userService.deleteEmployee(
+                                                        document[
+                                                            'UID']); // Call delete function from UserService
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: Text('Delete'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
                                 ],
                               ),
                             ),

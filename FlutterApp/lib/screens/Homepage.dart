@@ -447,7 +447,7 @@ class _HomePageState extends State<HomePage> {
                   // First Card
                   SizedBox(
                     height: 135.0,
-                    width: 175.0,
+                    width: 145.0,
                     child: Card(
                       elevation: 4,
                       child: Center(
@@ -512,7 +512,7 @@ class _HomePageState extends State<HomePage> {
                   // Second Card
                   SizedBox(
                     height: 135.0,
-                    width: 175.0,
+                    width: 145.0,
                     child: Card(
                       elevation: 4,
                       child: Center(
