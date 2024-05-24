@@ -27,44 +27,17 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
 
   Future<void> fetchData() async {
     products = await productService.getProduct().first;
-    calculateThresholds();
     productDistribution = categorizeProducts(products);
+    print(productDistribution);
     setState(() {
       isLoading = false; // Set loading flag to false after data is fetched
     });
   }
 
-  void calculateThresholds() {
-    double totalPrice = products.fold(
-        0,
-        (previousValue, element) =>
-            previousValue +
-            double.parse(element.price)); // Updated to use price
-
-    thresholdA = totalPrice * 0.2;
-    thresholdB = totalPrice * 0.4;
-  }
-
   Map<String, int> categorizeProducts(List<Product> products) {
-    products.sort((a, b) => double.parse(b.price)
-        .compareTo(double.parse(a.price))); // Updated to use price
-
-    int countA = 0;
-    int countB = 0;
-    int countC = 0;
-
-    for (var product in products) {
-      if (double.parse(product.price) >= thresholdA) {
-        // Updated to use price
-        countA++;
-      } else if (double.parse(product.price) >= thresholdB &&
-          double.parse(product.price) < thresholdA) {
-        // Updated to use price
-        countB++;
-      } else {
-        countC++;
-      }
-    }
+    int countA = (products.length * 0.2).round();
+    int countB = (products.length * 0.3).round();
+    int countC = products.length - (countA + countB);
 
     return {
       'Category A': countA,
@@ -192,6 +165,8 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
 
   void _showDetailsDialog(
       Map<String, int> distribution, List<Product> products) {
+    Map<String, List<Product>> categorizedProducts =
+        _getProductsForCategory(products);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -200,7 +175,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: distribution.entries.map((entry) {
+              children: categorizedProducts.entries.map((entry) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -212,7 +187,15 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    ..._getProductsForCategory(entry.key, products),
+                    Column(
+                      children: entry.value.map((product) {
+                        return ListTile(
+                          title: Text(product.name),
+                          subtitle: Text(
+                              'Price: \$${product.price}'), // Format price to display with two decimal places
+                        );
+                      }).toList(),
+                    ),
                     const SizedBox(height: 16),
                   ],
                 );
@@ -232,42 +215,29 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
     );
   }
 
-  List<Widget> _getProductsForCategory(
-      String category, List<Product> products) {
-    List<Widget> productWidgets = [];
+  Map<String, List<Product>> _getProductsForCategory(List<Product> products) {
+    products
+        .sort((a, b) => double.parse(b.price).compareTo(double.parse(a.price)));
 
-    // Filter products based on category
+    int countA = (products.length * 0.2).round();
+    int countB = (products.length * 0.3).round();
+
     List<Product> categoryProducts = [];
-    switch (category) {
-      case 'Category A':
-        categoryProducts = products.where((product) {
-          return double.parse(product.price) >= thresholdA;
-        }).toList();
-        break;
-      case 'Category B':
-        categoryProducts = products.where((product) {
-          return double.parse(product.price) >= thresholdB &&
-              double.parse(product.price) < thresholdA;
-        }).toList();
-        break;
-      case 'Category C':
-        categoryProducts = products.where((product) {
-          return double.parse(product.price) < thresholdB &&
-              double.parse(product.price) < thresholdA;
-        }).toList();
-        break;
+    Map<String, List<Product>> c = {};
+
+    for (int i = 0; i < products.length; i++) {
+      if (i == countA) {
+        c["Category A"] = categoryProducts;
+        categoryProducts = [];
+      }
+      if (i == countB + countA) {
+        c["Category B"] = categoryProducts;
+        categoryProducts = [];
+      }
+      categoryProducts.add(products[i]);
     }
+    c["Category C"] = categoryProducts;
 
-    // Add product widgets
-    categoryProducts.forEach((product) {
-      productWidgets.add(
-        ListTile(
-          title: Text(product.name),
-          subtitle: Text('Price: \$${product.price}'),
-        ),
-      );
-    });
-
-    return productWidgets;
+    return c;
   }
 }
