@@ -39,7 +39,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
   final ProductService _productService = ProductService();
   final FifoService _fifoService = FifoService();
 
-  List<Map<String, dynamic>>? fifoList;
+  Map<String, dynamic>? fifoList;
 
   // Dummy product details
   String _productName = '';
@@ -65,11 +65,11 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
     }
   }
 
-  void fetchAndDisplayFifoList(List<String> uids) async {
+  void fetchAndDisplayFifoList() async {
     try {
-      if (uids.isNotEmpty) {
-        List<Map<String, dynamic>> list =
-            await _fifoService.fetchRealtimeDatabaseDataForProduct(uids);
+      // if (fifoList!.isNotEmpty) {
+        Map<String, dynamic> list =
+            await _fifoService.fetchRealtimeDatabaseDataForProduct();
         setState(() {
           fifoList = list;
 
@@ -78,28 +78,28 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
               .firstWhere((product) => product.id == selectedProduct);
           _productName = _selectedProduct.name;
 
-          // Leave other fields as static for now
-          _productTagNumber = fifoList![0]['taguid'];
-          _dateOfEntry = fifoList![0]['datetime'];
-          _dateOfExit = '';
+
+          // _productTagNumber = fifoList![0]['taguid'];
+          // _dateOfEntry = fifoList![0]['datetime'];
+          // _dateOfExit = '';
         });
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('No UID found for the selected product.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
+      // } else {
+      //   showDialog(
+      //     context: context,
+      //     builder: (context) => AlertDialog(
+      //       title: Text('Error'),
+      //       content: Text('No UID found for the selected product.'),
+      //       actions: [
+      //         TextButton(
+      //           onPressed: () {
+      //             Navigator.pop(context); // Close the dialog
+      //           },
+      //           child: Text('OK'),
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
     } on ProductNotFoundException catch (e) {
       showDialog(
         context: context,
@@ -244,25 +244,25 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                     _dateOfExit = '';
                   });
                   List<String> uids = await getProductId(value!);
-                  if (uids.isNotEmpty) {
-                    fetchAndDisplayFifoList(uids);
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Sorry'),
-                        content: Text('There is no stock of this product in the inventory.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context); // Close the dialog
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                  // if (uids.isNotEmpty) {
+                    fetchAndDisplayFifoList();
+                  // } else {
+                  //   showDialog(
+                  //     context: context,
+                  //     builder: (context) => AlertDialog(
+                  //       title: Text('Sorry'),
+                  //       content: Text('There is no stock of this product in the inventory.'),
+                  //       actions: [
+                  //         TextButton(
+                  //           onPressed: () {
+                  //             Navigator.pop(context); // Close the dialog
+                  //           },
+                  //           child: Text('OK'),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   );
+                  // }
                 },
               ),
               SizedBox(height: 50),
@@ -358,7 +358,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                         if (fifoList != null && fifoList!.isNotEmpty)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: fifoList!.map((entry) {
+                            children: fifoList!.entries.map((entry) {
                               return Padding(
                                 padding: EdgeInsets.only(left: 40, top: 5),
                                 child: Column(
@@ -376,7 +376,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: '${entry['datetime']}',
+                                            text: '${entry.value}',
                                             style: TextStyle(fontSize: 16,color:Colors.black),
                                           ),
                                         ],
@@ -394,7 +394,7 @@ class _FIFOInventoryPageState extends State<FIFOInventoryPage> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: '${entry['taguid']}',
+                                            text: '${entry.key}',
                                             style: TextStyle(fontSize: 16,color:Colors.black),
                                           ),
                                         ],
