@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:smartinventory/models/ProductModel.dart';
+import 'package:smartinventory/screens/AccessMonitoring.dart';
 import 'package:smartinventory/services/ProductsService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductDistributionPage extends StatefulWidget {
   const ProductDistributionPage({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   late double thresholdA;
   late double thresholdB;
   bool isLoading = true; // Flag to track loading state
+  Map<Product, int> turnoverMap = {};
 
   @override
   void initState() {
@@ -27,17 +30,90 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
 
   Future<void> fetchData() async {
     products = await productService.getProduct().first;
-    productDistribution = categorizeProducts(products);
+    productDistribution = await categorizeProducts();
     print(productDistribution);
     setState(() {
       isLoading = false; // Set loading flag to false after data is fetched
     });
   }
 
-  Map<String, int> categorizeProducts(List<Product> products) {
-    int countA = (products.length * 0.2).round();
-    int countB = (products.length * 0.3).round();
-    int countC = products.length - (countA + countB);
+  Future<void> getProductsTurnover() async {
+    List<MapEntry<String, dynamic>> productStates = await masterFunction();
+    Map<String, int> productsEntry = {};
+    Map<String, int> productsExit = {};
+    Map<String, int> productsTurnover = {};
+    for (var product in productStates) {
+      if (product.value["Type"] == "Product") {
+        String? productId = await getProductByUID(product.value["taguid"]);
+        if (product.value["Entry/Exit"] == "Entry") {
+          if (productsEntry.containsKey(productId)) {
+            productsEntry[productId!] = productsEntry[productId]! + 1;
+          } else {
+            productsEntry[productId!] = 0;
+          }
+        } else {
+          if (productsExit.containsKey(productId)) {
+            productsExit[productId!] = productsExit[productId]! + 1;
+          } else {
+            productsExit[productId!] = 0;
+          }
+        }
+      }
+      for (var entry in productsEntry.entries) {
+        if (!productsExit.containsKey(entry.key)) {
+          productsTurnover[entry.key] = 0;
+        } else {
+          productsTurnover[entry.key] =
+              (productsEntry[entry.key]! > productsExit[entry.key]!)
+                  ? productsExit[entry.key]!
+                  : productsEntry[entry.key]!;
+        }
+      }
+    }
+    Map<Product, int> turnover = {};
+    for (var product in productsTurnover.entries) {
+      Product p = await productService.getProductById(product.key);
+      turnover[p] = product.value;
+    }
+    // Convert the map entries to a list
+    List<MapEntry<Product, int>> entries = turnover.entries.toList();
+
+    // Sort the list based on values
+    entries.sort((a, b) => a.value.compareTo(b.value));
+
+    // Optionally, create a new map from the sorted list
+    Map<Product, int> sortedMap = Map.fromEntries(entries);
+
+    // Printing the sorted map
+    sortedMap.forEach((key, value) {
+      print('${key}: $value');
+    });
+
+    turnoverMap = sortedMap;
+  
+  }
+
+  Future<String?> getProductByUID(String uid) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('Assigned_Products')
+          .where('UID', isEqualTo: uid)
+          .get();
+
+      return snapshot.docs.first["ProductId"];
+    } catch (e) {
+      print("Error fetchin UID data");
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<Map<String, int>> categorizeProducts() async {
+    await getProductsTurnover();
+    int countA = (turnoverMap.length * 0.2).round();
+    int countB = (turnoverMap.length * 0.3).round();
+    int countC = turnoverMap.length - (countA + countB);
 
     return {
       'Category A': countA,
@@ -50,10 +126,10 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: const Text('Product Distribution')),
+        title: const Center(child: Text('Product Distribution')),
       ),
       body: isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator()) // Show indicator when loading
           : Padding(
               padding: const EdgeInsets.all(16.0),
@@ -166,7 +242,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
   void _showDetailsDialog(
       Map<String, int> distribution, List<Product> products) {
     Map<String, List<Product>> categorizedProducts =
-        _getProductsForCategory(products);
+        _getProductsForCategory();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -181,7 +257,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
                   children: [
                     Text(
                       entry.key,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -215,17 +291,17 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
     );
   }
 
-  Map<String, List<Product>> _getProductsForCategory(List<Product> products) {
-    products
-        .sort((a, b) => double.parse(b.price).compareTo(double.parse(a.price)));
+  Map<String, List<Product>> _getProductsForCategory() {
 
-    int countA = (products.length * 0.2).round();
-    int countB = (products.length * 0.3).round();
+    int countA = (turnoverMap.length * 0.2).round();
+    int countB = (turnoverMap.length * 0.3).round();
 
     List<Product> categoryProducts = [];
     Map<String, List<Product>> c = {};
+    var entries = turnoverMap.entries.toList();
 
-    for (int i = 0; i < products.length; i++) {
+    for (int i = 0; i < turnoverMap.length; i++) {
+      var entry = entries[i];
       if (i == countA) {
         c["Category A"] = categoryProducts;
         categoryProducts = [];
@@ -234,7 +310,7 @@ class _ProductDistributionPageState extends State<ProductDistributionPage> {
         c["Category B"] = categoryProducts;
         categoryProducts = [];
       }
-      categoryProducts.add(products[i]);
+      categoryProducts.add(entry.key);
     }
     c["Category C"] = categoryProducts;
 
