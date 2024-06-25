@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:smartinventory/models/ProductModel.dart';
 import 'package:smartinventory/services/CategoriesServices.dart';
 
-
 class ProductDetails extends StatelessWidget {
   final Product product;
   final CategoryService categoryService = CategoryService();
@@ -26,13 +25,12 @@ class ProductDetails extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          // First colored container
+          // Product details container
           Positioned(
-            bottom: 0,
+            top: 300, // Adjust this value to control the overlap
             left: 0,
             right: 0,
             child: Container(
-              height: 350,
               padding: const EdgeInsets.fromLTRB(30.0, 30.0, 25.0, 0),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 232, 232, 232).withOpacity(0.95),
@@ -123,6 +121,7 @@ class ProductDetails extends StatelessWidget {
                       );
                     },
                   ),
+                  const SizedBox(height: 40), // Add space between the two sections
                 ],
               ),
             ),
