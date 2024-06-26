@@ -14,26 +14,23 @@ class ProductDetails extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Product Details'),
       ),
-      body: Stack(
+      body: Column(
         children: [
           // Product photo
           Container(
-            height: 400,
+            height: 300, // Adjust height as needed
             width: double.infinity,
             child: Image.network(
               product.imageUrl,
               fit: BoxFit.cover,
             ),
           ),
-          // Product details container
-          Positioned(
-            top: 300, // Adjust this value to control the overlap
-            left: 0,
-            right: 0,
+          Expanded(
             child: Container(
               padding: const EdgeInsets.fromLTRB(30.0, 30.0, 25.0, 0),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 232, 232, 232).withOpacity(0.95),
+                color:
+                    const Color.fromARGB(255, 232, 232, 232).withOpacity(0.95),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(50.0),
                   topRight: Radius.circular(50.0),
@@ -83,7 +80,8 @@ class ProductDetails extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   FutureBuilder<String>(
-                    future: categoryService.getCategoryNameById(product.categoryId),
+                    future:
+                        categoryService.getCategoryNameById(product.categoryId),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
@@ -121,56 +119,47 @@ class ProductDetails extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: 40), // Add space between the two sections
+                  const SizedBox(
+                      height: 40), // Add space between the two sections
                 ],
               ),
             ),
           ),
           // Second colored container with top-left border radius of 60px
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                height: 90,
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 19, 93, 102),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60.0),
+          Container(
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 19, 93, 102),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(60.0),
+              ),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 40.0),
+                  child: Text(
+                    'Number sold',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      decoration: TextDecoration.none,
+                    ),
                   ),
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 40.0),
-                      child: Text(
-                        'Number sold',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
+                Padding(
+                  padding: EdgeInsets.only(right: 40.0),
+                  child: Text(
+                    '1200',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      decoration: TextDecoration.none,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 40.0),
-                      child: Text(
-                        '1200',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
