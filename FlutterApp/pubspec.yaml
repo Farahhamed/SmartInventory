@@ -35,6 +35,7 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_database: ^10.4.9
   firebase_storage: ^11.6.9
+  flutter_launcher_icons: ^0.13.1
   fl_chart: any
   flutter:
     sdk: flutter
@@ -62,6 +63,12 @@ dev_dependencies:
   syncfusion_flutter_charts: ^24.2.7
   table_calendar: ^3.1.1
   uuid: ^4.3.3
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icons/icon3.png"
+  adaptive_icon_foreground: "assets/images/icons/icon3.png"
+  adaptive_icon_background: "#ffffff" # Use a solid color for the background
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -101,6 +108,7 @@ flutter:
     - assets/images/oil.png
     - assets/images/formBackground.png
     - assets/images/box.png
+    - assets/images/icons/icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
