@@ -25,22 +25,19 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
       List<SalesData> resultList = await PredictService.trainModel();
 
       setState(() {
-        // Update the forecastingResults with the fetched data
         forecastingResults = resultList;
       });
 
-      // Print the parsed data for debugging
       print('Updated forecastingResults: $forecastingResults');
     } catch (e) {
       print('Error fetching forecasting results: $e');
-      // Handle error if needed
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0), // Add padding to the entire page
+      padding: const EdgeInsets.all(16.0),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -52,12 +49,11 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
-            // Wrap the Column with SingleChildScrollView
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
-                  'Forecasting Results',
+                  'Forecasting Results for the next 3 months',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
@@ -65,35 +61,35 @@ class _ForecastingScreenState extends State<ForecastingScreen> {
                   height: 400,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: Colors.grey[300]!), // Border color
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                    border: Border.all(color: Colors.grey[300]!),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: SfCartesianChart(
-                    primaryXAxis: NumericAxis(
-                      minimum: 2013,
-                      maximum: 2025,
-                      interval: 2,
-                      numberFormat: NumberFormat('####'),
-                    ),
+                    tooltipBehavior: TooltipBehavior(enable: true),
+                    primaryXAxis: CategoryAxis(),
                     primaryYAxis: NumericAxis(
                       minimum: 0,
                       maximum: 5000000,
                       interval: 500000,
                     ),
                     series: <CartesianSeries>[
-                      ScatterSeries<SalesData, int>(
+                      LineSeries<SalesData, String>(
                         dataSource: forecastingResults,
-                        xValueMapper: (SalesData sales, _) => sales.year,
+                        xValueMapper: (SalesData sales, _) =>
+                            '${sales.year}-${sales.month.toString().padLeft(2, '0')}',
                         yValueMapper: (SalesData sales, _) => sales.sales,
                         name: 'Forecasting Results',
                         markerSettings: MarkerSettings(
                           isVisible: true,
-                          shape: DataMarkerType
-                              .circle, // Change marker shape if needed
-                          color: Colors.blue, // Marker color
-                          borderWidth: 2, // Marker border width
-                          borderColor: Colors.blue, // Marker border color
+                          shape: DataMarkerType.circle,
+                          color: Colors.blue,
+                          borderWidth: 2,
+                          borderColor: Colors.blue,
+                        ),
+                        dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          labelAlignment: ChartDataLabelAlignment.top,
+                          useSeriesColor: true,
                         ),
                       )
                     ],
