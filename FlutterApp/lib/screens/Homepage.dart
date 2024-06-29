@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Text(
-                              '\$${income - expenses}',
+                              '\$${(income - expenses).toStringAsFixed(2)}',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 50,
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '\$${income}',
+                                      '\$${income.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         color: Color(0xFF135D66),
                                         fontSize: 18,
@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '\$${expenses}',
+                                      '\$${expenses.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         color: Color(0xFF135D66),
                                         fontSize: 18,
