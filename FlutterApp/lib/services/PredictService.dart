@@ -1,36 +1,31 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:smartinventory/models/SalesData.dart';
 
 class PredictService {
-  static const String baseUrl =
-      "http://127.0.0.1:5000"; // Replace with your API URL
+  static const String baseUrl = "http://127.0.0.1:5000/"; // Replace with your API URL
 
-  static Future<List<String>> trainModel() async {
-    final response = await http.get(Uri.parse('$baseUrl/train'));
+  static Future<List<SalesData>> trainModel() async {
+    final response = await http.get(Uri.parse('$baseUrl/forecast'));
 
     if (response.statusCode == 200) {
-      // Parse the JSON response
       List<dynamic> result = jsonDecode(response.body);
-      Map<String, dynamic> result2 = result[0];
-      // Convert "date" string to DateTime
+      List<SalesData> resultList = [];
+
       DateFormat dateFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
-      DateTime date = dateFormat.parse(result2['date']);
 
-      // Convert "pred_value" to double
-      double predValue = result2['pred_value'].toDouble();
+      for (var item in result) {
+        DateTime date = dateFormat.parse(item['date']);
+        int year = date.year;
+        int month = date.month;
+        double predValue = item['pred_value'].toDouble();
 
-      print('Parsed DateTime: $date');
-      print('Parsed Double: $predValue');
-      print(result2.toString());
+        resultList.add(SalesData(year, month, predValue));
+      }
 
-      // Convert the dynamic values to doubles
-      List<String> resultList = [];
-      resultList.add(date.toString());
-      resultList.add(predValue.toString());
       return resultList;
     } else {
-      // Handle error
       throw Exception('Failed to load data');
     }
   }
